@@ -14,6 +14,7 @@
 </head>
 <body>
 
+    <!-- Banner-Bereich -->
     <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
         <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
         <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
@@ -27,20 +28,41 @@
             <img id="banner-logo" src="" style="display: block; width: 100%; max-width: 150px; margin-left: -20px; margin-bottom: -70px">
             <div id="banner-fsk" style="color:#bbb;font-size:13px;margin-bottom:12px"></div>
             <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
-            <a id="banner-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold;">▶ Anschauen</a>
+            <div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;">
+                <a id="banner-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold;">▶ Anschauen</a>
+                <button style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 18px;">+</button>
+            </div>
         </div>
     </div>
 
-    <div style="width:100%; background-color:#050505; padding:20px 30px;">
+    <!-- Indikator-Striche -->
+    <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
         <div id="indicator-box" style="display:flex; gap:10px; width:100px;">
             <div class="dot" id="dot-0"></div>
             <div class="dot" id="dot-1"></div>
         </div>
     </div>
 
+    <!-- Kategorien-Liste -->
+    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
+        <h2 style="font-size: 20px; margin-bottom: 15px">Filme und Partnerschaft</h2>
+        <div style="display: flex; gap: 15px;">
+            <div style="flex: 0 0 140px">
+                <a href="https://ankinox.wordpress.com/2026/07/03/445/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold;">Poretto und der Ma..</p>
+                <p style="font-size: 12px; color: #bbb">Untertitel | Synchro</p>
+            </div>
+            <div style="flex: 0 0 140px">
+                <a href="https://ankinox.wordpress.com/home/partner-studios/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold;">Partnerschaft mit An..</p>
+                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
+            </div>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <a href="index.html">Start</a>
-        <a href="stream.html" id="nav-stream">Stream</a>
+        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
         <a href="#">Shop</a>
         <a href="#">Partner</a>
     </nav>
@@ -71,13 +93,12 @@
             document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
             document.getElementById('banner-desc').innerText = data[idx].desc;
             document.getElementById('banner-link').href = data[idx].url;
-            
             document.getElementById('dot-0').style.background = (idx === 0) ? "linear-gradient(90deg,#7000ff,#00d4ff)" : "rgba(255,255,255,0.9)";
             document.getElementById('dot-1').style.background = (idx === 1) ? "linear-gradient(90deg,#7000ff,#00d4ff)" : "rgba(255,255,255,0.9)";
         }
 
         setInterval(() => updateBanner((idx + 1) % 2), 5000);
-        updateBanner(0); // Initial
+        updateBanner(0);
     </script>
 </body>
 </html>
