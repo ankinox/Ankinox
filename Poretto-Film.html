@@ -7,20 +7,20 @@
     <style>
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        /* Das Banner bleibt jetzt fest im Hintergrund beim Scrollen */
+        /* Banner mit absolutem Verlauf */
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png');
             background-size: cover; background-position: center; z-index: -1;
         }
-        /* Schwarzer Verlauf über das Bild */
         .overlay { width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 100%); }
 
-        /* Der Inhalts-Container scrollt über das Banner */
+        /* Content Container */
         .content {
-            margin-top: 50vh; /* Startet weiter unten */
-            background-color: #050505; border-radius: 30px 30px 0 0;
-            padding: 30px; position: relative; z-index: 1;
+            margin-top: 40vh; /* Lässt das Banner oben sichtbar */
+            background-color: #050505; 
+            padding: 20px;
+            position: relative;
         }
 
         .bottom-nav { 
@@ -40,27 +40,25 @@
 
     <div class="content">
         <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png" 
-             style="width: 100%; max-width: 500px; display: block; margin: -100px auto 20px auto;">
+             style="width: 100%; max-width: 500px; display: block; margin: -150px auto 10px auto;">
 
         <div style="text-align: center;">
-            <div style="color: #bbb; margin-bottom: 20px;">
-                <span style="border: 1px solid #7000ff; padding: 5px 15px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span> • Kurzfilm • Drama
+            <div style="color: #bbb; margin-bottom: 15px;">
+                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span> • Kurzfilm • Drama
             </div>
 
-            <div style="color: #00d4ff; font-size: 30px; margin-bottom: 25px;">★★★☆☆</div>
+            <div style="color: #00d4ff; font-size: 24px; margin-bottom: 20px;">★★★☆☆ <span style="color: white; font-size: 16px; margin-left: 10px;">Durchschnitt: 3.5</span></div>
 
-            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 30px;">
-                <button style="background: transparent; color: #00d4ff; border: 2px solid #00d4ff; padding: 15px 40px; border-radius: 50px; font-weight: bold;">♥ Favorit</button>
-                <a href="#" style="background: transparent; color: #7000ff; border: 2px solid #7000ff; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: bold;">➔ Teilen</a>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 25px;">
+                <button style="background: transparent; color: #00d4ff; border: 1px solid #00d4ff; padding: 10px 30px; border-radius: 20px; font-weight: bold;">♥ Favorit</button>
+                <a href="#" style="background: transparent; color: #bf00ff; border: 1px solid #bf00ff; padding: 10px 30px; border-radius: 20px; text-decoration: none; font-weight: bold;">➔ Teilen</a>
             </div>
 
-            <div style="text-align: left; color: #cccccc; line-height: 1.8; margin-bottom: 30px;">
-                Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.
+            <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 30px; font-size: 0.95rem;">
+                Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden. Der Stuhl ist Porettos Freund-Ersatz, bis sie eines Tages nach einem Umzug erneut seine Hilfe braucht und sich die Geschichte wiederholt. Dies ist ein Kurzfilm über Freundschaft und Neuanfänge.
             </div>
 
-            <a href="#" style="display: block; width: 80%; margin: 0 auto; padding: 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 20px; box-shadow: 0 0 15px rgba(0,212,255,0.3);">
-                ▶ Wiedergabe starten
-            </a>
+            <a href="#" style="display: block; width: 90%; margin: 0 auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; text-decoration: none; border-radius: 30px; font-weight: bold;">▶ Wiedergabe starten</a>
         </div>
     </div>
 
