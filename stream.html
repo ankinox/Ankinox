@@ -9,7 +9,16 @@
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
         .bottom-nav a#nav-stream { color: #bf00ff; }
-        .dot { flex: 1; height: 5px; border-radius: 2.5px; transition: 0.3s; }
+        
+        /* Indikator-Styling */
+        .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.3); border-radius: 2.5px; overflow: hidden; position: relative; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); }
+        .active .progress-bar { animation: load 5s linear forwards; }
+        
+        @keyframes load {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -23,8 +32,8 @@
             <div style="color:#ffffff;font-size:24px">🔍</div>
         </div>
 
-        <div style="position:absolute; bottom:1px; left:30px; z-index:3; max-width:500px">
-            <img id="banner-logo" src="" style="display: block; width: 100%; max-width: 150px; margin-left: -20px; margin-bottom: -70px">
+        <div style="position:absolute; bottom:100px; left:30px; z-index:3; max-width:500px">
+            <img id="banner-logo" src="" style="display: block; width: 100%; max-width: 150px; margin-left: -20px; margin-bottom: 10px">
             <div id="banner-fsk" style="color:#bbb;font-size:13px;margin-bottom:12px"></div>
             <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
             
@@ -37,52 +46,14 @@
 
     <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
         <div id="indicator-box" style="display:flex; gap:10px; width:100px;">
-            <div class="dot" id="dot-0"></div>
-            <div class="dot" id="dot-1"></div>
+            <div class="dot" id="dot-0"><div class="progress-bar"></div></div>
+            <div class="dot" id="dot-1"><div class="progress-bar"></div></div>
         </div>
     </div>
-
-    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
-        <h2 style="font-size: 20px; margin-bottom: 15px">Filme und Partnerschaft</h2>
-        <div style="display: flex; gap: 15px;">
-            <div style="flex: 0 0 140px">
-                <a href="https://ankinox.wordpress.com/2026/07/03/445/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Poretto und der Ma..</p>
-                <p style="font-size: 12px; color: #bbb">Untertitel | Synchro</p>
-            </div>
-            <div style="flex: 0 0 140px">
-                <a href="https://ankinox.wordpress.com/home/partner-studios/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
-                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
-            </div>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-        <a href="index.html">Start</a>
-        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
-        <a href="#">Shop</a>
-        <a href="#">Partner</a>
-    </nav>
 
     <script>
-        const data = [
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 0</span> Untertitel | Synchro • Kurzfilm • Drama',
-                desc: "Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.",
-                url: "https://ankinox.wordpress.com/2026/07/03/445/"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> Partnerschaft • Geldverdienen • Großwerden',
-                desc: "Werde jetzt Ankinox Partner.",
-                url: "https://ankinox.wordpress.com/home/partner-studios/"
-            }
-        ];
-
+        const data = [/* ... deine Daten ... */];
+        
         let idx = 0;
         function updateBanner(i) {
             idx = i;
@@ -92,8 +63,11 @@
             document.getElementById('banner-desc').innerText = data[idx].desc;
             document.getElementById('banner-button-link').href = data[idx].url;
             
-            document.getElementById('dot-0').style.background = (idx === 0) ? "linear-gradient(90deg,#7000ff,#00d4ff)" : "rgba(255,255,255,0.9)";
-            document.getElementById('dot-1').style.background = (idx === 1) ? "linear-gradient(90deg,#7000ff,#00d4ff)" : "rgba(255,255,255,0.9)";
+            // Animation triggern
+            document.querySelectorAll('.dot').forEach((el, index) => {
+                el.classList.remove('active');
+                if(index === idx) el.classList.add('active');
+            });
         }
 
         setInterval(() => updateBanner((idx + 1) % 2), 5000);
