@@ -12,8 +12,8 @@
         
         /* Indikator-Styling */
         .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.4); border-radius: 2.5px; overflow: hidden; position: relative; cursor: pointer; }
-        .dot.active { cursor: default; } /* Kein Zeiger für das aktuell aktive Element */
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); }
+        .dot.active { cursor: default; } /* Kein Cursor, wenn aktiv */
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; }
         
         @keyframes load {
             from { width: 0%; }
@@ -51,6 +51,29 @@
         </div>
     </div>
 
+    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
+        <h2 style="font-size: 20px; margin-bottom: 15px">Filme und Partnerschaft</h2>
+        <div style="display: flex; gap: 15px;">
+            <div style="flex: 0 0 140px">
+                <a href="https://ankinox.wordpress.com/2026/07/03/445/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Poretto und der Ma..</p>
+                <p style="font-size: 12px; color: #bbb">Untertitel | Synchro</p>
+            </div>
+            <div style="flex: 0 0 140px">
+                <a href="https://ankinox.wordpress.com/home/partner-studios/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
+                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
+        <a href="#">Shop</a>
+        <a href="#">Partner</a>
+    </nav>
+
     <script>
         const data = [
             {
@@ -77,10 +100,10 @@
         }
 
         function manualUpdate(i) {
-            if (i === idx) return; // Nichts tun, wenn bereits ausgewählt
+            if (i === idx) return; 
             clearInterval(timer);
             updateBanner(i);
-            timer = setInterval(autoUpdate, 5000); // Timer neu starten
+            timer = setInterval(autoUpdate, 5000); 
         }
 
         function updateBanner(i) {
@@ -97,7 +120,6 @@
 
             document.querySelectorAll('.progress-bar').forEach((bar, index) => {
                 bar.style.animation = 'none'; 
-                bar.style.width = index === idx ? '0%' : '0%';       
                 if (index === idx) {
                     void bar.offsetWidth; 
                     bar.style.animation = 'load 5s linear forwards';
