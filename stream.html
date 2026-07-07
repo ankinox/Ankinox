@@ -29,7 +29,7 @@
             <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
             
             <div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;flex-wrap:nowrap;position:relative;z-index:101">
-                <a id="banner-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
+                <a id="banner-button-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
                 <button type="submit" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 18px; display: inline-flex; align-items: center; justify-content: center">+</button>
             </div>
         </div>
@@ -90,7 +90,7 @@
             document.getElementById('banner-logo').src = data[idx].logo;
             document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
             document.getElementById('banner-desc').innerText = data[idx].desc;
-            document.getElementById('banner-link').href = data[idx].url;
+            document.getElementById('banner-button-link').href = data[idx].url; // Korrekt verknüpft
             document.getElementById('dot-0').style.background = (idx === 0) ? "linear-gradient(90deg,#7000ff,#00d4ff)" : "rgba(255,255,255,0.9)";
             document.getElementById('dot-1').style.background = (idx === 1) ? "linear-gradient(90deg,#7000ff,#00d4ff)" : "rgba(255,255,255,0.9)";
         }
