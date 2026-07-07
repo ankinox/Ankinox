@@ -12,8 +12,8 @@
         
         /* Indikator-Styling */
         .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.4); border-radius: 2.5px; overflow: hidden; position: relative; cursor: pointer; }
-        .dot.active { cursor: default; } /* Kein Cursor, wenn aktiv */
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; }
+        .dot.active { cursor: default; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
         @keyframes load {
             from { width: 0%; }
@@ -120,9 +120,11 @@
 
             document.querySelectorAll('.progress-bar').forEach((bar, index) => {
                 bar.style.animation = 'none'; 
+                bar.style.width = '0%';
                 if (index === idx) {
-                    void bar.offsetWidth; 
-                    bar.style.animation = 'load 5s linear forwards';
+                    setTimeout(() => {
+                        bar.style.animation = 'load 5s linear forwards';
+                    }, 50);
                 }
             });
         }
