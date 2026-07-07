@@ -44,10 +44,26 @@
         </div>
     </div>
 
-    <!-- Feste Navigationsleiste -->
-        <nav class="bottom-nav">
+            /* Feste Navigationsleiste */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: #0a0a0a; display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
+        }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+        .bottom-nav a.active { color: #bf00ff; }
+    </style>
+</head>
+<body>
+
+    <div class="header-hero">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" 
+             alt="Ankinox Logo" class="logo">
+    </div>
+
+    <nav class="bottom-nav">
         <a href="index.html">Start</a>
-        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
+        <a href="stream.html">Stream</a>
         <a href="#">Shop</a>
         <a href="#">Partner</a>
     </nav>
