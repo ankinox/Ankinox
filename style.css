@@ -2,29 +2,20 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #0a0a0a; /* Sehr dunkles Grau/Schwarz */
+    background-color: #0a0a0a;
     display: flex;
     justify-content: space-around;
-    padding: 10px 0;
+    padding: 15px 0;
     border-top: 1px solid #222;
 }
 
 .bottom-nav a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #555; /* Inaktive Farbe: dunkler */
-    text-decoration: none;
-    font-size: 0.7rem;
-    gap: 4px;
-    padding: 5px 15px;
-    border-radius: 20px; /* Abgerundete Ecken */
-    transition: all 0.3s;
+    color: #555; /* Standard: Grau */
+    transition: color 0.3s ease;
 }
 
-/* Der aktive Bereich (wie im Bild) */
-.bottom-nav a:first-child {
-    color: #fff; /* Leuchtend weiß für aktiv */
-    background-color: #1a1a1a; /* Kleiner Hintergrund-Schatten */
-    border-bottom: 2px solid #bf00ff; /* Lila Strich unten */
+/* Wenn ausgewählt: Farbe */
+.bottom-nav a.active {
+    color: #bf00ff; /* Dein Lila */
+    filter: drop-shadow(0 0 5px #bf00ff);
 }
