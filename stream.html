@@ -95,9 +95,21 @@
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
 
-        function autoUpdate() {
-            updateBanner((idx + 1) % data.length);
-        }
+        // Swipe-Logik
+        let touchstartX = 0;
+        const bannerContainer = document.getElementById('banner-container');
+
+        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        bannerContainer.addEventListener('touchend', e => {
+            let touchendX = e.changedTouches[0].screenX;
+            if (touchendX < touchstartX) { // Nach links swipen -> Nächster Film
+                manualUpdate((idx + 1) % data.length);
+            } else if (touchendX > touchstartX) { // Nach rechts swipen -> Vorheriger Film
+                manualUpdate((idx - 1 + data.length) % data.length);
+            }
+        });
+
+        function autoUpdate() { updateBanner((idx + 1) % data.length); }
 
         function manualUpdate(i) {
             if (i === idx) return; 
@@ -122,13 +134,10 @@
                 bar.style.animation = 'none'; 
                 bar.style.width = '0%';
                 if (index === idx) {
-                    setTimeout(() => {
-                        bar.style.animation = 'load 5s linear forwards';
-                    }, 50);
+                    setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
                 }
             });
         }
-
         updateBanner(0);
     </script>
 </body>
