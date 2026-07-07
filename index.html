@@ -5,9 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ankinox</title>
     <style>
-        /* Grundgerüst für App-Feeling */
         body { margin: 0; padding-bottom: 90px; background-color: #000; color: white; font-family: sans-serif; }
         
+        /* Container für den Header-Bereich mit dem Logo */
+        .header-hero { 
+            width: 100%; position: relative; 
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 90%, rgba(0,0,0,1) 100%), 
+            url('https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000111071f4924b6cba720793265390065964046614069.png');
+            background-size: cover; background-repeat: no-repeat; background-position: top center; 
+            min-height: 150px; padding: 20px; box-sizing: border-box;
+        }
+
+        /* Logo-Positionierung */
+        .logo { 
+            width: 100px; height: auto; display: block; 
+        }
+
         /* Feste Navigationsleiste */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
@@ -20,8 +33,10 @@
 </head>
 <body>
 
-    <div style="width:100%;min-width:320px;position:relative;background-image:linear-gradient(to bottom, rgba(0,0,0,0.8) 90%, rgba(0,0,0,1) 100%), url('https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000111071f4924b6cba720793265390065964046614069.png');background-size:cover;background-repeat:no-repeat;background-position:top center;min-height:150px">
-        </div>
+    <div class="header-hero">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" 
+             alt="Ankinox Logo" class="logo">
+    </div>
     
     <nav class="bottom-nav">
         <a href="#" class="active">Start</a>
