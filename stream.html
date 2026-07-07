@@ -1,0 +1,26 @@
+<div id="banner-slider" style="position:relative; width:100%; height:60vh; overflow:hidden;">
+    <img id="banner-img" src="BILD1.png" style="width:100%; height:100%; object-fit:cover;">
+</div>
+
+<script>
+    const images = ["BILD1.png", "BILD2.png", "BILD3.png"]; // Deine Bild-Dateinamen
+    let index = 0;
+    const banner = document.getElementById('banner-img');
+
+    // Automatischer Wechsel alle 5 Sekunden
+    setInterval(() => {
+        index = (index + 1) % images.length;
+        banner.src = images[index];
+    }, 5000);
+
+    // Swipe-Funktion (einfaches Erkennen)
+    let startX;
+    banner.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+    banner.addEventListener('touchend', e => {
+        let diff = e.changedTouches[0].clientX - startX;
+        if (Math.abs(diff) > 50) { // Wenn mehr als 50px gewischt wurde
+            index = diff > 0 ? (index - 1 + images.length) % images.length : (index + 1) % images.length;
+            banner.src = images[index];
+        }
+    });
+</script>
