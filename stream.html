@@ -55,7 +55,7 @@
         <h2 style="font-size: 20px; margin-bottom: 15px">Filme und Partnerschaft</h2>
         <div style="display: flex; gap: 15px;">
             <div style="flex: 0 0 140px">
-                <a href="https://ankinox.wordpress.com/2026/07/03/445/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <a href="Poretto-Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Poretto und der Ma..</p>
                 <p style="font-size: 12px; color: #bbb">Untertitel | Synchro</p>
             </div>
@@ -81,7 +81,7 @@
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png",
                 fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 0</span> Untertitel | Synchro • Kurzfilm • Drama',
                 desc: "Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.",
-                url: "https://ankinox.wordpress.com/2026/07/03/445/"
+                url: "Poretto-Film.html"
             },
             {
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
@@ -95,18 +95,14 @@
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
 
-        // Swipe-Logik
         let touchstartX = 0;
         const bannerContainer = document.getElementById('banner-container');
 
         bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
         bannerContainer.addEventListener('touchend', e => {
             let touchendX = e.changedTouches[0].screenX;
-            if (touchendX < touchstartX) { // Nach links swipen -> Nächster Film
-                manualUpdate((idx + 1) % data.length);
-            } else if (touchendX > touchstartX) { // Nach rechts swipen -> Vorheriger Film
-                manualUpdate((idx - 1 + data.length) % data.length);
-            }
+            if (touchendX < touchstartX) { manualUpdate((idx + 1) % data.length); }
+            else if (touchendX > touchstartX) { manualUpdate((idx - 1 + data.length) % data.length); }
         });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
