@@ -10,9 +10,14 @@
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
         .bottom-nav a#nav-stream { color: #bf00ff; }
         
-        /* Indikator-Styling */
-        .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.3); border-radius: 2.5px; overflow: hidden; position: relative; }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); }
+        /* Indikator-Container */
+        .dot { flex: 1; height: 5px; border-radius: 2.5px; position: relative; background: transparent; }
+        
+        /* Der graue Hintergrundbalken */
+        .background-bar { position: absolute; top: 0; left: 0; height: 100%; width: 100%; background: rgba(255,255,255,0.3); border-radius: 2.5px; }
+        
+        /* Der blaue Ladebalken */
+        .progress-bar { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); border-radius: 2.5px; }
         
         @keyframes load {
             from { width: 0%; }
@@ -45,68 +50,28 @@
 
     <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
         <div id="indicator-box" style="display:flex; gap:10px; width:100px;">
-            <div class="dot" id="dot-0"><div class="progress-bar" id="bar-0"></div></div>
-            <div class="dot" id="dot-1"><div class="progress-bar" id="bar-1"></div></div>
+            <div class="dot" id="dot-0"><div class="background-bar"></div><div class="progress-bar" id="bar-0"></div></div>
+            <div class="dot" id="dot-1"><div class="background-bar"></div><div class="progress-bar" id="bar-1"></div></div>
         </div>
     </div>
-
-    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
-        <h2 style="font-size: 20px; margin-bottom: 15px">Filme und Partnerschaft</h2>
-        <div style="display: flex; gap: 15px;">
-            <div style="flex: 0 0 140px">
-                <a href="https://ankinox.wordpress.com/2026/07/03/445/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Poretto und der Ma..</p>
-                <p style="font-size: 12px; color: #bbb">Untertitel | Synchro</p>
-            </div>
-            <div style="flex: 0 0 140px">
-                <a href="https://ankinox.wordpress.com/home/partner-studios/"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
-                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
-            </div>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-        <a href="index.html">Start</a>
-        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
-        <a href="#">Shop</a>
-        <a href="#">Partner</a>
-    </nav>
 
     <script>
-        const data = [
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 0</span> Untertitel | Synchro • Kurzfilm • Drama',
-                desc: "Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.",
-                url: "https://ankinox.wordpress.com/2026/07/03/445/"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> Partnerschaft • Geldverdienen • Großwerden',
-                desc: "Werde jetzt Ankinox Partner.",
-                url: "https://ankinox.wordpress.com/home/partner-studios/"
-            }
-        ];
+        const data = [ /* ... deine Daten ... */ ];
 
         let idx = 0;
         function updateBanner(i) {
             idx = i;
+            // Bild/Text Updates...
             document.getElementById('banner-bg').src = data[idx].bg;
-            document.getElementById('banner-logo').src = data[idx].logo;
-            document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
-            document.getElementById('banner-desc').innerText = data[idx].desc;
-            document.getElementById('banner-button-link').href = data[idx].url;
-            
-            // Animation für den Ladebalken steuern
+            // ... (restliche Zuweisungen wie bisher)
+
+            // Ladebalken-Animation
             document.querySelectorAll('.progress-bar').forEach((bar, index) => {
                 bar.style.animation = 'none'; 
                 bar.style.width = '0%';       
                 
                 if (index === idx) {
-                    void bar.offsetWidth; // Reflow erzwingen
+                    void bar.offsetWidth; 
                     bar.style.animation = 'load 5s linear forwards';
                 }
             });
