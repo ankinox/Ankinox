@@ -1,40 +1,30 @@
-body {
-    background-color: #050505;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding-bottom: 70px; /* Platz für die untere Leiste */
-}
-
-/* Logo oben rechts */
-header {
-    display: flex;
-    justify-content: flex-end;
-    padding: 20px;
-    font-weight: bold;
-    font-size: 1.5rem;
-    color: #00f2ff;
-    text-shadow: 0 0 10px #00f2ff;
-}
-
-/* Die untere Navigationsleiste */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #111;
+    background-color: #0a0a0a; /* Sehr dunkles Grau/Schwarz */
     display: flex;
     justify-content: space-around;
-    padding: 15px 0;
-    border-top: 1px solid #333;
+    padding: 10px 0;
+    border-top: 1px solid #222;
 }
 
 .bottom-nav a {
-    color: #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #555; /* Inaktive Farbe: dunkler */
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
+    gap: 4px;
+    padding: 5px 15px;
+    border-radius: 20px; /* Abgerundete Ecken */
+    transition: all 0.3s;
 }
 
-.bottom-nav a:hover {
-    color: #00f2ff;
+/* Der aktive Bereich (wie im Bild) */
+.bottom-nav a:first-child {
+    color: #fff; /* Leuchtend weiß für aktiv */
+    background-color: #1a1a1a; /* Kleiner Hintergrund-Schatten */
+    border-bottom: 2px solid #bf00ff; /* Lila Strich unten */
 }
