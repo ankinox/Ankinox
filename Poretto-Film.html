@@ -12,12 +12,12 @@
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png');
             background-size: cover; background-position: center; z-index: -1;
         }
-        .overlay { width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 100%); }
 
         .content {
             /* Hier den Wert erhöhen, um den schwarzen Balken weiter nach unten zu schieben */
             margin-top: 55vh; 
-            background-color: #050505; 
+            /* Der Verlauf erzeugt hier den transparenten Übergang */
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%, #050505 100%);
             padding: 20px;
             position: relative;
         }
@@ -33,9 +33,7 @@
 </head>
 <body>
 
-    <div class="banner">
-        <div class="overlay"></div>
-    </div>
+    <div class="banner"></div>
 
     <div class="content">
         <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png" 
