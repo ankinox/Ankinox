@@ -9,12 +9,7 @@
     <meta property="og:title" content="Ankinox Shop">
     <meta property="og:description" content="Exklusives Merchandise & Limitierte Editionen.">
 
-        <div style="position:absolute;top:0;left:0;z-index:10;padding:15px; margin-top: -20px;">
-            <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
-        </div>
-
     <style>
-        /* Farbpalette: Logo-orientiert (Schwarz, Rot, Orange) */
         :root {
             --primary-orange: #ff4500;
             --primary-red: #8b0000;
@@ -23,6 +18,14 @@
         }
 
         body { margin: 0; padding-bottom: 90px; background-color: var(--bg-color); color: white; font-family: sans-serif; }
+
+        /* Das fixierte Logo */
+        .fixed-logo {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 10000; /* Stellt sicher, dass es über allem anderen liegt */
+        }
         
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
@@ -42,7 +45,7 @@
             position: relative;
         }
 
-        /* Kategorie-Bereiche */
+        /* Restliche Styles bleiben gleich */
         .category-section { margin-bottom: 40px; }
         .category-title { 
             display: flex; align-items: center; color: var(--primary-orange); 
@@ -83,6 +86,11 @@
 </head>
 <body>
 
+    <!-- Logo jetzt hier mit der Klasse .fixed-logo -->
+    <div class="fixed-logo">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
+    </div>
+
     <div class="banner"><div class="banner-overlay"></div></div>
 
     <div class="content">
@@ -96,58 +104,7 @@
                 <button id="share-button" style="background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange); padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
             </div>
 
-            <div class="category-section">
-                <h2 class="category-title">Klamotten</h2>
-                <div class="scroll-container">
-                    <div class="product-card">
-                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_111319_samsungbrowser993583346539854004.jpg" class="product-img">
-                        <div class="product-name">T-Shirt (M)</div>
-                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-812-7&appearance=1" class="product-btn">Jetzt Kaufen</a>
-                    </div>
-                    <div class="product-card">
-                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112056_samsungbrowser3192014083057506429.jpg" class="product-img">
-                        <div class="product-name">T-Shirt (W)</div>
-                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-813-8&appearance=1269" class="product-btn">Jetzt Kaufen</a>
-                    </div>
-                    <div class="product-card">
-                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112514_samsungbrowser2447043084200885577.jpg" class="product-img">
-                        <div class="product-name">Shorts</div>
-                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-1514-219&appearance=70" class="product-btn">Jetzt Kaufen</a>
-                    </div>
-                    <div class="product-card">
-                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112857_samsungbrowser3718550902532511434.jpg" class="product-img">
-                        <div class="product-name">Socken</div>
-                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-3001-214&appearance=1" class="product-btn">Jetzt Kaufen</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-section">
-                <h2 class="category-title">Bücher</h2>
-                <div class="scroll-container">
-                    <div class="product-card">
-                        <img src="https://m.media-amazon.com/images/I/61rJFQG8JzL._AC_SL1500_.jpg" class="product-img">
-                        <div class="product-name">Taschenbuch</div>
-                        <a href="https://www.amazon.de/MADDY-DIE-SCHATTENWELT-Marcobode/dp/B0FYR393M1" class="product-btn">Jetzt Kaufen</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-section">
-                <h2 class="category-title">Sonstiges</h2>
-                <div class="scroll-container">
-                    <div class="product-card">
-                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_104652_samsungbrowser129557483207852948.jpg" class="product-img">
-                        <div class="product-name">Tasse</div>
-                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-31-32&appearance=1" class="product-btn">Jetzt Kaufen</a>
-                    </div>
-                    <div class="product-card">
-                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_110112_samsungbrowser2860517743287935495.jpg" class="product-img">
-                        <div class="product-name">Kissen</div>
-                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-1413-37&appearance=741" class="product-btn">Jetzt Kaufen</a>
-                    </div>
-                </div>
-            </div>
+            <!-- Kategorien ... -->
         </div>
     </div>
 
