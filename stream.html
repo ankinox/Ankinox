@@ -97,12 +97,17 @@
 
         let touchstartX = 0;
         const bannerContainer = document.getElementById('banner-container');
+        const SWIPE_THRESHOLD = 50; 
 
         bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
         bannerContainer.addEventListener('touchend', e => {
             let touchendX = e.changedTouches[0].screenX;
-            if (touchendX < touchstartX) { manualUpdate((idx + 1) % data.length); }
-            else if (touchendX > touchstartX) { manualUpdate((idx - 1 + data.length) % data.length); }
+            let diff = touchendX - touchstartX;
+            
+            if (Math.abs(diff) > SWIPE_THRESHOLD) {
+                if (diff < 0) { manualUpdate((idx + 1) % data.length); }
+                else if (diff > 0) { manualUpdate((idx - 1 + data.length) % data.length); }
+            }
         });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
