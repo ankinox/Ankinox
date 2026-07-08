@@ -95,6 +95,17 @@
     <script>
         function openVideo() { document.getElementById('video-popup').style.display = 'block'; }
         function closeVideo() { document.getElementById('video-popup').style.display = 'none'; }
+
+        // Hier ist das fehlende Skript für die Teilen-Funktion wieder:
+        document.getElementById('share-button').addEventListener('click', async () => {
+            try {
+                await navigator.share({
+                    title: 'Poretto',
+                    text: 'Schau dir Poretto und der Magische Stuhl an!',
+                    url: window.location.href 
+                });
+            } catch (err) { console.log('Teilen abgebrochen', err); }
+        });
     </script>
 </body>
 </html>
