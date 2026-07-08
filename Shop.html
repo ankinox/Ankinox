@@ -1,1 +1,101 @@
-super
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Ankinox Shop – Exklusive Fan-Artikel</title>
+
+    <meta property="og:title" content="Ankinox Shop – Hol dir unsere exklusiven Fan-Artikel">
+    <meta property="og:description" content="Entdecke limitierte Ankinox-Merchandise und unterstütze unsere Kreativen.">
+    <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png">
+    <meta property="og:url" content="https://ankinox.github.io/Ankinox/Shop.html">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" type="image/png" href="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png">
+
+    <style>
+        body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
+        
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg');
+            background-size: cover; background-position: center; z-index: -1;
+        }
+
+        .banner-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 255, 255, 0.2); 
+        }
+
+        .content {
+            margin-top: 30vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 7.5%, #050505 100%);
+            padding: 10vh 20px 20px 20px;
+            position: relative;
+        }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: #0a0a0a; display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
+        }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <div class="banner-overlay"></div>
+    </div>
+
+    <div class="content">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png" 
+             style="width: 100%; max-width: 225px; display: block; margin: -130px auto -60px auto;">
+
+        <div style="text-align: center;">
+            <h1 style="color: white; margin-top: 30px;">Ankinox Shop</h1>
+            <p style="color: #bbb; margin-bottom: 35px;">Exklusives Merchandise & Limitierte Editionen.</p>
+
+            <div style="margin-bottom: 35px;">
+                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
+            </div>
+
+            <div style="text-align: left; color: #cccccc; line-height: 1.6; font-size: 0.95rem;">
+                <p style="font-weight: bold; color: white;">Dein Stil, dein Ankinox</p>
+                Hier findest du unsere offiziellen Produkte – von Hoodies bis hin zu exklusiven Postern. Jeder Kauf unterstützt unsere Plattform und die unabhängigen Schöpfer, die ihre Werke auf Ankinox teilen.
+                
+                <p style="font-weight: bold; color: white; margin-top: 20px;">Was dich im Shop erwartet:</p>
+                <ul style="padding-left: 20px;">
+                    <li>Hochwertige Textilien: Langlebig und nachhaltig produziert.</li>
+                    <li>Fan-Editionen: Limitiert, nummeriert und exklusiv für unsere Community.</li>
+                    <li>Sicherer Versand: Schnelle Lieferung direkt zu dir nach Hause.</li>
+                </ul>
+
+                <p style="font-weight: bold; color: white; margin-top: 20px;">Fragen zu deiner Bestellung?</p>
+                Solltest du Fragen zu einer Lieferung oder einem Produkt haben, stehen wir dir jederzeit zur Verfügung:
+            </div>
+
+            <a href="mailto:Ankinox.shop@gmail.com" style="text-decoration: none; display: block; width: 90%; margin: 30px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center;">Ankinox.shop@gmail.com</a>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html">Stream</a>
+        <a href="Shop.html" style="color: #bf00ff;">Shop</a>
+        <a href="Partnerschaft.html">Partner</a>
+    </nav>
+
+    <script>
+        document.getElementById('share-button').addEventListener('click', async () => {
+            try {
+                await navigator.share({
+                    title: 'Ankinox Shop',
+                    url: window.location.href 
+                });
+            } catch (err) { console.log('Teilen abgebrochen', err); }
+        });
+    </script>
+</body>
+</html>
