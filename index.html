@@ -3,50 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ankinox</title>
+    <title>Stream - Ankinox</title>
     <style>
-        body { margin: 0; padding-bottom: 90px; background-color: #000; color: white; font-family: sans-serif; }
-        
-        /* Container für den Header-Bereich */
-        .header-hero { 
-            width: 100%; position: relative; 
-            background-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 90%, rgba(0,0,0,1) 100%), 
-            url('https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000111071f4924b6cba720793265390065964046614069.png');
-            background-size: cover; background-repeat: no-repeat; background-position: top center; 
-            min-height: 150px; 
-            /* Hier angepasst: Oben 5px, rechts 20px, unten 20px, links 20px */
-            padding: 5px 20px 20px 20px; 
-            box-sizing: border-box;
-        }
-
-        /* Logo-Positionierung */
-        .logo { 
-            width: 100px; height: auto; display: block; 
-        }
-
-        /* Feste Navigationsleiste */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background-color: #0a0a0a; display: flex; justify-content: space-around; 
-            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
-        }
+        body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
-        .bottom-nav a.active { color: #bf00ff; }
+        .bottom-nav a#nav-stream { color: #bf00ff; }
+        
+        /* Indikator-Styling */
+        .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.4); border-radius: 2.5px; overflow: hidden; position: relative; cursor: pointer; }
+        .dot.active { cursor: default; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
+        
+        /* Wischbarer Kategorien-Container */
+        .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        
+        @keyframes load {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-hero">
-        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" 
-             alt="Ankinox Logo" class="logo">
+    <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
+        <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
+        
+        <div style="position:absolute;top:0;left:0;z-index:10;padding:15px; margin-top: -20px;">
+            <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
+        </div>
+
+        <div style="position:absolute; bottom:1px; left:30px; z-index:3; max-width:500px">
+            <img id="banner-logo" src="" style="display: block; width: 100%; max-width: 150px; margin-left: -20px; margin-bottom: -70px">
+            <div id="banner-fsk" style="color:#bbb;font-size:13px;margin-bottom:12px"></div>
+            <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
+            
+            <div style="display:flex; gap:10px; align-items:center; position:relative; z-index:101">
+                <a id="banner-button-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
+                <button type="button" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 18px; display: inline-flex; align-items: center; justify-content: center">+</button>
+            </div>
+        </div>
     </div>
-    
+
+    <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
+        <div id="indicator-box" style="display:flex; gap:10px; width:150px;">
+            <div class="dot" onclick="manualUpdate(0)" id="dot-0"><div class="progress-bar" id="bar-0"></div></div>
+            <div class="dot" onclick="manualUpdate(1)" id="dot-1"><div class="progress-bar" id="bar-1"></div></div>
+            <div class="dot" onclick="manualUpdate(2)" id="dot-2"><div class="progress-bar" id="bar-2"></div></div>
+        </div>
+    </div>
+
+    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
+        <h2 style="font-size: 20px; margin-bottom: 15px">Filme und Partnerschaft</h2>
+        <div class="scroll-container">
+            <div style="flex: 0 0 140px">
+                <a href="Poretto-Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Poretto und der Ma..</p>
+                <p style="font-size: 12px; color: #bbb">Untertitel | Synchro</p>
+            </div>
+            <div style="flex: 0 0 140px">
+                <a href="Partnerschaft.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
+                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
+            </div>
+            <div style="flex: 0 0 140px">
+                <a href="Shop.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Ankinox Shop</p>
+                <p style="font-size: 12px; color: #bbb">Merchandise | Exklusiv</p>
+            </div>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
-        <a href="index.html" class="active">Start</a>
-        <a href="stream.html">Stream</a>
+        <a href="index.html">Start</a>
+        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
         <a href="Shop.html">Shop</a>
         <a href="Partnerschaft.html">Partner</a>
     </nav>
 
+    <script>
+        const data = [
+            {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 0</span> Untertitel | Synchro • Kurzfilm • Drama',
+                desc: "Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.",
+                url: "Poretto-Film.html"
+            },
+            {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> Partnerschaft • Geldverdienen • Großwerden',
+                desc: "Werde jetzt Ankinox Partner.",
+                url: "Partnerschaft.html"
+            },
+            {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Shop</span> Merchandise • Exklusiv • Fanartikel',
+                desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.",
+                url: "Shop.html"
+            }
+        ];
+
+        let idx = 0;
+        let timer = setInterval(autoUpdate, 5000);
+
+        let touchstartX = 0;
+        const bannerContainer = document.getElementById('banner-container');
+        const SWIPE_THRESHOLD = 50; 
+
+        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        bannerContainer.addEventListener('touchend', e => {
+            let touchendX = e.changedTouches[0].screenX;
+            let diff = touchendX - touchstartX;
+            
+            if (Math.abs(diff) > SWIPE_THRESHOLD) {
+                if (diff < 0) { manualUpdate((idx + 1) % data.length); }
+                else if (diff > 0) { manualUpdate((idx - 1 + data.length) % data.length); }
+            }
+        });
+
+        function autoUpdate() { updateBanner((idx + 1) % data.length); }
+
+        function manualUpdate(i) {
+            if (i === idx) return; 
+            clearInterval(timer);
+            updateBanner(i);
+            timer = setInterval(autoUpdate, 5000); 
+        }
+
+        function updateBanner(i) {
+            idx = i;
+            document.getElementById('banner-bg').src = data[idx].bg;
+            document.getElementById('banner-logo').src = data[idx].logo;
+            document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
+            document.getElementById('banner-desc').innerText = data[idx].desc;
+            document.getElementById('banner-button-link').href = data[idx].url;
+            
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === idx);
+            });
+
+            document.querySelectorAll('.progress-bar').forEach((bar, index) => {
+                bar.style.animation = 'none'; 
+                bar.style.width = '0%';
+                if (index === idx) {
+                    setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
+                }
+            });
+        }
+        updateBanner(0);
+    </script>
 </body>
 </html>
