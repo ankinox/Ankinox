@@ -23,17 +23,8 @@
             background-size: cover; background-position: center; z-index: -1;
         }
 
-        .banner-logo {
-            position: absolute;
-            top: -6px;
-            left: 15px;
-            z-index: 10;
-        }
-
-        .banner-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(255, 255, 255, 0.2); 
-        }
+        .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.2); }
 
         .content {
             margin-top: 30vh; 
@@ -69,18 +60,11 @@
             </div>
 
             <!-- Teilen Button -->
-            <div style="margin-bottom: 20px;">
+            <div style="margin-bottom: 40px;">
                 <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 8px 25px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
             </div>
 
-            <!-- Goldener Kanalmitgliedschaft Button -->
-            <div style="margin-bottom: 35px;">
-                <a href="https://youtube.com/@ankinox/join" style="background: linear-gradient(to bottom, #ffd700, #daa520); color: #000; padding: 15px 30px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);">
-                    ➔ Jetzt Kanalmitglied werden
-                </a>
-            </div>
-
-            <!-- Vorteile Liste -->
+            <!-- Vorteile Liste (Zuerst) -->
             <div style="text-align: left; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px; margin-bottom: 30px; color: #fff;">
                 <h3 style="margin-top: 0; color: #ffd700;">Deine Vorteile als Mitglied:</h3>
                 <ul style="padding-left: 20px; line-height: 1.8;">
@@ -90,11 +74,16 @@
                     <li><strong>Serien:</strong> Zugriff auf die komplette Serien-Bibliothek</li>
                     <li><strong>Werbung:</strong> Trotz Mitgliedschaft ist kurze Werbung enthalten</li>
                 </ul>
+                <p style="font-size: 0.9rem; color: #ccc; margin-top: 20px;">
+                    Unterstütze unseren Kanal direkt und schalte exklusive Inhalte frei. Als Kanalmitglied bist du Teil unserer Community und genießt bevorzugten Zugriff auf neue Anime-Highlights.
+                </p>
             </div>
 
-            <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 30px; font-size: 0.95rem;">
-                <p style="font-weight: bold; color: white;">Mehr erleben mit Ankinox</p>
-                Unterstütze unseren Kanal direkt und schalte exklusive Inhalte frei. Als Kanalmitglied bist du Teil unserer Community und genießt bevorzugten Zugriff auf neue Anime-Highlights.
+            <!-- Goldener Kanalmitgliedschaft Button (Ganz unten) -->
+            <div style="margin: 40px 0;">
+                <a href="https://youtube.com/@ankinox/join" style="background: linear-gradient(to right, #ffd700, #ffeb3b); color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; text-decoration: none; display: inline-block; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); font-size: 1.1rem; border: 2px solid #daa520;">
+                    ➔ Jetzt Kanalmitglied werden
+                </a>
             </div>
         </div>
     </div>
