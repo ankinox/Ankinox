@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poretto</title>
+
+    <!-- Open Graph Tags für die korrekte Vorschau -->
+    <meta property="og:title" content="Poretto – Der magische Stuhl">
+    <meta property="og:description" content="Ein Kurzfilm über Freundschaft und Neuanfänge. Begleite Poretto auf ihrer Reise.">
+    <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png">
+    <meta property="og:url" content="https://ankinox.github.io/Ankinox/Poretto-Film.html">
+    <meta property="og:type" content="video.movie">
+
     <style>
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
         
@@ -25,7 +33,6 @@
             position: relative;
         }
 
-        /* Video Popup Styling - Transparent */
         #video-popup {
             display: none; position: fixed; top: 0; left: 0; width: 100%; 
             height: auto; z-index: 10000; background: transparent;
@@ -96,7 +103,6 @@
         function openVideo() { document.getElementById('video-popup').style.display = 'block'; }
         function closeVideo() { document.getElementById('video-popup').style.display = 'none'; }
 
-        // Hier ist das fehlende Skript für die Teilen-Funktion wieder:
         document.getElementById('share-button').addEventListener('click', async () => {
             try {
                 await navigator.share({
