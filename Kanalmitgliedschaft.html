@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Partner werden bei Ankinox</title>
+    <title>Kanalmitgliedschaft bei Ankinox</title>
 
-    <meta property="og:title" content="Partner werden bei Ankinox – Gemeinsam wachsen">
-    <meta property="og:description" content="Du produzierst Anime oder Animationsfilme? Ankinox bietet dir die passende Bühne.">
+    <meta property="og:title" content="Werde Ankinox Kanalmitglied – Exklusive Vorteile">
+    <meta property="og:description" content="Sichere dir exklusive Vorteile: Schaue Filme früher und schalte die komplette Serien-Bibliothek frei!">
     <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png">
-    <meta property="og:url" content="https://ankinox.github.io/Ankinox/Partnerschaft.html">
+    <meta property="og:url" content="https://ankinox.github.io/Ankinox/Mitgliedschaft.html">
     <meta property="og:type" content="website">
 
     <link rel="icon" type="image/png" href="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png">
@@ -65,19 +65,24 @@
 
         <div style="text-align: center;">
             <div style="color: #bbb; margin-bottom: 25px;">
-                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 18</span>
+                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">Mitgliedschaft</span>
             </div>
 
-            <!-- Kanalmitgliedschaft Button -->
+            <!-- Teilen Button -->
+            <div style="margin-bottom: 20px;">
+                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 8px 25px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
+            </div>
+
+            <!-- Goldener Kanalmitgliedschaft Button -->
             <div style="margin-bottom: 35px;">
                 <a href="https://youtube.com/@ankinox/join" style="background: linear-gradient(to bottom, #ffd700, #daa520); color: #000; padding: 15px 30px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);">
-                    ➔ Kanalmitglied werden
+                    ➔ Jetzt Kanalmitglied werden
                 </a>
             </div>
 
             <!-- Vorteile Liste -->
             <div style="text-align: left; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px; margin-bottom: 30px; color: #fff;">
-                <h3 style="margin-top: 0; color: #ffd700;">Vorteile der Mitgliedschaft:</h3>
+                <h3 style="margin-top: 0; color: #ffd700;">Deine Vorteile als Mitglied:</h3>
                 <ul style="padding-left: 20px; line-height: 1.8;">
                     <li><strong>Preis:</strong> 4,99 € pro Monat</li>
                     <li><strong>Filme:</strong> 1 Monat vorab schauen</li>
@@ -87,19 +92,9 @@
             </div>
 
             <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 30px; font-size: 0.95rem;">
-                <p style="font-weight: bold; color: white;">Du produzierst Anime oder Animationsfilme und suchst die richtige Bühne?</p>
-                Ankinox bietet Indie-Studios und unabhängigen Kreativen eine professionelle Plattform, um ihre Werke einem breiten Publikum zu präsentieren.
-                
-                <p style="font-weight: bold; color: white; margin-top: 15px;">Unser Angebot für Studios:</p>
-                <ul style="padding-left: 20px;">
-                    <li>Reichweite & Community: Wir bündeln unsere Community, um deine Filme ins Rampenlicht zu rücken.</li>
-                    <li>Transparente Partnerschaft: Faire Jahresverträge mit maximaler Flexibilität.</li>
-                    <li>Faire Umsatzbeteiligung: Beteiligung prozentual an den Werbeeinnahmen.</li>
-                    <li>Full-Service: Wir übernehmen Hosting, Einbindung und Community-Arbeit.</li>
-                </ul>
+                <p style="font-weight: bold; color: white;">Mehr erleben mit Ankinox</p>
+                Unterstütze unseren Kanal direkt und schalte exklusive Inhalte frei. Als Kanalmitglied bist du Teil unserer Community und genießt bevorzugten Zugriff auf neue Anime-Highlights.
             </div>
-
-            <a href="mailto:Ankinox.contact@gmail.com" style="text-decoration: none; display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center;">Ankinox.contact@gmail.com</a>
         </div>
     </div>
 
@@ -109,5 +104,16 @@
         <a href="Shop.html">Shop</a>
         <a href="Partnerschaft.html">Partner</a>
     </nav>
+
+    <script>
+        document.getElementById('share-button').addEventListener('click', async () => {
+            try {
+                await navigator.share({
+                    title: 'Kanalmitgliedschaft bei Ankinox',
+                    url: window.location.href 
+                });
+            } catch (err) { console.log('Teilen abgebrochen', err); }
+        });
+    </script>
 </body>
 </html>
