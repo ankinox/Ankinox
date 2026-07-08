@@ -25,32 +25,17 @@
             position: relative;
         }
 
-        /* Video Popup Styling - Transparent ohne Hintergrund */
+        /* Video Popup Styling - Transparent */
         #video-popup {
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: auto; 
-            z-index: 10000; 
-            background: transparent;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; 
+            height: auto; z-index: 10000; background: transparent;
         }
         #video-container {
-            position: relative; 
-            width: 100%;
+            position: relative; width: 100%;
         }
         #close-btn {
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
-            color: white; 
-            font-size: 30px; 
-            cursor: pointer; 
-            z-index: 10001; 
-            background: none; 
-            padding: 0;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            position: absolute; top: 10px; right: 10px; color: white; font-size: 30px; 
+            cursor: pointer; z-index: 10001; text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
 
         .bottom-nav { 
@@ -59,7 +44,6 @@
             padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
         }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
-        .bottom-nav a.active { color: #bf00ff; }
     </style>
 </head>
 <body>
@@ -97,7 +81,7 @@
                 Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden. Der Stuhl ist Porettos Freund-Ersatz, bis sie eines Tages nach einem Umzug erneut seine Hilfe braucht und sich die Geschichte wiederholt. Dies ist ein Kurzfilm über Freundschaft und Neuanfänge.
             </div>
 
-            <button onclick="openVideo()" style="display: block; width: 90%; margin: 0 auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
+            <button onclick="openVideo()" style="display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
         </div>
     </div>
 
@@ -111,16 +95,6 @@
     <script>
         function openVideo() { document.getElementById('video-popup').style.display = 'block'; }
         function closeVideo() { document.getElementById('video-popup').style.display = 'none'; }
-
-        document.getElementById('share-button').addEventListener('click', async () => {
-            try {
-                await navigator.share({
-                    title: 'Poretto',
-                    text: 'Schau dir Poretto und der Magische Stuhl an!',
-                    url: window.location.href 
-                });
-            } catch (err) { console.log('Teilen abgebrochen', err); }
-        });
     </script>
 </body>
 </html>
