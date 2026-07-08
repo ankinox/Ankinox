@@ -15,6 +15,10 @@
         .dot.active { cursor: default; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
+        /* Wischbarer Kategorien-Container */
+        .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        
         @keyframes load {
             from { width: 0%; }
             to { width: 100%; }
@@ -54,7 +58,7 @@
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
         <h2 style="font-size: 20px; margin-bottom: 15px">Filme und Partnerschaft</h2>
-        <div style="display: flex; gap: 15px;">
+        <div class="scroll-container">
             <div style="flex: 0 0 140px">
                 <a href="Poretto-Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Poretto und der Ma..</p>
