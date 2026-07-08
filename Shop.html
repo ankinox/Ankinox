@@ -20,12 +20,12 @@
 
         body { margin: 0; padding-bottom: 90px; background-color: var(--bg-color); color: white; font-family: sans-serif; }
         
-        /* Das fixierte Logo, das nicht mitscrollt */
-        .fixed-logo {
-            position: fixed;
+        /* Das Logo ist nun absolut positioniert, scrollt also mit */
+        .top-logo {
+            position: absolute;
             top: 15px;
             left: 15px;
-            z-index: 10000;
+            z-index: 100;
         }
 
         .banner {
@@ -86,7 +86,7 @@
 </head>
 <body>
 
-    <div class="fixed-logo">
+    <div class="top-logo">
         <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
     </div>
 
