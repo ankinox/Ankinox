@@ -68,18 +68,22 @@
                 <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 18</span>
             </div>
 
-            <div style="text-align: center; margin-bottom: 25px;">
-                <p style="color: #bbb; font-size: 0.95rem; margin-bottom: 15px;">Wir arbeiten mit starken Partnern zusammen:</p>
-                <a href="https://youtube.com/@ankinox?si=WDc3DIt--5MQiHHm" style="text-decoration: none; display: inline-block;">
-                    <div style="width: 60px; height: 60px; background-color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #00d4ff; overflow: hidden; margin: 0 auto 8px auto; box-shadow: 0 0 10px #00d4ff;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" style="width: 60%; height: auto;">
-                    </div>
-                    <div style="color: #00d4ff; font-weight: bold; font-size: 0.9rem;">YouTube</div>
+            <!-- Kanalmitgliedschaft Button -->
+            <div style="margin-bottom: 35px;">
+                <a href="https://youtube.com/@ankinox/join" style="background: linear-gradient(to bottom, #ffd700, #daa520); color: #000; padding: 15px 30px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);">
+                    ➔ Kanalmitglied werden
                 </a>
             </div>
 
-            <div style="margin-bottom: 35px;">
-                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
+            <!-- Vorteile Liste -->
+            <div style="text-align: left; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px; margin-bottom: 30px; color: #fff;">
+                <h3 style="margin-top: 0; color: #ffd700;">Vorteile der Mitgliedschaft:</h3>
+                <ul style="padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Preis:</strong> 4,99 € pro Monat</li>
+                    <li><strong>Filme:</strong> 1 Monat vorab schauen</li>
+                    <li><strong>Serien:</strong> Zugriff auf alle Folgen aller Serien</li>
+                    <li><strong>Werbung:</strong> Trotz Mitgliedschaft ist kurze Werbung enthalten</li>
+                </ul>
             </div>
 
             <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 30px; font-size: 0.95rem;">
@@ -93,12 +97,6 @@
                     <li>Faire Umsatzbeteiligung: Beteiligung prozentual an den Werbeeinnahmen.</li>
                     <li>Full-Service: Wir übernehmen Hosting, Einbindung und Community-Arbeit.</li>
                 </ul>
-
-                <p style="font-weight: bold; color: white; margin-top: 15px;">Wie läuft die Zusammenarbeit ab?</p>
-                Wir legen großen Wert auf Planungssicherheit für alle Beteiligten. Sollte eine Zusammenarbeit einmal enden, garantieren wir eine Vorlaufzeit von einem Monat ab Kündigung. Das gibt uns die Zeit, unsere Community transparent zu informieren und die Inhalte sauber aus dem Programm zu nehmen – für eine faire und professionelle Trennung.
-                
-                <p style="font-weight: bold; color: white; margin-top: 15px;">Kontakt für Studios</p>
-                Ihr habt ein Projekt, das zu Ankinox passt? Schreibt uns eine Nachricht an:
             </div>
 
             <a href="mailto:Ankinox.contact@gmail.com" style="text-decoration: none; display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center;">Ankinox.contact@gmail.com</a>
@@ -111,16 +109,5 @@
         <a href="Shop.html">Shop</a>
         <a href="Partnerschaft.html">Partner</a>
     </nav>
-
-    <script>
-        document.getElementById('share-button').addEventListener('click', async () => {
-            try {
-                await navigator.share({
-                    title: 'Partner werden bei Ankinox',
-                    url: window.location.href 
-                });
-            } catch (err) { console.log('Teilen abgebrochen', err); }
-        });
-    </script>
 </body>
 </html>
