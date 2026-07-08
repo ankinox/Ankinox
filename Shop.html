@@ -10,11 +10,11 @@
     <meta property="og:description" content="Exklusives Merchandise & Limitierte Editionen.">
 
     <style>
-        /* Farbpalette basierend auf dem Logo-Look und dem Verlauf */
+        /* Farbpalette basierend auf dem Logo-Look */
         :root {
-            --accent-color: #ff6b6b;
+            --accent-color: #ff6b6b; /* Das dezente Rot/Orange */
+            --button-color: #d63031; /* Ein sattes, dunkleres Rot für Buttons */
             --bg-color: #050505;
-            --button-gradient: linear-gradient(90deg, #d63031 0%, #6c5ce7 100%);
         }
 
         body { margin: 0; padding-bottom: 90px; background-color: var(--bg-color); color: white; font-family: sans-serif; }
@@ -60,11 +60,9 @@
         }
         .product-img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; margin-bottom: 10px; }
         .product-name { font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
-        
         .product-btn { 
             display: inline-block; margin-top: 10px; padding: 8px 15px; 
-            background: var(--button-gradient); color: white; text-decoration: none; border-radius: 20px; 
-            font-size: 0.8rem; font-weight: bold; border: none;
+            background: var(--button-color); color: white; text-decoration: none; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
         }
 
         .bottom-nav { 
@@ -90,6 +88,7 @@
                 <button id="share-button" style="background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color); padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
             </div>
 
+            <!-- Kategorien bleiben gleich, greifen aber jetzt auf die CSS-Variablen zu -->
             <div class="category-section">
                 <h2 class="category-title">Klamotten</h2>
                 <div class="scroll-container">
@@ -105,15 +104,9 @@
                     </div>
                 </div>
             </div>
+            <!-- ... restlicher Inhalt ... -->
         </div>
     </div>
-
-    <nav class="bottom-nav">
-        <a href="index.html">Start</a>
-        <a href="stream.html">Stream</a>
-        <a href="Shop.html" style="color: #bf00ff;">Shop</a>
-        <a href="Partnerschaft.html">Partner</a>
-    </nav>
 
     <script>
         document.getElementById('share-button').addEventListener('click', async () => {
