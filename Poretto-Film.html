@@ -13,10 +13,9 @@
             background-size: cover; background-position: center; z-index: -1;
         }
 
-        /* Aufhellung korrigiert auf 0.2 */
         .banner-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(255, 255, 255, -4.9); 
+            background-color: rgba(255, 255, 255, 0.2); 
         }
 
         .content {
@@ -24,6 +23,18 @@
             background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 5%, #050505 100%);
             padding: 20px;
             position: relative;
+        }
+
+        /* Video Popup Styling */
+        #video-popup {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 10000;
+        }
+        #video-container {
+            position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%);
+        }
+        #close-btn {
+            position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer;
         }
 
         .bottom-nav { 
@@ -36,6 +47,15 @@
     </style>
 </head>
 <body>
+
+    <!-- Video Popup -->
+    <div id="video-popup">
+        <span id="close-btn" onclick="closeVideo()">✕</span>
+        <div id="video-container">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/videoseries?list=PLRaI73il2WqIyi8v53CMK3QgXFTGs67Yh" 
+                    frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
 
     <div class="banner">
         <div class="banner-overlay"></div>
@@ -55,7 +75,6 @@
 
             <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
                 <button style="background: transparent; color: #00d4ff; border: 2px solid #00d4ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">♥ Favorit</button>
-                <!-- Teilen-Button mit ID für das Skript -->
                 <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
             </div>
 
@@ -63,7 +82,8 @@
                 Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden. Der Stuhl ist Porettos Freund-Ersatz, bis sie eines Tages nach einem Umzug erneut seine Hilfe braucht und sich die Geschichte wiederholt. Dies ist ein Kurzfilm über Freundschaft und Neuanfänge.
             </div>
 
-            <a href="#" style="display: block; width: 90%; margin: 0 auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; text-decoration: none; border-radius: 30px; font-weight: bold;">▶ Wiedergabe starten</a>
+            <!-- Wiedergabe-Button löst das Popup aus -->
+            <button onclick="openVideo()" style="display: block; width: 90%; margin: 0 auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
         </div>
     </div>
 
@@ -74,8 +94,10 @@
         <a href="#">Partner</a>
     </nav>
 
-    <!-- JavaScript für die native Teilen-Funktion -->
     <script>
+        function openVideo() { document.getElementById('video-popup').style.display = 'block'; }
+        function closeVideo() { document.getElementById('video-popup').style.display = 'none'; }
+
         document.getElementById('share-button').addEventListener('click', async () => {
             try {
                 await navigator.share({
@@ -83,9 +105,7 @@
                     text: 'Schau dir Poretto und der Magische Stuhl an!',
                     url: window.location.href 
                 });
-            } catch (err) {
-                console.log('Teilen abgebrochen oder nicht unterstützt', err);
-            }
+            } catch (err) { console.log('Teilen abgebrochen', err); }
         });
     </script>
 
