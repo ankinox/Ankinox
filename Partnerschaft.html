@@ -25,19 +25,6 @@
             position: relative;
         }
 
-        /* Video Popup Styling - Transparent */
-        #video-popup {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; 
-            height: auto; z-index: 10000; background: transparent;
-        }
-        #video-container {
-            position: relative; width: 100%;
-        }
-        #close-btn {
-            position: absolute; top: 10px; right: 10px; color: white; font-size: 30px; 
-            cursor: pointer; z-index: 10001; text-shadow: 0 0 5px rgba(0,0,0,0.8);
-        }
-
         .bottom-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
             background-color: #0a0a0a; display: flex; justify-content: space-around; 
@@ -47,14 +34,6 @@
     </style>
 </head>
 <body>
-
-    <div id="video-popup">
-        <span id="close-btn" onclick="closeVideo()">✕</span>
-        <div id="video-container">
-            <iframe width="100%" height="250" src="https://www.youtube.com/embed/videoseries?list=PLRaI73il2WqIyi8v53CMK3QgXFTGs67Yh" 
-                    frameborder="0" allowfullscreen></iframe>
-        </div>
-    </div>
 
     <div class="banner">
         <div class="banner-overlay"></div>
@@ -78,10 +57,18 @@
             </div>
 
             <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 30px; font-size: 0.95rem;">
-                Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden. Der Stuhl ist Porettos Freund-Ersatz, bis sie eines Tages nach einem Umzug erneut seine Hilfe braucht und sich die Geschichte wiederholt. Dies ist ein Kurzfilm über Freundschaft und Neuanfänge.
+                <p style="font-weight: bold; color: white;">Du produzierst Anime oder Animationsfilme und suchst die richtige Bühne?</p>
+                Ankinox bietet Indie-Studios und unabhängigen Kreativen eine professionelle Plattform, um ihre Werke einem breiten Publikum zu präsentieren. Wir verstehen uns als Partner, der eure Reichweite ausbaut und eure Inhalte dort platziert, wo sie gesehen werden.
+                <p style="font-weight: bold; color: white; margin-top: 15px;">Unser Angebot für Studios:</p>
+                <ul style="padding-left: 20px;">
+                    <li>Reichweite & Community: Wir bündeln unsere Community, um deine Filme ins Rampenlicht zu rücken.</li>
+                    <li>Transparente Partnerschaft: Faire Jahresverträge mit maximaler Flexibilität.</li>
+                    <li>Faire Umsatzbeteiligung: Beteiligung prozentual an den Werbeeinnahmen.</li>
+                    <li>Full-Service: Wir übernehmen Hosting, Einbindung und Community-Arbeit.</li>
+                </ul>
             </div>
 
-            <button onclick="openVideo()" style="display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
+            <a href="mailto:Ankinox.contact@gmail.com" style="text-decoration: none; display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center;">Kontakt aufnehmen</a>
         </div>
     </div>
 
@@ -93,15 +80,11 @@
     </nav>
 
     <script>
-        function openVideo() { document.getElementById('video-popup').style.display = 'block'; }
-        function closeVideo() { document.getElementById('video-popup').style.display = 'none'; }
-
-        // Hier ist das fehlende Skript für die Teilen-Funktion wieder:
         document.getElementById('share-button').addEventListener('click', async () => {
             try {
                 await navigator.share({
-                    title: 'Poretto',
-                    text: 'Schau dir Poretto und der Magische Stuhl an!',
+                    title: 'Partnerschaft bei Ankinox',
+                    text: 'Werde Partner bei Ankinox und wachse mit uns!',
                     url: window.location.href 
                 });
             } catch (err) { console.log('Teilen abgebrochen', err); }
