@@ -10,10 +10,11 @@
     <meta property="og:description" content="Exklusives Merchandise & Limitierte Editionen.">
 
     <style>
-        /* Farbpalette basierend auf dem Logo-Look */
+        /* Farbpalette: Logo-orientiert (Schwarz, Rot, Orange) */
         :root {
-            --accent-color: #ff6b6b; /* Das dezente Rot/Orange */
-            --button-color: #d63031; /* Ein sattes, dunkleres Rot für Buttons */
+            --primary-orange: #ff4500;
+            --primary-red: #8b0000;
+            --button-gradient: linear-gradient(90deg, #ff4500 0%, #8b0000 100%);
             --bg-color: #050505;
         }
 
@@ -27,7 +28,7 @@
 
         .banner-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(5, 5, 5, 0.4); 
+            background-color: rgba(0, 0, 0, 0.4); 
         }
 
         .content {
@@ -37,14 +38,15 @@
             position: relative;
         }
 
+        /* Kategorie-Bereiche */
         .category-section { margin-bottom: 40px; }
         .category-title { 
-            display: flex; align-items: center; color: var(--accent-color); 
+            display: flex; align-items: center; color: var(--primary-orange); 
             margin-bottom: 20px; text-transform: uppercase; font-size: 1.2rem;
         }
         .category-title::before {
             content: ""; display: inline-block; width: 4px; height: 25px; 
-            background-color: var(--accent-color); margin-right: 10px;
+            background-color: var(--primary-orange); margin-right: 10px;
         }
         
         .scroll-container {
@@ -56,13 +58,15 @@
         .product-card {
             min-width: 160px; width: 160px; background: #111; border-radius: 15px; padding: 10px;
             display: flex; flex-direction: column; align-items: center; text-align: center;
-            border: 1px solid var(--accent-color);
+            border: 1px solid var(--primary-orange);
         }
         .product-img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; margin-bottom: 10px; }
         .product-name { font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        
         .product-btn { 
             display: inline-block; margin-top: 10px; padding: 8px 15px; 
-            background: var(--button-color); color: white; text-decoration: none; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
+            background: var(--button-gradient); color: white; text-decoration: none; border-radius: 20px; 
+            font-size: 0.8rem; font-weight: bold; border: none;
         }
 
         .bottom-nav { 
@@ -85,10 +89,9 @@
             <p style="color: #bbb; margin-top: 0; margin-bottom: 35px;">Exklusives Merchandise & Limitierte Editionen.</p>
 
             <div style="margin-bottom: 35px;">
-                <button id="share-button" style="background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color); padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
+                <button id="share-button" style="background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange); padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
             </div>
 
-            <!-- Kategorien bleiben gleich, greifen aber jetzt auf die CSS-Variablen zu -->
             <div class="category-section">
                 <h2 class="category-title">Klamotten</h2>
                 <div class="scroll-container">
@@ -102,11 +105,54 @@
                         <div class="product-name">T-Shirt (W)</div>
                         <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-813-8&appearance=1269" class="product-btn">Jetzt Kaufen</a>
                     </div>
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112514_samsungbrowser2447043084200885577.jpg" class="product-img">
+                        <div class="product-name">Shorts</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-1514-219&appearance=70" class="product-btn">Jetzt Kaufen</a>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112857_samsungbrowser3718550902532511434.jpg" class="product-img">
+                        <div class="product-name">Socken</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-3001-214&appearance=1" class="product-btn">Jetzt Kaufen</a>
+                    </div>
                 </div>
             </div>
-            <!-- ... restlicher Inhalt ... -->
+
+            <div class="category-section">
+                <h2 class="category-title">Bücher</h2>
+                <div class="scroll-container">
+                    <div class="product-card">
+                        <img src="https://m.media-amazon.com/images/I/61rJFQG8JzL._AC_SL1500_.jpg" class="product-img">
+                        <div class="product-name">Taschenbuch</div>
+                        <a href="https://www.amazon.de/MADDY-DIE-SCHATTENWELT-Marcobode/dp/B0FYR393M1" class="product-btn">Jetzt Kaufen</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section">
+                <h2 class="category-title">Sonstiges</h2>
+                <div class="scroll-container">
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_104652_samsungbrowser129557483207852948.jpg" class="product-img">
+                        <div class="product-name">Tasse</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-31-32&appearance=1" class="product-btn">Jetzt Kaufen</a>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_110112_samsungbrowser2860517743287935495.jpg" class="product-img">
+                        <div class="product-name">Kissen</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-1413-37&appearance=741" class="product-btn">Jetzt Kaufen</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html">Stream</a>
+        <a href="Shop.html" style="color: #bf00ff;">Shop</a>
+        <a href="Partnerschaft.html">Partner</a>
+    </nav>
 
     <script>
         document.getElementById('share-button').addEventListener('click', async () => {
