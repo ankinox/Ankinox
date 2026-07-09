@@ -11,24 +11,25 @@
     <meta property="og:url" content="https://ankinox.github.io/"> <meta property="og:type" content="website">
 
     <style>
+        /* Entfernt den blauen Klick-Effekt auf mobilen Geräten überall */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
         .bottom-nav a#nav-stream { color: #bf00ff; }
         
-        /* Indikator-Styling */
         .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.4); border-radius: 2.5px; overflow: hidden; position: relative; cursor: pointer; }
         .dot.active { cursor: default; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
-        /* Wischbarer Kategorien-Container */
         .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
         .scroll-container::-webkit-scrollbar { display: none; }
         
-        @keyframes load {
-            from { width: 0%; }
-            to { width: 100%; }
-        }
+        @keyframes load { from { width: 0%; } to { width: 100%; } }
     </style>
 </head>
 <body>
@@ -53,30 +54,32 @@
     </div>
 
     <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
-        <div id="indicator-box" style="display:flex; gap:10px; width:150px;">
-            <div class="dot" onclick="manualUpdate(0)" id="dot-0"><div class="progress-bar" id="bar-0"></div></div>
-            <div class="dot" onclick="manualUpdate(1)" id="dot-1"><div class="progress-bar" id="bar-1"></div></div>
-        </div>
+        <div id="indicator-box" style="display:flex; gap:10px; width:150px;"></div>
     </div>
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
         <h2 style="font-size: 20px; margin-bottom: 15px">Partnerschaft und Shop</h2>
         <div class="scroll-container">
             <div style="flex: 0 0 140px">
-                <a href="Partnerschaft.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
-                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
+                <a href="Kanalmitgliedschaft.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Mitgliedschaft</p>
+                <p style="font-size: 12px; color: #bbb">Vorteile | Exklusiv</p>
             </div>
             <div style="flex: 0 0 140px">
                 <a href="Shop.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Ankinox Shop</p>
                 <p style="font-size: 12px; color: #bbb">Merchandise | Exklusiv</p>
             </div>
+            <div style="flex: 0 0 140px">
+                <a href="Partnerschaft.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
+                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
+            </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="Startseite" style="color: #bf00ff">Start</a>
+        <a href="index.html" style="color: #bf00ff">Start</a>
         <a href="stream.html">Stream</a>
         <a href="Shop.html">Shop</a>
         <a href="Partnerschaft.html">Partner</a>
@@ -85,43 +88,50 @@
     <script>
         const data = [
             {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607090240148567443699929004634.png",
+                fsk: '<span style="border:2px solid #ffd700;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ffd700;box-shadow:0 0 5px #ffd700">Mitgliedschaft</span> Exklusive Vorteile',
+                desc: "Profitiere von exklusiven Vorteilen und schalte die komplette Serien-Bibliothek frei.",
+                url: "Kanalmitgliedschaft.html"
+            },
+            {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
+                fsk: '<span style="border:2px solid #ff4500;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff4500;box-shadow:0 0 5px #ff4500">Shop</span> Merchandise • Exklusiv • Fanartikel',
+                desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.",
+                url: "Shop.html"
+            },
+            {
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
                 fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Partnerschaft</span> Geldverdienen • Großwerden',
                 desc: "Werde jetzt Ankinox Partner.",
                 url: "Partnerschaft.html"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Shop</span> Merchandise • Exklusiv • Fanartikel',
-                desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.",
-                url: "Shop.html"
             }
         ];
+
+        const indicatorBox = document.getElementById('indicator-box');
+        data.forEach((_, i) => {
+            indicatorBox.innerHTML += `<div class="dot" onclick="manualUpdate(${i})" id="dot-${i}"><div class="progress-bar" id="bar-${i}"></div></div>`;
+        });
 
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
 
         let touchstartX = 0;
         const bannerContainer = document.getElementById('banner-container');
-        const SWIPE_THRESHOLD = 50; 
-
         bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
         bannerContainer.addEventListener('touchend', e => {
-            let touchendX = e.changedTouches[0].screenX;
-            let diff = touchendX - touchstartX;
-            
-            if (Math.abs(diff) > SWIPE_THRESHOLD) {
-                if (diff < 0) { manualUpdate((idx + 1) % data.length); }
-                else if (diff > 0) { manualUpdate((idx - 1 + data.length) % data.length); }
+            let diff = e.changedTouches[0].screenX - touchstartX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) manualUpdate((idx + 1) % data.length);
+                else manualUpdate((idx - 1 + data.length) % data.length);
             }
         });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
 
         function manualUpdate(i) {
-            if (i === idx) return; 
             clearInterval(timer);
             updateBanner(i);
             timer = setInterval(autoUpdate, 5000); 
@@ -151,5 +161,3 @@
     </script>
 </body>
 </html>
-
-
