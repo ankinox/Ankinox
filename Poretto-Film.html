@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poretto</title>
 
-    <!-- Open Graph Tags für die korrekte Vorschau -->
     <meta property="og:title" content="Poretto – Der magische Stuhl">
     <meta property="og:description" content="Ein Kurzfilm über Freundschaft und Neuanfänge. Begleite Poretto auf ihrer Reise.">
     <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png">
@@ -13,6 +12,12 @@
     <meta property="og:type" content="video.movie">
 
     <style>
+        /* Entfernt den blauen Klick-Effekt auf mobilen Geräten überall */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
         
         .banner {
