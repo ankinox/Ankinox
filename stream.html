@@ -60,7 +60,7 @@
             <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
             
             <div style="display:flex; gap:10px; align-items:center; position:relative; z-index:101">
-                <a id="banner-button-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Suchen</a>
+                <a id="banner-button-link" href="#" style="padding: 8px 20px; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Suchen</a>
             </div>
         </div>
     </div>
@@ -112,14 +112,16 @@
             {
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Filme</span> • Alle Filme ansehen',
+                fsk: '<span style="border:2px solid #228B22;padding:1px 6px;border-radius:4px;font-weight:bold;color:#228B22;box-shadow:0 0 5px #228B22">Filme</span> • Alle Filme ansehen',
+                btnColor: "linear-gradient(90deg, #228B22, #006400)",
                 desc: "Entdecke eine große Auswahl an spannenden Filmen.",
                 url: "Film.html"
             },
             {
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Serien</span> • Alle Serien ansehen',
+                fsk: '<span style="border:2px solid #ff00ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff00ff;box-shadow:0 0 5px #ff00ff">Serien</span> • Alle Serien ansehen',
+                btnColor: "linear-gradient(90deg, #ff00ff, #c71585)",
                 desc: "Finde hier deine nächste Lieblingsserie.",
                 url: "Serien.html"
             },
@@ -127,6 +129,7 @@
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
                 fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Musik</span> • Alle Musikvideos ansehen',
+                btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)",
                 desc: "Musikgenuss pur: Entdecke deine Musik.",
                 url: "Musik.html"
             }
@@ -166,6 +169,7 @@
             document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
             document.getElementById('banner-desc').innerText = data[idx].desc;
             document.getElementById('banner-button-link').href = data[idx].url;
+            document.getElementById('banner-button-link').style.background = data[idx].btnColor;
             
             document.querySelectorAll('.dot').forEach((dot, index) => {
                 dot.classList.toggle('active', index === idx);
