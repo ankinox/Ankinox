@@ -48,22 +48,26 @@
     </div>
 
     <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
-        <div id="indicator-box" style="display:flex; gap:10px; width:150px;">
-            </div>
+        <div id="indicator-box" style="display:flex; gap:10px; width:150px;"></div>
     </div>
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
         <h2 style="font-size: 20px; margin-bottom: 15px">Partnerschaft und Shop</h2>
         <div class="scroll-container">
             <div style="flex: 0 0 140px">
-                <a href="Partnerschaft.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
-                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
+                <a href="Kanalmitgliedschaft.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Mitgliedschaft</p>
+                <p style="font-size: 12px; color: #bbb">Vorteile | Exklusiv</p>
             </div>
             <div style="flex: 0 0 140px">
                 <a href="Shop.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Ankinox Shop</p>
                 <p style="font-size: 12px; color: #bbb">Merchandise | Exklusiv</p>
+            </div>
+            <div style="flex: 0 0 140px">
+                <a href="Partnerschaft.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
+                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
             </div>
         </div>
     </div>
@@ -85,18 +89,18 @@
                 url: "Kanalmitgliedschaft.html"
             },
             {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Shop</span> Merchandise • Exklusiv • Fanartikel',
+                desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.",
+                url: "Shop.html"
+            },
+            {
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
                 fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Partnerschaft</span> Geldverdienen • Großwerden',
                 desc: "Werde jetzt Ankinox Partner.",
                 url: "Partnerschaft.html"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#8b0000;box-shadow:0 0 5px #8b0000">Shop</span> Merchandise • Exklusiv • Fanartikel',
-                desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.",
-                url: "Shop.html"
             }
         ];
 
@@ -108,7 +112,6 @@
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
 
-        // Wisch-Steuerung
         let touchstartX = 0;
         const bannerContainer = document.getElementById('banner-container');
         bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
