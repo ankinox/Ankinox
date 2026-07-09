@@ -49,15 +49,13 @@
 
     <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
         <div id="indicator-box" style="display:flex; gap:10px; width:150px;">
-            <!-- Die Anzahl der Dots wird im Script automatisch angepasst -->
-        </div>
+            </div>
     </div>
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
         <h2 style="font-size: 20px; margin-bottom: 15px">Partnerschaft und Shop</h2>
         <div class="scroll-container">
-            <!-- Content -->
-        </div>
+            </div>
     </div>
 
     <nav class="bottom-nav">
@@ -92,7 +90,6 @@
             }
         ];
 
-        // Automatische Generierung der Indikator-Dots
         const indicatorBox = document.getElementById('indicator-box');
         data.forEach((_, i) => {
             indicatorBox.innerHTML += `<div class="dot" onclick="manualUpdate(${i})" id="dot-${i}"><div class="progress-bar" id="bar-${i}"></div></div>`;
@@ -100,6 +97,18 @@
 
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
+
+        // Wisch-Steuerung
+        let touchstartX = 0;
+        const bannerContainer = document.getElementById('banner-container');
+        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        bannerContainer.addEventListener('touchend', e => {
+            let diff = e.changedTouches[0].screenX - touchstartX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) manualUpdate((idx + 1) % data.length);
+                else manualUpdate((idx - 1 + data.length) % data.length);
+            }
+        });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
 
