@@ -82,4 +82,40 @@
 
             <div style="margin: 40px 0;">
                 <a href="https://youtube.com/@ankinox/join" 
-                   style="display: inline-
+                   style="display: inline-block; 
+                          width: 85%; 
+                          max-width: 400px;
+                          padding: 18px 0; 
+                          background: linear-gradient(90deg, #E6FF00, #FFD700); 
+                          color: #000; 
+                          border-radius: 50px; 
+                          font-weight: 900; 
+                          font-size: 1.3rem; 
+                          text-decoration: none; 
+                          text-align: center;
+                          box-shadow: 0 0 20px rgba(230, 255, 0, 0.4);">
+                    Jetzt Mitglied werden
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html">Stream</a>
+        <a href="Shop.html">Shop</a>
+        <a href="Partnerschaft.html">Partner</a>
+    </nav>
+
+    <script>
+        document.getElementById('share-button').addEventListener('click', async () => {
+            try {
+                await navigator.share({
+                    title: 'Kanalmitgliedschaft bei Ankinox',
+                    url: window.location.href 
+                });
+            } catch (err) { console.log('Teilen abgebrochen', err); }
+        });
+    </script>
+</body>
+</html>
