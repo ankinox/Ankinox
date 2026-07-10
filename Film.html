@@ -28,9 +28,9 @@
         /* Platzhalter-Styling */
         .add-placeholder {
             flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555; text-decoration: none;
         }
-        .placeholder-text { font-size: 12px; margin-top: 10px; text-align: center; padding: 0 5px; }
+        .placeholder-text { font-size: 12px; margin-top: 10px; text-align: center; padding: 0 5px; color: #555; }
         
         @keyframes load {
             from { width: 0%; }
@@ -72,7 +72,8 @@
         
         <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste / Favoriten</h2>
         <div class="scroll-container">
-            <div class="add-placeholder">+</div>
+            <a href="fav_Film.html" class="add-placeholder">+<span class="placeholder-text">Filme</span></a>
+            <a href="fav_Stream.html" class="add-placeholder">+<span class="placeholder-text">Alle Favoriten</span></a>
         </div>
 
         <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Filme</h2>
