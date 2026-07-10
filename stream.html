@@ -17,7 +17,6 @@
         .dot.active { cursor: default; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
-        /* Hier wurde der Gap auf 20px angepasst */
         .scroll-container { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 10px; scrollbar-width: none; }
         .scroll-container::-webkit-scrollbar { display: none; }
         
@@ -102,12 +101,23 @@
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
         
+        // Banner Wisch-Logik
+        let touchstartX = 0;
+        const bannerContainer = document.getElementById('banner-container');
+        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        bannerContainer.addEventListener('touchend', e => {
+            let diff = e.changedTouches[0].screenX - touchstartX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) manualUpdate((idx + 1) % data.length);
+                else manualUpdate((idx - 1 + data.length) % data.length);
+            }
+        });
+
+        // Mediathek Karussell-Logik
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
-
         function startCarousel() {
             scrollTimer = setInterval(() => {
-                // Bei 160 (140px Bild + 20px Gap) ist das Element komplett links raus
                 if (mediathek.scrollLeft >= 160) {
                     mediathek.appendChild(mediathek.firstElementChild);
                     mediathek.scrollLeft = 0;
