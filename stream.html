@@ -17,7 +17,8 @@
         .dot.active { cursor: default; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
-        .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
+        /* Hier wurde der Gap auf 20px angepasst */
+        .scroll-container { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 10px; scrollbar-width: none; }
         .scroll-container::-webkit-scrollbar { display: none; }
         
         .fav-placeholder { flex: 0 0 140px; text-decoration: none; color: white; }
@@ -100,17 +101,15 @@
 
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
-        const bannerContainer = document.getElementById('banner-container');
         
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
 
         function startCarousel() {
             scrollTimer = setInterval(() => {
-                const firstItem = mediathek.firstElementChild;
-                // Wenn das erste Element den linken Rand verlässt
-                if (firstItem.getBoundingClientRect().right <= mediathek.getBoundingClientRect().left) {
-                    mediathek.appendChild(firstItem);
+                // Bei 160 (140px Bild + 20px Gap) ist das Element komplett links raus
+                if (mediathek.scrollLeft >= 160) {
+                    mediathek.appendChild(mediathek.firstElementChild);
                     mediathek.scrollLeft = 0;
                 } else {
                     mediathek.scrollLeft += 1;
