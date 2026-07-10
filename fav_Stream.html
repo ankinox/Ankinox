@@ -1,1 +1,87 @@
-Favoriten Stream
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoriten - Ankinox</title>
+
+    <style>
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
+        
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            /* Neues Bannerbild für Favoriten */
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
+            background-size: cover; background-position: center; z-index: -1;
+        }
+
+        .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
+        
+        .banner-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .content {
+            margin-top: 35vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%);
+            padding: 20px;
+            position: relative;
+        }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: #0a0a0a; display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
+        }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+        
+        .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
+        .add-plus-placeholder {
+            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <div class="banner-logo">
+            <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
+        </div>
+        <div class="banner-overlay"></div>
+    </div>
+
+    <div class="content">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png" 
+             style="width: 100%; max-width: 225px; display: block; margin: -100px auto 20px auto;">
+
+        <div style="text-align: center; margin-top: -80px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <a href="syncro.html" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold;">
+                    ⇄ Syncro
+                </a>
+            </div>
+            
+            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
+                Synchronisiere deine Favoriten mit anderen Geräten.
+            </div>
+
+            <div style="text-align: left;">
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Favoriten</h2>
+                <div class="fav-container">
+                    <div class="add-plus-placeholder">+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html">Stream</a>
+        <a href="Shop.html">Shop</a>
+        <a href="Partnerschaft.html">Partner</a>
+    </nav>
+</body>
+</html>
