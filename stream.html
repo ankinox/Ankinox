@@ -69,15 +69,15 @@
 
         <h2 class="category-link">Mediathek</h2>
         <div class="scroll-container" id="mediathek-carousel">
-            <div style="flex: 0 0 140px">
+            <div style="flex: 0 0 140px" class="cat-item">
                 <a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Filme</p>
             </div>
-            <div style="flex: 0 0 140px">
+            <div style="flex: 0 0 140px" class="cat-item">
                 <a href="Serien.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Serien</p>
             </div>
-            <div style="flex: 0 0 140px">
+            <div style="flex: 0 0 140px" class="cat-item">
                 <a href="Musik.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alles an Musik</p>
             </div>
@@ -102,20 +102,23 @@
         let timer = setInterval(autoUpdate, 5000);
         const bannerContainer = document.getElementById('banner-container');
         
-        // Mediathek Karussell Logik
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
+
         function startCarousel() {
             scrollTimer = setInterval(() => {
+                const firstItem = mediathek.firstElementChild;
+                if (firstItem.getBoundingClientRect().right < 0) {
+                    mediathek.appendChild(firstItem);
+                }
                 mediathek.scrollLeft += 1;
-                if (mediathek.scrollLeft >= mediathek.scrollWidth - mediathek.clientWidth) mediathek.scrollLeft = 0;
-            }, 50);
+            }, 30);
         }
         startCarousel();
+
         mediathek.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
         mediathek.addEventListener('touchend', () => { resumeTimer = setTimeout(startCarousel, 3000); });
 
-        // Banner Logik
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
         function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
         function updateBanner(i) {
