@@ -42,6 +42,12 @@
         .fav-placeholder-img img {
             width: 100%; height: 100%; object-fit: cover;
         }
+
+        /* Styling für den Plus-Platzhalter */
+        .add-plus-placeholder {
+            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555;
+        }
         
         @keyframes load {
             from { width: 0%; }
@@ -84,10 +90,11 @@
         <div class="scroll-container">
             <a href="fav_Stream.html" class="fav-placeholder">
                 <div class="fav-placeholder-img">
-                    <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" alt="Alle Favoriten">
+                    <img src="URL_ZU_DEINEM_BILD_HIER_EINTRAGEN" alt="Alle Favoriten">
                 </div>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Favoriten</p>
             </a>
+            <div class="add-plus-placeholder">+</div>
         </div>
 
         <a href="Film.html" class="category-link">Filme</a>
