@@ -23,8 +23,8 @@
         }
 
         .content {
-            /* content weiter nach oben gezogen */
-            margin-top: 25vh; 
+            /* Der schwarze Bereich bleibt hier, wo er ist */
+            margin-top: 35vh; 
             background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%);
             padding: 20px;
             position: relative;
@@ -54,24 +54,26 @@
     </div>
 
     <div class="content">
-        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png" 
-             style="width: 100%; max-width: 225px; display: block; margin: -50px auto 15px auto;">
+        <div style="margin-top: -150px;">
+            <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png" 
+                 style="width: 100%; max-width: 225px; display: block; margin: 0 auto 20px auto;">
 
-        <div style="text-align: center;">
-            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
-                <a href="syncro.html" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold;">
-                    ⇄ Syncro
-                </a>
-            </div>
-            
-            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 20px;">
-                Synchronisiere deine Favoriten mit anderen Geräten.
-            </div>
+            <div style="text-align: center;">
+                <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                    <a href="syncro.html" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold;">
+                        ⇄ Syncro
+                    </a>
+                </div>
+                
+                <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
+                    Synchronisiere deine Favoriten mit anderen Geräten.
+                </div>
 
-            <div style="text-align: left;">
-                <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 0;">Film Favoriten</h2>
-                <div class="fav-container">
-                    <div class="add-plus-placeholder">+</div>
+                <div style="text-align: left;">
+                    <h2 style="font-size: 20px; margin-bottom: 15px;">Film Favoriten</h2>
+                    <div class="fav-container">
+                        <div class="add-plus-placeholder">+</div>
+                    </div>
                 </div>
             </div>
         </div>
