@@ -31,12 +31,14 @@
         .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
         .scroll-container::-webkit-scrollbar { display: none; }
         
-        /* Platzhalter-Styling (für sonstige Fälle) */
-        .add-placeholder {
-            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555;
+        /* Platzhalter-Styling für Alle Favoriten */
+        .fav-placeholder {
+            flex: 0 0 140px; text-decoration: none; color: white;
         }
-        .placeholder-text { font-size: 12px; margin-top: 10px; text-align: center; padding: 0 5px; }
+        .fav-placeholder-img {
+            width: 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555;
+        }
         
         @keyframes load {
             from { width: 0%; }
@@ -77,7 +79,10 @@
         
         <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste</h2>
         <div class="scroll-container">
-            <div class="add-placeholder">+</div>
+            <a href="fav_stream.html" class="fav-placeholder">
+                <div class="fav-placeholder-img">+</div>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Favoriten</p>
+            </a>
         </div>
 
         <a href="Film.html" class="category-link">Filme</a>
