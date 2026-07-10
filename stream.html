@@ -106,7 +106,8 @@
 
         function startCarousel() {
             function animate() {
-                mediathek.scrollLeft += 0.5;
+                // Geschwindigkeit von 0.5 auf 0.2 geändert
+                mediathek.scrollLeft += 0.2; 
                 const firstItem = mediathek.firstElementChild;
                 if (firstItem.getBoundingClientRect().right <= mediathek.getBoundingClientRect().left) {
                     mediathek.appendChild(firstItem);
