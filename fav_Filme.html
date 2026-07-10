@@ -1,1 +1,85 @@
-Filme Favoriten
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Favoriten - Ankinox</title>
+
+    <style>
+        /* Entfernt den blauen Klick-Effekt auf mobilen Geräten überall */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
+        
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836724628075278825439436597859.png');
+            background-size: cover; background-position: center; z-index: -1;
+        }
+
+        .banner-logo {
+            position: absolute;
+            top: -6px;
+            left: 15px;
+            z-index: 10;
+        }
+
+        .banner-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); 
+        }
+
+        .content {
+            margin-top: 45vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 5%, #050505 100%);
+            padding: 20px;
+            position: relative;
+        }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: #0a0a0a; display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
+        }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <div class="banner-logo">
+            <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
+        </div>
+        <div class="banner-overlay"></div>
+    </div>
+
+    <div class="content">
+        <div style="text-align: center;">
+            <h1 style="margin-top: -100px; margin-bottom: 20px;">Meine Favoriten</h1>
+
+            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 10px;">
+                <a href="syncro.html" style="text-decoration: none; background: transparent; color: #00d4ff; border: 2px solid #00d4ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer; display: inline-block;">
+                    ⇄ Syncro
+                </a>
+            </div>
+            
+            <div style="color: #cccccc; font-size: 0.85rem; margin-bottom: 30px;">
+                Synchronisiere deine Favoriten mit anderen Geräten.
+            </div>
+
+            <div id="favoriten-liste" style="text-align: left;">
+                </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html">Stream</a>
+        <a href="Shop.html">Shop</a>
+        <a href="Partnerschaft.html">Partner</a>
+    </nav>
+</body>
+</html>
