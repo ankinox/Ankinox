@@ -16,12 +16,6 @@
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
         .bottom-nav a#nav-stream { color: #bf00ff; }
         
-        /* Kategorie-Link Styling */
-        .category-link { 
-            color: white; text-decoration: none; font-size: 20px; font-weight: bold; 
-            display: inline-block; margin-bottom: 15px; margin-top: 30px; 
-        }
-        
         /* Indikator-Styling */
         .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.4); border-radius: 2.5px; overflow: hidden; position: relative; cursor: pointer; }
         .dot.active { cursor: default; }
@@ -31,22 +25,19 @@
         .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
         .scroll-container::-webkit-scrollbar { display: none; }
         
-        /* Platzhalter-Styling für Alle Favoriten */
-        .fav-placeholder {
+        /* Platzhalter-Styling */
+        .add-placeholder {
+            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555; text-decoration: none;
+        }
+        .placeholder-text { font-size: 12px; margin-top: 10px; text-align: center; padding: 0 5px; color: #555; }
+        
+        /* Styling für die Favoriten-Kacheln (angepasst) */
+        .fav-item {
             flex: 0 0 140px; text-decoration: none; color: white;
         }
-        .fav-placeholder-img {
-            width: 140px; height: 200px; border-radius: 8px; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .fav-placeholder-img img {
-            width: 100%; height: 100%; object-fit: cover;
-        }
-
-        /* Styling für den Plus-Platzhalter */
-        .add-plus-placeholder {
-            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555;
+        .fav-img {
+            width: 140px; height: 200px; border-radius: 8px; object-fit: cover;
         }
         
         @keyframes load {
@@ -71,7 +62,8 @@
             <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
             
             <div style="display:flex; gap:10px; align-items:center; position:relative; z-index:101">
-                <a id="banner-button-link" href="#" style="padding: 8px 20px; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Suchen</a>
+                <a id="banner-button-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
+                <button type="button" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 18px; display: inline-flex; align-items: center; justify-content: center">+</button>
             </div>
         </div>
     </div>
@@ -84,25 +76,22 @@
         </div>
     </div>
 
-    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif; position: relative; z-index: 10;">
+    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
         
-        <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste</h2>
+        <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste / Favoriten</h2>
         <div class="scroll-container">
-            <a href="fav_Film.html" class="fav-placeholder">
-                <div class="fav-placeholder-img">
-                    <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836724628075278825439436597859.png" alt="Film Favoriten">
-                </div>
+            <a href="fav_Film.html" class="fav-item">
+                <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836724628075278825439436597859.png" class="fav-img">
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Film Favoriten</p>
             </a>
-            <div class="add-plus-placeholder">+</div>
+            <a href="fav_Stream.html" class="fav-item">
+                <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" class="fav-img">
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Favoriten</p>
+            </a>
         </div>
 
-        <a href="Film.html" class="category-link">Filme</a>
+        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Filme</h2>
         <div class="scroll-container">
-            <div style="flex: 0 0 140px">
-                <a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Filme</p>
-            </div>
             <div style="flex: 0 0 140px">
                 <a href="Poretto-Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Poretto und der Ma..</p>
@@ -110,26 +99,20 @@
             </div>
         </div>
 
-        <a href="Serien.html" class="category-link">Serien</a>
+        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Serien</h2>
         <div class="scroll-container">
-            <div style="flex: 0 0 140px">
-                <a href="Serien.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Serien</p>
-            </div>
+            <div class="add-placeholder">?<span class="placeholder-text">Bald Verfügbar</span></div>
         </div>
 
-        <a href="Musik.html" class="category-link">Musik</a>
+        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Musik</h2>
         <div class="scroll-container">
-            <div style="flex: 0 0 140px">
-                <a href="Musik.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Musik</p>
-            </div>
+            <div class="add-placeholder">?<span class="placeholder-text">Bald Verfügbar</span></div>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <a href="index.html">Start</a>
-        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
+        <a href="stream.html">Stream</a>
         <a href="Shop.html">Shop</a>
         <a href="Partnerschaft.html">Partner</a>
     </nav>
@@ -137,28 +120,25 @@
     <script>
         const data = [
             {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png",
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png",
-                fsk: '<span style="border:2px solid #228B22;padding:1px 6px;border-radius:4px;font-weight:bold;color:#228B22;box-shadow:0 0 5px #228B22">Filme</span> • Alle Filme ansehen',
-                btnColor: "linear-gradient(90deg, #228B22, #006400)",
-                desc: "Entdecke eine große Auswahl an spannenden Filmen.",
-                url: "Film.html"
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 0</span> Untertitel | Synchro • Kurzfilm • Drama',
+                desc: "Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.",
+                url: "Poretto-Film.html"
             },
             {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000780071f4a855ae531f00044d5070151381204724086.png",
-                fsk: '<span style="border:2px solid #ff00ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff00ff;box-shadow:0 0 5px #ff00ff">Serien</span> • Alle Serien ansehen',
-                btnColor: "linear-gradient(90deg, #ff00ff, #c71585)",
-                desc: "Finde hier deine nächste Lieblingsserie.",
-                url: "Serien.html"
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> Partnerschaft • Geldverdienen • Großwerden',
+                desc: "Werde jetzt Ankinox Partner.",
+                url: "Partnerschaft.html"
             },
             {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png",
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Musik</span> • Alle Musikvideos ansehen',
-                btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)",
-                desc: "Musikgenuss pur: Entdecke deine Musik.",
-                url: "Musik.html"
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Shop</span> Merchandise • Exklusiv • Fanartikel',
+                desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.",
+                url: "Shop.html"
             }
         ];
 
@@ -196,7 +176,6 @@
             document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
             document.getElementById('banner-desc').innerText = data[idx].desc;
             document.getElementById('banner-button-link').href = data[idx].url;
-            document.getElementById('banner-button-link').style.background = data[idx].btnColor;
             
             document.querySelectorAll('.dot').forEach((dot, index) => {
                 dot.classList.toggle('active', index === idx);
