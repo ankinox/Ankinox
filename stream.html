@@ -68,7 +68,7 @@
         </div>
 
         <h2 class="category-link">Mediathek</h2>
-        <div class="scroll-container">
+        <div class="scroll-container" id="mediathek-carousel">
             <div style="flex: 0 0 140px">
                 <a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Filme</p>
@@ -93,59 +93,31 @@
 
     <script>
         const data = [
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000058a0720a823da3d2bca122623492259678561224911.png",
-                fsk: '<span style="border:2px solid #228B22;padding:1px 6px;border-radius:4px;font-weight:bold;color:#228B22;box-shadow:0 0 5px #228B22">Filme</span> • Alle Filme ansehen',
-                btnColor: "linear-gradient(90deg, #228B22, #006400)",
-                desc: "Entdecke eine große Auswahl an spannenden Filmen.",
-                url: "Film.html"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000ebf871f4b508c4c0ad6159746969114662329309493.png",
-                fsk: '<span style="border:2px solid #ff00ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff00ff;box-shadow:0 0 5px #ff00ff">Serien</span> • Alle Serien ansehen',
-                btnColor: "linear-gradient(90deg, #ff00ff, #c71585)",
-                desc: "Finde hier deine nächste Lieblingsserie.",
-                url: "Serien.html"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000000b70720a910c4533cc84f2a84410358198528856596.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Musik</span> • Alle Musikvideos ansehen',
-                btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)",
-                desc: "Musikgenuss pur: Entdecke deine Musik.",
-                url: "Musik.html"
-            }
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000058a0720a823da3d2bca122623492259678561224911.png", fsk: '<span style="border:2px solid #228B22;padding:1px 6px;border-radius:4px;font-weight:bold;color:#228B22;box-shadow:0 0 5px #228B22">Filme</span> • Alle Filme ansehen', btnColor: "linear-gradient(90deg, #228B22, #006400)", desc: "Entdecke eine große Auswahl an spannenden Filmen.", url: "Film.html" },
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000ebf871f4b508c4c0ad6159746969114662329309493.png", fsk: '<span style="border:2px solid #ff00ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff00ff;box-shadow:0 0 5px #ff00ff">Serien</span> • Alle Serien ansehen', btnColor: "linear-gradient(90deg, #ff00ff, #c71585)", desc: "Finde hier deine nächste Lieblingsserie.", url: "Serien.html" },
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000000b70720a910c4533cc84f2a84410358198528856596.png", fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Musik</span> • Alle Musikvideos ansehen', btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)", desc: "Musikgenuss pur: Entdecke deine Musik.", url: "Musik.html" }
         ];
 
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
-
-        let touchstartX = 0;
         const bannerContainer = document.getElementById('banner-container');
-        const SWIPE_THRESHOLD = 50; 
-
-        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
-        bannerContainer.addEventListener('touchend', e => {
-            let touchendX = e.changedTouches[0].screenX;
-            let diff = touchendX - touchstartX;
-            
-            if (Math.abs(diff) > SWIPE_THRESHOLD) {
-                if (diff < 0) { manualUpdate((idx + 1) % data.length); }
-                else if (diff > 0) { manualUpdate((idx - 1 + data.length) % data.length); }
-            }
-        });
-
-        function autoUpdate() { updateBanner((idx + 1) % data.length); }
-
-        function manualUpdate(i) {
-            if (i === idx) return; 
-            clearInterval(timer);
-            updateBanner(i);
-            timer = setInterval(autoUpdate, 5000); 
+        
+        // Mediathek Karussell Logik
+        const mediathek = document.getElementById('mediathek-carousel');
+        let scrollTimer, resumeTimer;
+        function startCarousel() {
+            scrollTimer = setInterval(() => {
+                mediathek.scrollLeft += 1;
+                if (mediathek.scrollLeft >= mediathek.scrollWidth - mediathek.clientWidth) mediathek.scrollLeft = 0;
+            }, 50);
         }
+        startCarousel();
+        mediathek.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
+        mediathek.addEventListener('touchend', () => { resumeTimer = setTimeout(startCarousel, 3000); });
 
+        // Banner Logik
+        function autoUpdate() { updateBanner((idx + 1) % data.length); }
+        function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
         function updateBanner(i) {
             idx = i;
             document.getElementById('banner-bg').src = data[idx].bg;
@@ -154,17 +126,10 @@
             document.getElementById('banner-desc').innerText = data[idx].desc;
             document.getElementById('banner-button-link').href = data[idx].url;
             document.getElementById('banner-button-link').style.background = data[idx].btnColor;
-            
-            document.querySelectorAll('.dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === idx);
-            });
-
+            document.querySelectorAll('.dot').forEach((dot, index) => dot.classList.toggle('active', index === idx));
             document.querySelectorAll('.progress-bar').forEach((bar, index) => {
-                bar.style.animation = 'none'; 
-                bar.style.width = '0%';
-                if (index === idx) {
-                    setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
-                }
+                bar.style.animation = 'none'; bar.style.width = '0%';
+                if (index === idx) setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
             });
         }
         updateBanner(0);
