@@ -17,7 +17,7 @@
         .dot.active { cursor: default; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
-        .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
+        .scroll-container { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 10px; scrollbar-width: none; will-change: transform; }
         .scroll-container::-webkit-scrollbar { display: none; }
         
         .fav-placeholder { flex: 0 0 140px; text-decoration: none; color: white; }
@@ -100,27 +100,27 @@
 
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
-        const bannerContainer = document.getElementById('banner-container');
         
         const mediathek = document.getElementById('mediathek-carousel');
-        let scrollTimer, resumeTimer;
+        let requestId;
 
         function startCarousel() {
-            scrollTimer = setInterval(() => {
+            function animate() {
+                mediathek.scrollLeft += 0.5;
                 const firstItem = mediathek.firstElementChild;
-                // Wenn das erste Element den linken Rand verlässt
                 if (firstItem.getBoundingClientRect().right <= mediathek.getBoundingClientRect().left) {
                     mediathek.appendChild(firstItem);
                     mediathek.scrollLeft = 0;
-                } else {
-                    mediathek.scrollLeft += 1;
                 }
-            }, 30);
+                requestId = requestAnimationFrame(animate);
+            }
+            requestId = requestAnimationFrame(animate);
         }
+        
         startCarousel();
 
-        mediathek.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
-        mediathek.addEventListener('touchend', () => { resumeTimer = setTimeout(startCarousel, 3000); });
+        mediathek.addEventListener('touchstart', () => { cancelAnimationFrame(requestId); });
+        mediathek.addEventListener('touchend', () => { setTimeout(startCarousel, 3000); });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
         function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
