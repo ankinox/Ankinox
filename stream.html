@@ -108,10 +108,13 @@
         function startCarousel() {
             scrollTimer = setInterval(() => {
                 const firstItem = mediathek.firstElementChild;
-                if (firstItem.getBoundingClientRect().right < 0) {
+                // Wenn das erste Element den linken Rand verlässt
+                if (firstItem.getBoundingClientRect().right <= mediathek.getBoundingClientRect().left) {
                     mediathek.appendChild(firstItem);
+                    mediathek.scrollLeft = 0;
+                } else {
+                    mediathek.scrollLeft += 1;
                 }
-                mediathek.scrollLeft += 1;
             }, 30);
         }
         startCarousel();
