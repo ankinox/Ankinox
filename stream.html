@@ -17,30 +17,19 @@
         .dot.active { cursor: default; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
-        /* WICHTIG: scroll-snap sorgt für das saubere Einrasten bei manuellem Wischen */
-        .scroll-container { 
-            display: flex; 
-            overflow-x: auto; 
-            gap: 20px; 
-            padding-bottom: 10px; 
-            scrollbar-width: none; 
-            will-change: transform; 
-            scroll-snap-type: x mandatory;
-        }
+        .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
         .scroll-container::-webkit-scrollbar { display: none; }
-        .cat-item, .fav-placeholder { scroll-snap-align: start; flex: 0 0 140px; }
         
-        .fav-placeholder { text-decoration: none; color: white; }
+        .fav-placeholder { flex: 0 0 140px; text-decoration: none; color: white; }
         .fav-placeholder-img { width: 140px; height: 200px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .fav-placeholder-img img { width: 100%; height: 100%; object-fit: cover; }
-        .add-plus-placeholder { height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; }
+        .add-plus-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; }
         
         @keyframes load { from { width: 0%; } to { width: 100%; } }
     </style>
 </head>
 <body>
 
-    <!-- [Banner-Bereich bleibt wie gehabt] -->
     <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
         <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
         <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
@@ -57,7 +46,6 @@
         </div>
     </div>
 
-    <!-- [Indicator & Content] -->
     <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
         <div id="indicator-box" style="display:flex; gap:10px; width:150px;">
             <div class="dot" onclick="manualUpdate(0)" id="dot-0"><div class="progress-bar" id="bar-0"></div></div>
@@ -67,71 +55,90 @@
     </div>
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif; position: relative; z-index: 10;">
+        
         <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste</h2>
         <div class="scroll-container">
             <a href="fav_Stream.html" class="fav-placeholder">
-                <div class="fav-placeholder-img"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png" alt="Favoriten"></div>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold;">Alle Favoriten</p>
+                <div class="fav-placeholder-img">
+                    <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png" alt="Alle Favoriten">
+                </div>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Favoriten</p>
             </a>
-            <div class="add-plus-placeholder" style="flex: 0 0 140px;">+</div>
+            <div class="add-plus-placeholder">+</div>
         </div>
 
         <h2 class="category-link">Mediathek</h2>
         <div class="scroll-container" id="mediathek-carousel">
-            <div class="cat-item"><a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a><p style="font-size: 14px; font-weight: bold;">Alle Filme</p></div>
-            <div class="cat-item"><a href="Serien.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a><p style="font-size: 14px; font-weight: bold;">Alle Serien</p></div>
-            <div class="cat-item"><a href="Musik.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a><p style="font-size: 14px; font-weight: bold;">Alles an Musik</p></div>
+            <div style="flex: 0 0 140px" class="cat-item">
+                <a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Filme</p>
+            </div>
+            <div style="flex: 0 0 140px" class="cat-item">
+                <a href="Serien.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Serien</p>
+            </div>
+            <div style="flex: 0 0 140px" class="cat-item">
+                <a href="Musik.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alles an Musik</p>
+            </div>
         </div>
     </div>
 
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
+        <a href="Shop.html">Shop</a>
+        <a href="Partnerschaft.html">Partner</a>
+    </nav>
+
     <script>
-        const data = [/* Banner-Daten */];
+        const data = [
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000058a0720a823da3d2bca122623492259678561224911.png", fsk: '<span style="border:2px solid #228B22;padding:1px 6px;border-radius:4px;font-weight:bold;color:#228B22;box-shadow:0 0 5px #228B22">Filme</span> • Alle Filme ansehen', btnColor: "linear-gradient(90deg, #228B22, #006400)", desc: "Entdecke eine große Auswahl an spannenden Filmen.", url: "Film.html" },
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000ebf871f4b508c4c0ad6159746969114662329309493.png", fsk: '<span style="border:2px solid #ff00ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff00ff;box-shadow:0 0 5px #ff00ff">Serien</span> • Alle Serien ansehen', btnColor: "linear-gradient(90deg, #ff00ff, #c71585)", desc: "Finde hier deine nächste Lieblingsserie.", url: "Serien.html" },
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000000b70720a910c4533cc84f2a84410358198528856596.png", fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Musik</span> • Alle Musikvideos ansehen', btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)", desc: "Musikgenuss pur: Entdecke deine Musik.", url: "Musik.html" }
+        ];
+
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
+        const bannerContainer = document.getElementById('banner-container');
         
         const mediathek = document.getElementById('mediathek-carousel');
-        let requestId;
-        let autoTimeout;
-        let isManual = false;
+        let scrollTimer, resumeTimer;
 
         function startCarousel() {
-            if (isManual) return; 
-
-            function animate() {
-                if (isManual) return;
-                
-                mediathek.scrollLeft += 0.2;
-                
-                // Teleportation nur wenn Element weit genug links draußen ist
-                if (mediathek.scrollLeft >= 160) { // 140px Bild + 20px Gap
-                    mediathek.appendChild(mediathek.firstElementChild);
+            scrollTimer = setInterval(() => {
+                const firstItem = mediathek.firstElementChild;
+                // Wenn das erste Element den linken Rand verlässt
+                if (firstItem.getBoundingClientRect().right <= mediathek.getBoundingClientRect().left) {
+                    mediathek.appendChild(firstItem);
                     mediathek.scrollLeft = 0;
+                } else {
+                    mediathek.scrollLeft += 1;
                 }
-                requestId = requestAnimationFrame(animate);
-            }
-            requestId = requestAnimationFrame(animate);
+            }, 30);
         }
-
-        // Interaktion: Stoppt alles sofort
-        mediathek.addEventListener('scroll', () => {
-            isManual = true;
-            cancelAnimationFrame(requestId);
-            clearTimeout(autoTimeout);
-            
-            // Erst nach 3 Sekunden Inaktivität Auto-Scroll erlauben
-            autoTimeout = setTimeout(() => {
-                isManual = false;
-                startCarousel();
-            }, 3000);
-        }, { passive: true });
-
-        // Initial starten
         startCarousel();
 
-        // Banner-Logik...
-        function updateBanner(i) { /* ... */ }
-        function autoUpdate() { /* ... */ }
-        function manualUpdate(i) { /* ... */ }
+        mediathek.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
+        mediathek.addEventListener('touchend', () => { resumeTimer = setTimeout(startCarousel, 3000); });
+
+        function autoUpdate() { updateBanner((idx + 1) % data.length); }
+        function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
+        function updateBanner(i) {
+            idx = i;
+            document.getElementById('banner-bg').src = data[idx].bg;
+            document.getElementById('banner-logo').src = data[idx].logo;
+            document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
+            document.getElementById('banner-desc').innerText = data[idx].desc;
+            document.getElementById('banner-button-link').href = data[idx].url;
+            document.getElementById('banner-button-link').style.background = data[idx].btnColor;
+            document.querySelectorAll('.dot').forEach((dot, index) => dot.classList.toggle('active', index === idx));
+            document.querySelectorAll('.progress-bar').forEach((bar, index) => {
+                bar.style.animation = 'none'; bar.style.width = '0%';
+                if (index === idx) setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
+            });
+        }
+        updateBanner(0);
     </script>
 </body>
 </html>
