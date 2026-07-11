@@ -116,9 +116,13 @@
         // Mediathek Karussell-Logik
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
+
         function startCarousel() {
             scrollTimer = setInterval(() => {
-                if (mediathek.scrollLeft >= 160) {
+                // Dynamische Berechnung der Breite des ersten Kind-Elements
+                const firstElementWidth = mediathek.firstElementChild.offsetWidth;
+                
+                if (mediathek.scrollLeft >= firstElementWidth) {
                     mediathek.appendChild(mediathek.firstElementChild);
                     mediathek.scrollLeft = 0;
                 } else {
