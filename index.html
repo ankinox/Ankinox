@@ -109,6 +109,8 @@
         let isManual = false;
         let hasDeletedInManualMode = false;
 
+        function canScroll() { return carousel.scrollWidth > carousel.clientWidth; }
+
         function fillToFour() {
             while (carousel.children.length < 4) {
                 carousel.appendChild(carousel.firstElementChild.cloneNode(true));
@@ -116,10 +118,10 @@
         }
 
         function startCarousel() {
+            if (!canScroll()) return;
             isManual = false;
             hasDeletedInManualMode = false;
             fillToFour();
-            
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
                 if (carousel.scrollLeft >= 160) {
@@ -148,9 +150,12 @@
         });
 
         carousel.addEventListener('touchend', () => { 
-            resumeTimer = setTimeout(() => {
-                startCarousel();
-            }, 3000); 
+            resumeTimer = setTimeout(() => { startCarousel(); }, 3000); 
+        });
+
+        window.addEventListener('resize', () => {
+            if (!canScroll()) { clearInterval(scrollTimer); }
+            else if (!isManual && !scrollTimer) { startCarousel(); }
         });
     </script>
 </body>
