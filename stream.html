@@ -101,9 +101,8 @@
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
         
-        // Banner Wisch-Logik
-        let touchstartX = 0;
         const bannerContainer = document.getElementById('banner-container');
+        let touchstartX = 0;
         bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
         bannerContainer.addEventListener('touchend', e => {
             let diff = e.changedTouches[0].screenX - touchstartX;
@@ -113,14 +112,16 @@
             }
         });
 
-        // Mediathek Karussell-Logik
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
+
         function startCarousel() {
             if (mediathek.scrollWidth <= mediathek.clientWidth) return;
             scrollTimer = setInterval(() => {
                 if (mediathek.scrollLeft >= 160) {
-                    mediathek.appendChild(mediathek.firstElementChild);
+                    let first = mediathek.firstElementChild;
+                    mediathek.appendChild(first.cloneNode(true));
+                    mediathek.removeChild(first);
                     mediathek.scrollLeft = 0;
                 } else {
                     mediathek.scrollLeft += 1;
@@ -129,8 +130,20 @@
         }
         startCarousel();
 
-        mediathek.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
-        mediathek.addEventListener('touchend', () => { resumeTimer = setTimeout(startCarousel, 3000); });
+        mediathek.addEventListener('touchstart', () => { 
+            clearInterval(scrollTimer); 
+            clearTimeout(resumeTimer); 
+        });
+        mediathek.addEventListener('touchend', () => { 
+            resumeTimer = setTimeout(startCarousel, 3000); 
+        });
+        // Manuelle Scroll-Überwachung um Elemente zu entfernen
+        mediathek.addEventListener('scroll', () => {
+            if (mediathek.scrollLeft > 160) {
+                mediathek.removeChild(mediathek.firstElementChild);
+                mediathek.scrollLeft -= 160;
+            }
+        });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
         function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
