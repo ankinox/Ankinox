@@ -118,7 +118,9 @@
         let scrollTimer, resumeTimer;
         function startCarousel() {
             scrollTimer = setInterval(() => {
-                if (mediathek.scrollLeft >= 160) {
+                // Wir definieren den Schritt basierend auf der Breite des ersten Kindelements plus Gap (160px)
+                const scrollStep = 160; 
+                if (mediathek.scrollLeft >= scrollStep) {
                     mediathek.appendChild(mediathek.firstElementChild);
                     mediathek.scrollLeft = 0;
                 } else {
