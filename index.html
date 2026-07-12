@@ -166,39 +166,52 @@
         // Karussell Logik
         const carousel = document.getElementById('ankinox-carousel');
         const urls = ["Kanalmitgliedschaft.html", "Shop.html", "Partnerschaft.html"];
-        let scrollTimer, resumeTimer;
+        let scrollTimer;
 
         function startCarousel() {
-            if (carousel.scrollWidth <= carousel.clientWidth) return;
-            
-            // Initial klonen wir das erste Element
-            if (carousel.children.length === 3) {
-                carousel.appendChild(carousel.firstElementChild.cloneNode(true));
-            }
-            
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
+                
+                // Wenn ein Element komplett links rausgefahren ist (160px Breite inkl Gap)
                 if (carousel.scrollLeft >= 160) {
                     const first = carousel.firstElementChild;
                     carousel.removeChild(first);
                     carousel.scrollLeft = 0;
                     
+                    // Nächste URL bestimmen
                     const lastUrl = carousel.lastElementChild.querySelector('a').getAttribute('href');
                     const nextUrl = urls[(urls.indexOf(lastUrl) + 1) % urls.length];
-                    const nextElement = Array.from(document.querySelectorAll('#ankinox-carousel > div')).find(e => e.querySelector('a').href.includes(nextUrl)) || first;
                     
+                    // Neues Element hinzufügen
+                    const nextElement = Array.from(document.querySelectorAll('#ankinox-carousel > div'))
+                        .find(e => e.querySelector('a').href.includes(nextUrl)) || first;
                     carousel.appendChild(nextElement.cloneNode(true));
                 }
             }, 30);
         }
+
+        // Initiale Sicherung: Ein Klon muss existieren, damit es läuft
+        if (carousel.children.length === 3) {
+            carousel.appendChild(carousel.firstElementChild.cloneNode(true));
+        }
         startCarousel();
 
-        carousel.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
+        carousel.addEventListener('scroll', () => {
+            // Beim manuellen Scrollen prüfen, ob der erste Slot raus ist
+            if (carousel.scrollLeft >= 160) {
+                carousel.removeChild(carousel.firstElementChild);
+                carousel.scrollLeft = 0;
+                const lastUrl = carousel.lastElementChild.querySelector('a').getAttribute('href');
+                const nextUrl = urls[(urls.indexOf(lastUrl) + 1) % urls.length];
+                const nextElement = Array.from(document.querySelectorAll('#ankinox-carousel > div'))
+                    .find(e => e.querySelector('a').href.includes(nextUrl)) || carousel.firstElementChild;
+                carousel.appendChild(nextElement.cloneNode(true));
+            }
+        });
+
+        carousel.addEventListener('touchstart', () => { clearInterval(scrollTimer); });
         carousel.addEventListener('touchend', () => { 
-            resumeTimer = setTimeout(() => {
-                if (carousel.children.length < 4) carousel.appendChild(carousel.firstElementChild.cloneNode(true));
-                startCarousel();
-            }, 3000); 
+            setTimeout(startCarousel, 3000); 
         });
     </script>
 </body>
