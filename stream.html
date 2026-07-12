@@ -112,40 +112,60 @@
             }
         });
 
+        // Karussell Logik
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
+        let isManual = false;
+        let hasDeletedInManualMode = false;
+
+        function canScroll() { return mediathek.scrollWidth > mediathek.clientWidth; }
+
+        function fillToFour() {
+            while (mediathek.children.length < 4) {
+                mediathek.appendChild(mediathek.firstElementChild.cloneNode(true));
+            }
+        }
 
         function startCarousel() {
-            if (mediathek.scrollWidth <= mediathek.clientWidth) return;
-            // Erstelle Klon vom Ersten, bevor Auto-Scroll startet
-            mediathek.appendChild(mediathek.firstElementChild.cloneNode(true));
+            if (!canScroll()) return;
+            isManual = false;
+            hasDeletedInManualMode = false;
+            fillToFour();
             
             scrollTimer = setInterval(() => {
+                mediathek.scrollLeft += 1;
                 if (mediathek.scrollLeft >= 160) {
                     mediathek.removeChild(mediathek.firstElementChild);
-                    mediathek.appendChild(mediathek.firstElementChild.cloneNode(true));
                     mediathek.scrollLeft = 0;
-                } else {
-                    mediathek.scrollLeft += 1;
+                    fillToFour(); 
                 }
             }, 30);
         }
+
         startCarousel();
 
         mediathek.addEventListener('touchstart', () => { 
+            isManual = true;
+            hasDeletedInManualMode = false;
             clearInterval(scrollTimer); 
             clearTimeout(resumeTimer); 
         });
-        mediathek.addEventListener('touchend', () => { 
-            resumeTimer = setTimeout(startCarousel, 3000); 
+        
+        mediathek.addEventListener('scroll', () => {
+            if (isManual && !hasDeletedInManualMode && mediathek.children.length > 3 && mediathek.scrollLeft >= 160) {
+                mediathek.removeChild(mediathek.firstElementChild);
+                mediathek.scrollLeft = 0;
+                hasDeletedInManualMode = true;
+            }
         });
 
-        // Manuelle Scroll-Überwachung um Elemente auf 3 zu begrenzen
-        mediathek.addEventListener('scroll', () => {
-            if (mediathek.scrollLeft > 160 && mediathek.childElementCount > 3) {
-                mediathek.removeChild(mediathek.firstElementChild);
-                mediathek.scrollLeft -= 160;
-            }
+        mediathek.addEventListener('touchend', () => { 
+            resumeTimer = setTimeout(() => { startCarousel(); }, 3000); 
+        });
+
+        window.addEventListener('resize', () => {
+            if (!canScroll()) { clearInterval(scrollTimer); }
+            else if (!isManual && !scrollTimer) { startCarousel(); }
         });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
