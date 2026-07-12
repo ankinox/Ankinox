@@ -166,18 +166,24 @@
         // Karussell Logik
         const carousel = document.getElementById('ankinox-carousel');
         let scrollTimer, resumeTimer;
+        let currentIndex = 0;
 
         function startCarousel() {
-            if (carousel.scrollWidth <= carousel.clientWidth) return;
-            carousel.appendChild(carousel.firstElementChild.cloneNode(true));
+            if (carousel.children.length > 0) {
+                carousel.appendChild(carousel.children[currentIndex].cloneNode(true));
+                currentIndex++;
+            }
             
             scrollTimer = setInterval(() => {
+                carousel.scrollLeft += 1;
+
                 if (carousel.scrollLeft >= 160) {
                     carousel.removeChild(carousel.firstElementChild);
-                    carousel.appendChild(carousel.firstElementChild.cloneNode(true));
                     carousel.scrollLeft = 0;
-                } else {
-                    carousel.scrollLeft += 1;
+                    
+                    const nextElement = carousel.children[currentIndex % 3].cloneNode(true);
+                    carousel.appendChild(nextElement);
+                    currentIndex++;
                 }
             }, 30);
         }
@@ -185,13 +191,6 @@
 
         carousel.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
         carousel.addEventListener('touchend', () => { resumeTimer = setTimeout(startCarousel, 3000); });
-
-        carousel.addEventListener('scroll', () => {
-            if (carousel.scrollLeft > 160 && carousel.childElementCount > 3) {
-                carousel.removeChild(carousel.firstElementChild);
-                carousel.scrollLeft -= 160;
-            }
-        });
     </script>
 </body>
 </html>
