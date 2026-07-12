@@ -165,32 +165,41 @@
 
         // Karussell Logik
         const carousel = document.getElementById('ankinox-carousel');
+        const urls = ["Kanalmitgliedschaft.html", "Shop.html", "Partnerschaft.html"];
         let scrollTimer, resumeTimer;
-        let currentIndex = 0;
 
         function startCarousel() {
-            if (carousel.children.length > 0) {
-                carousel.appendChild(carousel.children[currentIndex].cloneNode(true));
-                currentIndex++;
+            if (carousel.scrollWidth <= carousel.clientWidth) return;
+            
+            // Initial klonen wir das erste Element
+            if (carousel.children.length === 3) {
+                carousel.appendChild(carousel.firstElementChild.cloneNode(true));
             }
             
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
-
                 if (carousel.scrollLeft >= 160) {
-                    carousel.removeChild(carousel.firstElementChild);
+                    const first = carousel.firstElementChild;
+                    carousel.removeChild(first);
                     carousel.scrollLeft = 0;
                     
-                    const nextElement = carousel.children[currentIndex % 3].cloneNode(true);
-                    carousel.appendChild(nextElement);
-                    currentIndex++;
+                    const lastUrl = carousel.lastElementChild.querySelector('a').getAttribute('href');
+                    const nextUrl = urls[(urls.indexOf(lastUrl) + 1) % urls.length];
+                    const nextElement = Array.from(document.querySelectorAll('#ankinox-carousel > div')).find(e => e.querySelector('a').href.includes(nextUrl)) || first;
+                    
+                    carousel.appendChild(nextElement.cloneNode(true));
                 }
             }, 30);
         }
         startCarousel();
 
         carousel.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
-        carousel.addEventListener('touchend', () => { resumeTimer = setTimeout(startCarousel, 3000); });
+        carousel.addEventListener('touchend', () => { 
+            resumeTimer = setTimeout(() => {
+                if (carousel.children.length < 4) carousel.appendChild(carousel.firstElementChild.cloneNode(true));
+                startCarousel();
+            }, 3000); 
+        });
     </script>
 </body>
 </html>
