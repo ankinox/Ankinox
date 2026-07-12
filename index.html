@@ -107,22 +107,24 @@
         const carousel = document.getElementById('ankinox-carousel');
         let scrollTimer, resumeTimer;
         let isManual = false;
+        let isRemoving = false; // Sperre gegen mehrfaches Löschen
 
         function cloneFirstToEnd() {
-            if (carousel.children.length > 0 && carousel.children.length < 4) {
+            if (carousel.children.length > 0) {
                 carousel.appendChild(carousel.firstElementChild.cloneNode(true));
             }
         }
 
         function startCarousel() {
             isManual = false;
-            cloneFirstToEnd();
+            isRemoving = false;
+            while (carousel.children.length < 4) cloneFirstToEnd();
+            
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
                 if (carousel.scrollLeft >= 160) {
                     if (carousel.children.length > 1) carousel.removeChild(carousel.firstElementChild);
                     carousel.scrollLeft = 0;
-                    cloneFirstToEnd();
                 }
             }, 30);
         }
@@ -131,21 +133,24 @@
 
         carousel.addEventListener('touchstart', () => { 
             isManual = true;
+            isRemoving = false;
             clearInterval(scrollTimer); 
             clearTimeout(resumeTimer); 
         });
         
         carousel.addEventListener('scroll', () => {
-            if (isManual && carousel.scrollLeft >= 160) {
+            if (isManual && !isRemoving && carousel.scrollLeft >= 160) {
                 if (carousel.children.length > 1) {
                     carousel.removeChild(carousel.firstElementChild);
                     carousel.scrollLeft = 0;
+                    isRemoving = true;
                 }
             }
         });
 
         carousel.addEventListener('touchend', () => { 
             resumeTimer = setTimeout(() => {
+                isManual = false;
                 startCarousel();
             }, 3000); 
         });
