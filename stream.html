@@ -117,11 +117,13 @@
 
         function startCarousel() {
             if (mediathek.scrollWidth <= mediathek.clientWidth) return;
+            // Erstelle Klon vom Ersten, bevor Auto-Scroll startet
+            mediathek.appendChild(mediathek.firstElementChild.cloneNode(true));
+            
             scrollTimer = setInterval(() => {
                 if (mediathek.scrollLeft >= 160) {
-                    let first = mediathek.firstElementChild;
-                    mediathek.appendChild(first.cloneNode(true));
-                    mediathek.removeChild(first);
+                    mediathek.removeChild(mediathek.firstElementChild);
+                    mediathek.appendChild(mediathek.firstElementChild.cloneNode(true));
                     mediathek.scrollLeft = 0;
                 } else {
                     mediathek.scrollLeft += 1;
@@ -137,9 +139,10 @@
         mediathek.addEventListener('touchend', () => { 
             resumeTimer = setTimeout(startCarousel, 3000); 
         });
-        // Manuelle Scroll-Überwachung um Elemente zu entfernen
+
+        // Manuelle Scroll-Überwachung um Elemente auf 3 zu begrenzen
         mediathek.addEventListener('scroll', () => {
-            if (mediathek.scrollLeft > 160) {
+            if (mediathek.scrollLeft > 160 && mediathek.childElementCount > 3) {
                 mediathek.removeChild(mediathek.firstElementChild);
                 mediathek.scrollLeft -= 160;
             }
