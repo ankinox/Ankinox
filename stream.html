@@ -116,23 +116,15 @@
         // Mediathek Karussell-Logik
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
-
         function startCarousel() {
             scrollTimer = setInterval(() => {
-                // Klonen des ersten Elements am Ende der Liste
-                const firstItem = mediathek.firstElementChild;
-                const clone = firstItem.cloneNode(true);
-                mediathek.appendChild(clone);
-
-                // Scrollen um die Breite des ersten Elements (140px + 20px Gap = 160px)
-                mediathek.scrollBy({ left: 160, behavior: 'smooth' });
-
-                // Löschen des ursprünglichen Elements nach kurzem Timeout (wenn es aus dem Bild ist)
-                setTimeout(() => {
-                    mediathek.removeChild(firstItem);
+                if (mediathek.scrollLeft >= 160) {
+                    mediathek.appendChild(mediathek.firstElementChild);
                     mediathek.scrollLeft = 0;
-                }, 500);
-            }, 3000);
+                } else {
+                    mediathek.scrollLeft += 1;
+                }
+            }, 30);
         }
         startCarousel();
 
