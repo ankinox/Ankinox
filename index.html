@@ -105,19 +105,22 @@
         updateBanner(0);
 
         const carousel = document.getElementById('ankinox-carousel');
-        const urls = ["Kanalmitgliedschaft.html", "Shop.html", "Partnerschaft.html"];
         let scrollTimer, resumeTimer;
+        let isManual = false;
 
         function cloneFirstToEnd() {
-            if (carousel.children.length < 4) carousel.appendChild(carousel.firstElementChild.cloneNode(true));
+            if (carousel.children.length > 0 && carousel.children.length < 4) {
+                carousel.appendChild(carousel.firstElementChild.cloneNode(true));
+            }
         }
 
         function startCarousel() {
+            isManual = false;
             cloneFirstToEnd();
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
                 if (carousel.scrollLeft >= 160) {
-                    carousel.removeChild(carousel.firstElementChild);
+                    if (carousel.children.length > 1) carousel.removeChild(carousel.firstElementChild);
                     carousel.scrollLeft = 0;
                     cloneFirstToEnd();
                 }
@@ -126,12 +129,18 @@
 
         startCarousel();
 
-        carousel.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
+        carousel.addEventListener('touchstart', () => { 
+            isManual = true;
+            clearInterval(scrollTimer); 
+            clearTimeout(resumeTimer); 
+        });
         
         carousel.addEventListener('scroll', () => {
-            if (!scrollTimer && carousel.scrollLeft >= 160) {
-                carousel.removeChild(carousel.firstElementChild);
-                carousel.scrollLeft = 0;
+            if (isManual && carousel.scrollLeft >= 160) {
+                if (carousel.children.length > 1) {
+                    carousel.removeChild(carousel.firstElementChild);
+                    carousel.scrollLeft = 0;
+                }
             }
         });
 
