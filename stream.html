@@ -17,8 +17,9 @@
         .dot.active { cursor: default; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
         
-        .scroll-container { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 10px; scrollbar-width: none; }
-        .scroll-container::-webkit-scrollbar { display: none; }
+        /* Karussell Container */
+        .scroll-container { display: flex; overflow: hidden; gap: 20px; padding-bottom: 10px; width: 100%; }
+        .carousel-track { display: flex; gap: 20px; animation: scroll 15s linear infinite; }
         
         .fav-placeholder { flex: 0 0 140px; text-decoration: none; color: white; }
         .fav-placeholder-img { width: 140px; height: 200px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
@@ -26,6 +27,8 @@
         .add-plus-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; }
         
         @keyframes load { from { width: 0%; } to { width: 100%; } }
+        /* Der Endlos-Scroll-Effekt */
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-480px); } }
     </style>
 </head>
 <body>
@@ -55,7 +58,6 @@
     </div>
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif; position: relative; z-index: 10;">
-        
         <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste</h2>
         <div class="scroll-container">
             <a href="fav_Stream.html" class="fav-placeholder">
@@ -68,28 +70,17 @@
         </div>
 
         <h2 class="category-link">Mediathek</h2>
-        <div class="scroll-container" id="mediathek-carousel">
-            <div style="flex: 0 0 140px" class="cat-item">
-                <a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Filme</p>
-            </div>
-            <div style="flex: 0 0 140px" class="cat-item">
-                <a href="Serien.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Serien</p>
-            </div>
-            <div style="flex: 0 0 140px" class="cat-item">
-                <a href="Musik.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alles an Musik</p>
+        <div class="scroll-container">
+            <div class="carousel-track" id="mediathek-carousel">
+                <!-- Die Elemente müssen hier doppelt vorhanden sein für den Endlos-Effekt -->
+                <div style="flex: 0 0 140px"><a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a><p style="font-size: 14px; font-weight: bold;">Alle Filme</p></div>
+                <div style="flex: 0 0 140px"><a href="Serien.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a><p style="font-size: 14px; font-weight: bold;">Alle Serien</p></div>
+                <div style="flex: 0 0 140px"><a href="Musik.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a><p style="font-size: 14px; font-weight: bold;">Alles an Musik</p></div>
+                <!-- Dubletten für den Endlos-Loop -->
+                <div style="flex: 0 0 140px"><a href="Film.html"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;"></a><p style="font-size: 14px; font-weight: bold;">Alle Filme</p></div>
             </div>
         </div>
     </div>
-
-    <nav class="bottom-nav">
-        <a href="index.html">Start</a>
-        <a href="stream.html" id="nav-stream" style="color: #bf00ff;">Stream</a>
-        <a href="Shop.html">Shop</a>
-        <a href="Partnerschaft.html">Partner</a>
-    </nav>
 
     <script>
         const data = [
@@ -100,37 +91,6 @@
 
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
-        
-        let touchstartX = 0;
-        const bannerContainer = document.getElementById('banner-container');
-        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
-        bannerContainer.addEventListener('touchend', e => {
-            let diff = e.changedTouches[0].screenX - touchstartX;
-            if (Math.abs(diff) > 50) {
-                if (diff < 0) manualUpdate((idx + 1) % data.length);
-                else manualUpdate((idx - 1 + data.length) % data.length);
-            }
-        });
-
-        // Kontinuierliche Mediathek-Logik
-        const mediathek = document.getElementById('mediathek-carousel');
-        let isPaused = false;
-
-        function animateScroll() {
-            if (!isPaused) {
-                mediathek.scrollLeft += 1; 
-                if (mediathek.scrollLeft >= 160) {
-                    mediathek.appendChild(mediathek.firstElementChild);
-                    mediathek.scrollLeft = 0;
-                }
-            }
-            requestAnimationFrame(animateScroll);
-        }
-        animateScroll();
-
-        mediathek.addEventListener('touchstart', () => { isPaused = true; });
-        mediathek.addEventListener('touchend', () => { setTimeout(() => { isPaused = false; }, 2000); });
-
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
         function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
         function updateBanner(i) {
