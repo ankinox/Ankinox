@@ -117,6 +117,7 @@
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
         function startCarousel() {
+            if (mediathek.scrollWidth <= mediathek.clientWidth) return;
             scrollTimer = setInterval(() => {
                 if (mediathek.scrollLeft >= 160) {
                     mediathek.appendChild(mediathek.firstElementChild);
