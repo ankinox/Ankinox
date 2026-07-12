@@ -107,24 +107,25 @@
         const carousel = document.getElementById('ankinox-carousel');
         let scrollTimer, resumeTimer;
         let isManual = false;
-        let isRemoving = false; // Sperre gegen mehrfaches Löschen
+        let hasDeletedInManualMode = false;
 
-        function cloneFirstToEnd() {
-            if (carousel.children.length > 0) {
+        function fillToFour() {
+            while (carousel.children.length < 4) {
                 carousel.appendChild(carousel.firstElementChild.cloneNode(true));
             }
         }
 
         function startCarousel() {
             isManual = false;
-            isRemoving = false;
-            while (carousel.children.length < 4) cloneFirstToEnd();
+            hasDeletedInManualMode = false;
+            fillToFour();
             
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
                 if (carousel.scrollLeft >= 160) {
-                    if (carousel.children.length > 1) carousel.removeChild(carousel.firstElementChild);
+                    carousel.removeChild(carousel.firstElementChild);
                     carousel.scrollLeft = 0;
+                    fillToFour(); 
                 }
             }, 30);
         }
@@ -133,24 +134,21 @@
 
         carousel.addEventListener('touchstart', () => { 
             isManual = true;
-            isRemoving = false;
+            hasDeletedInManualMode = false;
             clearInterval(scrollTimer); 
             clearTimeout(resumeTimer); 
         });
         
         carousel.addEventListener('scroll', () => {
-            if (isManual && !isRemoving && carousel.scrollLeft >= 160) {
-                if (carousel.children.length > 1) {
-                    carousel.removeChild(carousel.firstElementChild);
-                    carousel.scrollLeft = 0;
-                    isRemoving = true;
-                }
+            if (isManual && !hasDeletedInManualMode && carousel.children.length > 3 && carousel.scrollLeft >= 160) {
+                carousel.removeChild(carousel.firstElementChild);
+                carousel.scrollLeft = 0;
+                hasDeletedInManualMode = true;
             }
         });
 
         carousel.addEventListener('touchend', () => { 
             resumeTimer = setTimeout(() => {
-                isManual = false;
                 startCarousel();
             }, 3000); 
         });
