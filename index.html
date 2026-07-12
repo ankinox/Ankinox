@@ -108,40 +108,35 @@
         const urls = ["Kanalmitgliedschaft.html", "Shop.html", "Partnerschaft.html"];
         let scrollTimer, resumeTimer;
 
+        function cloneFirstToEnd() {
+            if (carousel.children.length < 4) carousel.appendChild(carousel.firstElementChild.cloneNode(true));
+        }
+
         function startCarousel() {
+            cloneFirstToEnd();
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
                 if (carousel.scrollLeft >= 160) {
-                    const first = carousel.firstElementChild;
-                    carousel.removeChild(first);
+                    carousel.removeChild(carousel.firstElementChild);
                     carousel.scrollLeft = 0;
-                    const lastUrl = carousel.lastElementChild.querySelector('a').getAttribute('href');
-                    const nextUrl = urls[(urls.indexOf(lastUrl) + 1) % urls.length];
-                    const nextElement = Array.from(document.querySelectorAll('#ankinox-carousel > div')).find(e => e.querySelector('a').href.includes(nextUrl)) || first;
-                    carousel.appendChild(nextElement.cloneNode(true));
+                    cloneFirstToEnd();
                 }
             }, 30);
         }
 
-        if (carousel.children.length === 3) carousel.appendChild(carousel.firstElementChild.cloneNode(true));
         startCarousel();
 
+        carousel.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
+        
         carousel.addEventListener('scroll', () => {
-            if (carousel.scrollLeft >= 160) {
+            if (!scrollTimer && carousel.scrollLeft >= 160) {
                 carousel.removeChild(carousel.firstElementChild);
                 carousel.scrollLeft = 0;
             }
         });
 
-        carousel.addEventListener('touchstart', () => { clearInterval(scrollTimer); clearTimeout(resumeTimer); });
         carousel.addEventListener('touchend', () => { 
             resumeTimer = setTimeout(() => {
-                if (carousel.children.length < 4) {
-                    const lastUrl = carousel.lastElementChild.querySelector('a').getAttribute('href');
-                    const nextUrl = urls[(urls.indexOf(lastUrl) + 1) % urls.length];
-                    const nextElement = Array.from(document.querySelectorAll('#ankinox-carousel > div')).find(e => e.querySelector('a').href.includes(nextUrl)) || carousel.firstElementChild;
-                    carousel.appendChild(nextElement.cloneNode(true));
-                }
                 startCarousel();
             }, 3000); 
         });
