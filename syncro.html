@@ -14,65 +14,42 @@
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
             background-size: cover; background-position: center; z-index: -1;
         }
-
         .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
-        
-        .banner-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
-        }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
 
-        .content {
-            margin-top: 35vh; 
-            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%);
-            padding: 20px;
-            position: relative;
-        }
-
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background-color: #0a0a0a; display: flex; justify-content: space-around; 
-            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
-        }
+        .content { margin-top: 35vh; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); padding: 20px; position: relative; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
         
         .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
-        .add-plus-placeholder {
-            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555;
-        }
+        .device-card { flex: 0 0 140px; height: 200px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; }
+        .add-plus-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; cursor: pointer; }
 
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 10000; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: #111; padding: 30px; border-radius: 15px; text-align: center;
-            border: 1px solid #333; width: 80%; max-width: 300px;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
+        .modal-content { background: #111; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #333; width: 80%; max-width: 300px; }
     </style>
 </head>
 <body>
 
     <div class="banner">
-        <div class="banner-logo">
-            <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
-        </div>
+        <div class="banner-logo"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;"></div>
         <div class="banner-overlay"></div>
     </div>
 
+    <!-- Popup für Code-Eingabe oder Anzeige -->
     <div id="codeModal" class="modal">
         <div class="modal-content">
-            <p>Gruppen Schlüssel eingeben</p>
-            <input type="text" id="groupCode" placeholder="Code" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center;">
-            <button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px; cursor: pointer; margin-right: 10px;">OK</button>
-            <button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>
+            <div id="modal-body">
+                <p id="modal-text">Code eingeben:</p>
+                <input type="text" id="groupCode" maxlength="5" placeholder="00000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center; font-size: 1.5rem;">
+                <button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px; cursor: pointer;">Verbinden</button>
+                <button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer; margin-left: 10px;">Abbrechen</button>
+            </div>
         </div>
     </div>
 
     <div class="content">
-        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" 
-             style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
 
         <div style="text-align: center; margin-top: -20px;">
             <div style="display: flex; justify-content: center; margin-bottom: 15px;">
@@ -80,50 +57,68 @@
                    Code eingeben
                 </a>
             </div>
-            
             <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
-                Synchronisiere deine Geräte mit einem 5 Minuten Code. Voraussetzung: beide Geräte sind mit dem selben Router Verbunden.
+                Synchronisiere deine Geräte per WLAN-Netzwerk.
             </div>
 
             <div style="text-align: left;">
                 <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
-                <div class="fav-container">
-                    <div class="add-plus-placeholder">+</div>
+                <div class="fav-container" id="device-list">
+                    <div class="device-card"><p>📱 Mein Gerät (Host)</p></div>
+                    <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="index.html">Start</a>
-        <a href="stream.html">Stream</a>
-        <a href="Shop.html">Shop</a>
-        <a href="Partnerschaft.html">Partner</a>
-    </nav>
-
     <script>
         let isGrouped = false;
         let showKey = false;
-        const myGroupKey = "ANKI-X-99"; // Beispiel Schlüssel
+        let generatedCode = "";
+        let pairingTimer;
+
+        function startPairingProcess() {
+            // Generiert 5-stelligen Code
+            generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
+            document.getElementById('modal-text').innerHTML = "Dein 5-Minuten-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
+            document.getElementById('groupCode').style.display = 'none';
+            document.getElementById('codeModal').style.display = 'flex';
+
+            pairingTimer = setTimeout(() => {
+                document.getElementById('modal-text').innerHTML = "Code abgelaufen.<br><button onclick='startPairingProcess()' style='margin-top:10px;'>Erneut generieren</button>";
+            }, 300000); // 5 Min Timer
+        }
 
         function handleButtonClick() {
             if (!isGrouped) {
+                document.getElementById('modal-text').innerText = "Code eingeben:";
+                document.getElementById('groupCode').style.display = 'block';
                 document.getElementById('codeModal').style.display = 'flex';
             } else {
                 showKey = !showKey;
-                document.getElementById('mainButton').innerText = showKey ? myGroupKey : "Dein Gruppen Schlüssel";
+                document.getElementById('mainButton').innerText = showKey ? "Key: ANKI-X-99" : "Dein Gruppen Schlüssel";
             }
         }
 
         function confirmCode() {
-            // Hier Code-Prüfung einfügen
-            isGrouped = true;
-            document.getElementById('mainButton').innerText = "Dein Gruppen Schlüssel";
-            closeModal();
+            const input = document.getElementById('groupCode').value;
+            // Prüfung: Muss mit generiertem Code übereinstimmen (Simuliert WLAN-Check)
+            if (input === generatedCode) {
+                isGrouped = true;
+                document.getElementById('mainButton').innerText = "Dein Gruppen Schlüssel";
+                document.getElementById('device-list').innerHTML = `
+                    <div class="device-card"><p>📱 Mein Gerät</p></div>
+                    <div class="device-card"><p>💻 Verbundenes Gerät</p></div>
+                `;
+                closeModal();
+            } else {
+                alert("Ungültiger Code oder Netzwerk-Fehler.");
+            }
         }
 
         function closeModal() {
             document.getElementById('codeModal').style.display = 'none';
+            clearTimeout(pairingTimer);
         }
     </script>
 </body>
