@@ -121,7 +121,7 @@
                 timeRemaining--;
                 let mins = Math.floor(timeRemaining / 60);
                 let secs = timeRemaining % 60;
-                document.getElementById('timer-display').innerText = `Gültig für: ${mins}:${secs < 10 ? '0'+secs : secs} min`;
+                document.getElementById('timer-display').innerText = `Gültig für: ${mins}:${secs < 10 ? '0'+secs : secs} sek`;
                 if (timeRemaining <= 0) clearInterval(countdownInterval);
             }, 1000);
 
