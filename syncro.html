@@ -1,97 +1,168 @@
-<script>
-    let isGrouped = false;
-    let generatedCode = "";
-    let pairingTimer, countdownInterval;
 
-    // Speichert den originalen HTML-Zustand des Action-Bereichs
-    const originalActionArea = `<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>`;
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synchronisieren</title>
 
-    function updateDeviceList() {
-        const list = document.getElementById('device-list');
-        if (isGrouped) {
-            list.innerHTML = `
-                <div class="device-card" onclick="leaveGroup()">
-                    <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
-                </div>
-                <div class="device-card" onclick="kickDevice()">
-                    <p>💻 Verbundenes Gerät<br><small>(Entfernen)</small></p>
-                </div>
-                <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
-            `;
-        } else {
-            list.innerHTML = `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
+    <style>
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
+        
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
+            background-size: cover; background-position: center; z-index: -1;
         }
-    }
+        .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
 
-    function startPairingProcess() {
-        generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
-        
-        // Reset Modal UI
-        document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
-        document.getElementById('input-area').style.display = 'none';
-        document.getElementById('action-area').innerHTML = originalActionArea; // Immer Standard-Abbrechen
-        document.getElementById('codeModal').style.display = 'flex';
+        .content { margin-top: 35vh; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); padding: 20px; position: relative; }
+        .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
+        .device-card { flex: 0 0 140px; height: 200px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; cursor: pointer; }
+        .add-plus-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; cursor: pointer; }
 
-        let timeRemaining = 60; 
-        document.getElementById('timer-display').innerText = "Gültig für: 1:00 min";
-        
-        countdownInterval = setInterval(() => {
-            timeRemaining--;
-            let mins = Math.floor(timeRemaining / 60);
-            let secs = timeRemaining % 60;
-            document.getElementById('timer-display').innerText = `Gültig für: ${mins}:${secs < 10 ? '0'+secs : secs} sek`;
-            if (timeRemaining <= 0) clearInterval(countdownInterval);
-        }, 1000);
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
+        .modal-content { background: #111; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #333; width: 80%; max-width: 300px; }
+    </style>
+</head>
+<body>
 
-        pairingTimer = setTimeout(() => {
+    <div class="banner">
+        <div class="banner-logo"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;"></div>
+        <div class="banner-overlay"></div>
+    </div>
+
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <div id="modal-body">
+                <p id="modal-text">Code eingeben:</p>
+                <div id="input-area">
+                    <input type="text" id="groupCode" maxlength="5" placeholder="00000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center; font-size: 1.5rem;">
+                    <button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px; cursor: pointer;">Verbinden</button>
+                </div>
+                <div id="timer-display" style="color: #888; margin-top: 10px; font-size: 0.9rem;"></div>
+                <div id="action-area" style="margin-top:15px;">
+                    <button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
+
+        <div style="text-align: center; margin-top: -20px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <a href="#" id="mainButton" onclick="handleButtonClick()" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer;">
+                   Code eingeben
+                </a>
+            </div>
+            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
+                Synchronisiere dein Gerät mit einem 60-Sekunden-Code. Voraussetzung: beide Geräte sind mit dem selben Router Verbunden.
+            </div>
+
+            <div style="text-align: left;">
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
+                <div class="fav-container" id="device-list">
+                    <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isGrouped = false;
+        let generatedCode = "";
+        let pairingTimer, countdownInterval;
+
+        function updateDeviceList() {
+            const list = document.getElementById('device-list');
+            if (isGrouped) {
+                list.innerHTML = `
+                    <div class="device-card" onclick="leaveGroup()">
+                        <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
+                    </div>
+                    <div class="device-card" onclick="kickDevice()">
+                        <p>💻 Verbundenes Gerät<br><small>(Entfernen)</small></p>
+                    </div>
+                    <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
+                `;
+            } else {
+                list.innerHTML = `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
+            }
+        }
+
+        function leaveGroup() {
+            if(confirm("Möchtest du die Gruppe wirklich verlassen?")) {
+                isGrouped = false;
+                document.getElementById('mainButton').innerText = "Code eingeben";
+                updateDeviceList();
+            }
+        }
+
+        function kickDevice() {
+            if(confirm("Möchtest du das verbundene Gerät entfernen?")) {
+                isGrouped = false;
+                document.getElementById('mainButton').innerText = "Code eingeben";
+                updateDeviceList();
+            }
+        }
+
+        function startPairingProcess() {
+            generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
+            document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
+            document.getElementById('input-area').style.display = 'none';
+            document.getElementById('codeModal').style.display = 'flex';
+
+            let timeRemaining = 60; 
+            document.getElementById('timer-display').innerText = "Gültig für: 1:00 min";
+            countdownInterval = setInterval(() => {
+                timeRemaining--;
+                let mins = Math.floor(timeRemaining / 60);
+                let secs = timeRemaining % 60;
+                document.getElementById('timer-display').innerText = `Gültig für: ${mins}:${secs < 10 ? '0'+secs : secs} sek`;
+                if (timeRemaining <= 0) clearInterval(countdownInterval);
+            }, 1000);
+
+            pairingTimer = setTimeout(() => {
+                generatedCode = ""; 
+                document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
+                document.getElementById('timer-display').innerText = "";
+                document.getElementById('action-area').innerHTML = "<button onclick='startPairingProcess()' style='color:#00d4ff; background:none; border:1px solid #00d4ff; padding:5px 20px; border-radius:20px; cursor:pointer;'>Neuen Code anfordern</button><br><br><button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+            }, 60000); 
+        }
+
+        function handleButtonClick() {
+            if (!isGrouped) {
+                document.getElementById('modal-text').innerText = "Code eingeben:";
+                document.getElementById('input-area').style.display = 'block';
+                document.getElementById('timer-display').innerText = "";
+                document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+                document.getElementById('codeModal').style.display = 'flex';
+            }
+        }
+
+        function confirmCode() {
+            const input = document.getElementById('groupCode').value;
+            if (generatedCode !== "" && input === generatedCode) {
+                isGrouped = true;
+                document.getElementById('mainButton').innerText = "Anki-Schlüssel: ANKI-X-99";
+                updateDeviceList();
+                closeModal();
+            } else { alert("Ungültiger oder abgelaufener Code."); }
+        }
+
+        function closeModal() {
             generatedCode = ""; 
-            document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
-            document.getElementById('timer-display').innerText = "";
-            // Hier nutzen wir Buttons, die die Funktion startPairingProcess sauber neu aufrufen
-            document.getElementById('action-area').innerHTML = `
-                <button onclick="startPairingProcess()" style='color:#00d4ff; background:none; border:1px solid #00d4ff; padding:5px 20px; border-radius:20px; cursor:pointer;'>Neu generieren</button>
-                <div style="margin-top:10px;"></div>
-                <button onclick="closeModal()" style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>
-            `;
-        }, 60000); 
-    }
-
-    function handleButtonClick() {
-        if (!isGrouped) {
-            document.getElementById('modal-text').innerText = "Code eingeben:";
+            clearInterval(countdownInterval);
+            clearTimeout(pairingTimer);
+            document.getElementById('codeModal').style.display = 'none';
             document.getElementById('input-area').style.display = 'block';
             document.getElementById('timer-display').innerText = "";
-            document.getElementById('action-area').innerHTML = originalActionArea;
-            document.getElementById('codeModal').style.display = 'flex';
+            document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
         }
-    }
-
-    function confirmCode() {
-        const input = document.getElementById('groupCode').value;
-        // HINWEIS: Hier müsstest du später die Supabase-Logik einfügen, 
-        // um den Code mit dem Server abzugleichen.
-        if (generatedCode !== "" && input === generatedCode) {
-            isGrouped = true;
-            document.getElementById('mainButton').innerText = "Anki-Schlüssel: ANKI-X-99";
-            updateDeviceList();
-            closeModal();
-        } else { alert("Ungültiger oder abgelaufener Code."); }
-    }
-
-    function closeModal() {
-        generatedCode = ""; 
-        clearInterval(countdownInterval);
-        clearTimeout(pairingTimer);
-        document.getElementById('codeModal').style.display = 'none';
-        
-        // Wichtig: Alles für das nächste Mal zurücksetzen
-        document.getElementById('input-area').style.display = 'block';
-        document.getElementById('timer-display').innerText = "";
-        document.getElementById('groupCode').value = ""; // Input leeren
-        document.getElementById('action-area').innerHTML = originalActionArea;
-    }
-    
-    // Hilfsfunktionen für Listen-Logik
-    function leaveGroup() { if(confirm("Gruppe verlassen?")) { isGrouped = false; document.getElementById('mainButton').innerText = "Code eingeben"; updateDeviceList(); } }
-    function kickDevice() { if(confirm("Gerät entfernen?")) { isGrouped = false; document.getElementById('mainButton').innerText = "Code eingeben"; updateDeviceList(); } }
-</script>
+    </script>
+</body>
+</html>
