@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synchronisieren</title>
+    <!-- Supabase Bibliothek laden -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -49,7 +50,6 @@
             <div style="display: flex; justify-content: center; margin-bottom: 15px;">
                 <a href="#" id="mainButton" onclick="handleButtonClick()" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer;">Code eingeben</a>
             </div>
-            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">Synchronisiere dein Gerät mit einem 60-Sekunden-Code.</div>
             <div style="text-align: left;">
                 <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
                 <div class="fav-container" id="device-list"><div class="add-plus-placeholder" onclick="startPairingProcess()">+</div></div>
@@ -58,42 +58,40 @@
     </div>
 
     <script>
+        // TRAGE HIER DEINE DATEN EIN
         const supabase = supabase.createClient(
             'https://kynhrpdxhkjaeeexalje.supabase.co', 
             'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
         );
 
         let isGrouped = false;
-        let currentGroupId = null;
-
-        function getDeviceId() {
-            let id = localStorage.getItem('ankinox_device_id');
-            if (!id) { id = 'dev_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('ankinox_device_id', id); }
-            return id;
-        }
+        let activeRowId = null;
 
         async function startPairingProcess() {
             const code = Math.floor(100000 + Math.random() * 900000).toString();
+            const expires = new Date(Date.now() + 60000).toISOString();
+
             const { data, error } = await supabase.from('groups').insert([{ 
-                group_key: code, status: 'active', expires_at: new Date(Date.now() + 60000).toISOString(), device_id: getDeviceId() 
+                group_key: code, status: 'active', last_active_at: expires 
             }]).select().single();
 
-            if (error) return alert("Fehler beim Erstellen");
-            currentGroupId = data.id;
+            if (error) return alert("Fehler: " + error.message);
+            activeRowId = data.id;
 
-            document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + code + "</strong>";
+            document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + code + "</strong>";
             document.getElementById('input-area').style.display = 'none';
             document.getElementById('codeModal').style.display = 'flex';
         }
 
         async function confirmCode() {
             const input = document.getElementById('groupCode').value;
-            const { data, error } = await supabase.from('groups').select('*').eq('group_key', input).eq('status', 'active').single();
+            const { data, error } = await supabase.from('groups')
+                .select('*').eq('group_key', input).eq('status', 'active').single();
 
-            if (data && new Date(data.expires_at) > new Date()) {
-                isGrouped = true;
+            if (data && new Date(data.last_active_at) > new Date()) {
                 await supabase.from('groups').update({ status: 'linked' }).eq('id', data.id);
-                alert("Synchronisation erfolgreich!");
+                isGrouped = true;
+                alert("Erfolgreich verbunden!");
                 closeModal();
             } else {
                 alert("Code ungültig oder abgelaufen.");
