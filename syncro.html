@@ -36,14 +36,18 @@
         <div class="banner-overlay"></div>
     </div>
 
-    <!-- Popup für Code-Eingabe oder Anzeige -->
+    <!-- Popup -->
     <div id="codeModal" class="modal">
         <div class="modal-content">
             <div id="modal-body">
                 <p id="modal-text">Code eingeben:</p>
-                <input type="text" id="groupCode" maxlength="5" placeholder="00000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center; font-size: 1.5rem;">
-                <button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px; cursor: pointer;">Verbinden</button>
-                <button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer; margin-left: 10px;">Abbrechen</button>
+                <div id="input-area">
+                    <input type="text" id="groupCode" maxlength="5" placeholder="00000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center; font-size: 1.5rem;">
+                    <button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px; cursor: pointer;">Verbinden</button>
+                </div>
+                <div id="action-area" style="margin-top:15px;">
+                    <button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>
+                </div>
             </div>
         </div>
     </div>
@@ -57,10 +61,6 @@
                    Code eingeben
                 </a>
             </div>
-            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
-                Synchronisiere deine Geräte per WLAN-Netzwerk.
-            </div>
-
             <div style="text-align: left;">
                 <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
                 <div class="fav-container" id="device-list">
@@ -73,52 +73,46 @@
 
     <script>
         let isGrouped = false;
-        let showKey = false;
         let generatedCode = "";
         let pairingTimer;
 
         function startPairingProcess() {
-            // Generiert 5-stelligen Code
             generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
             document.getElementById('modal-text').innerHTML = "Dein 5-Minuten-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
-            document.getElementById('groupCode').style.display = 'none';
+            document.getElementById('input-area').style.display = 'none';
             document.getElementById('codeModal').style.display = 'flex';
 
             pairingTimer = setTimeout(() => {
-                document.getElementById('modal-text').innerHTML = "Code abgelaufen.<br><button onclick='startPairingProcess()' style='margin-top:10px;'>Erneut generieren</button>";
-            }, 300000); // 5 Min Timer
+                generatedCode = ""; // Code nach Ablauf löschen
+                document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
+                document.getElementById('action-area').innerHTML = "<button onclick='startPairingProcess()' style='color:#00d4ff; background:none; border:1px solid #00d4ff; padding:5px 20px; border-radius:20px; cursor:pointer;'>Neuen Code anfordern</button><br><br><button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+            }, 300000); 
         }
 
         function handleButtonClick() {
             if (!isGrouped) {
                 document.getElementById('modal-text').innerText = "Code eingeben:";
-                document.getElementById('groupCode').style.display = 'block';
+                document.getElementById('input-area').style.display = 'block';
+                document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
                 document.getElementById('codeModal').style.display = 'flex';
-            } else {
-                showKey = !showKey;
-                document.getElementById('mainButton').innerText = showKey ? "Key: ANKI-X-99" : "Dein Gruppen Schlüssel";
             }
         }
 
         function confirmCode() {
             const input = document.getElementById('groupCode').value;
-            // Prüfung: Muss mit generiertem Code übereinstimmen (Simuliert WLAN-Check)
-            if (input === generatedCode) {
+            if (generatedCode !== "" && input === generatedCode) {
                 isGrouped = true;
-                document.getElementById('mainButton').innerText = "Dein Gruppen Schlüssel";
-                document.getElementById('device-list').innerHTML = `
-                    <div class="device-card"><p>📱 Mein Gerät</p></div>
-                    <div class="device-card"><p>💻 Verbundenes Gerät</p></div>
-                `;
+                document.getElementById('device-list').innerHTML = `<div class="device-card"><p>📱 Mein Gerät</p></div><div class="device-card"><p>💻 Verbundenes Gerät</p></div>`;
                 closeModal();
-            } else {
-                alert("Ungültiger Code oder Netzwerk-Fehler.");
-            }
+            } else { alert("Ungültiger oder abgelaufener Code."); }
         }
 
         function closeModal() {
+            generatedCode = ""; // Hier wird der Code beim Schließen aktiv gelöscht
             document.getElementById('codeModal').style.display = 'none';
             clearTimeout(pairingTimer);
+            document.getElementById('input-area').style.display = 'block';
+            document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
         }
     </script>
 </body>
