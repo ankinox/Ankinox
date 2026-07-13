@@ -3,130 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synchronisieren - Ankinox</title>
+    <title>Synchronisieren</title>
 
     <style>
-        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        .banner { position: fixed; top: 0; left: 0; width: 100%; height: 60vh; background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png'); background-size: cover; background-position: center; z-index: -1; }
-        .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
-        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            /* Neues Bannerbild für Favoriten */
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
+            background-size: cover; background-position: center; z-index: -1;
+        }
 
-        .content { margin-top: 35vh; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); padding: 20px; position: relative; }
+        .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
         
-        .btn-ui { text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; background: transparent; display: inline-block; }
-        
-        .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
-        .device-slot { flex: 0 0 140px; height: 200px; background: #1a1a1a; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1px solid #333; }
-        .add-plus { border: 1px dashed #555; color: #555; font-size: 40px; cursor: pointer; }
-        
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
+        .banner-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .content {
+            margin-top: 35vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%);
+            padding: 20px;
+            position: relative;
+        }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: #0a0a0a; display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
+        }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
         
-        .hidden { display: none; }
-
-        /* Popup Styling */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .modal-content { background: #111; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #333; width: 90%; max-width: 320px; }
+        .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
+        .add-plus-placeholder {
+            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555;
+        }
     </style>
 </head>
 <body>
 
     <div class="banner">
-        <div class="banner-logo"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;"></div>
+        <div class="banner-logo">
+            <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;">
+        </div>
         <div class="banner-overlay"></div>
     </div>
 
-    <!-- Kopplungs-Popup -->
-    <div id="pairing-modal" class="modal hidden">
-        <div class="modal-content">
-            <p id="modal-desc">Kopplungs-Code (5 Min gültig):</p>
-            <div id="modal-code" style="font-size: 2.5rem; color: #00d4ff; margin: 15px 0;">----</div>
-            <input type="text" id="modal-input" placeholder="Code eingeben" style="padding: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px; text-align:center;">
-            <button class="btn-ui" onclick="verifyPairing()" style="width: 100%; margin-bottom: 10px;">Bestätigen</button>
-            <button onclick="closeModal()" style="background:none; color:#555; border:none; cursor:pointer;">Abbrechen</button>
-        </div>
-    </div>
-
     <div class="content">
-        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" 
+             style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
 
-        <div style="text-align: center; margin-top: -20px;" id="status-area">
-            <div id="state-not-connected">
-                <button class="btn-ui" onclick="openPairing()">Gerät verbinden (+)</button>
+        <div style="text-align: center; margin-top: -20px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <a href="syncro.html" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold;">
+                   Dein Gruppen Schlüssel
+                </a>
             </div>
             
-            <div id="state-connected" class="hidden">
-                <div class="btn-ui" onclick="toggleKey()" id="key-display" style="margin-bottom: 10px;">Anki-1 (Klicken zum Anzeigen)</div>
-                <br>
-                <button onclick="leaveGroup()" style="background:none; color:#ff4444; border:1px solid #ff4444; padding:5px 15px; border-radius:5px; cursor:pointer;">Gruppe verlassen</button>
+            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
+                Synchronisiere deine Geräte mit einem 5 Minuten Code. Voraussetzung: beide Geräte sind mit dem selben Router Verbunden.
             </div>
-        </div>
 
-        <div style="text-align: left; margin-top: 40px;">
-            <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
-            <div class="fav-container" id="device-list">
-                <div class="device-slot add-plus" onclick="openPairing()">+</div>
+            <div style="text-align: left;">
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
+                <div class="fav-container">
+                    <div class="add-plus-placeholder">+</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        let isConnected = false;
-        let pairingTimer;
-
-        function openPairing() {
-            document.getElementById('pairing-modal').classList.remove('hidden');
-            const code = Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('modal-code').innerText = code;
-
-            pairingTimer = setTimeout(() => {
-                if(!isConnected) {
-                    alert("Kopplungs-Code abgelaufen!");
-                    closeModal();
-                }
-            }, 300000); // 5 Minuten
-        }
-
-        function closeModal() {
-            document.getElementById('pairing-modal').classList.add('hidden');
-            clearTimeout(pairingTimer);
-        }
-
-        function verifyPairing() {
-            const input = document.getElementById('modal-input').value;
-            if(input !== "") {
-                isConnected = true;
-                closeModal();
-                document.getElementById('state-not-connected').classList.add('hidden');
-                document.getElementById('state-connected').classList.remove('hidden');
-                renderDevices();
-            }
-        }
-
-        function leaveGroup() {
-            if(confirm("Wirklich aus der Gruppe austreten?")) {
-                isConnected = false;
-                document.getElementById('state-connected').classList.add('hidden');
-                document.getElementById('state-not-connected').classList.remove('hidden');
-                document.getElementById('device-list').innerHTML = '<div class="device-slot add-plus" onclick="openPairing()">+</div>';
-            }
-        }
-
-        function renderDevices() {
-            const container = document.getElementById('device-list');
-            container.innerHTML = `
-                <div class="device-slot"><p>📱 Mein Gerät</p></div>
-                <div class="device-slot"><p>💻 Tablet</p><button onclick="this.parentElement.remove()" style="margin-top:10px; color:#ff4444; border:none; background:none; cursor:pointer;">Entfernen</button></div>
-                <div class="device-slot add-plus" onclick="openPairing()">+</div>
-            `;
-        }
-
-        function toggleKey() {
-            const el = document.getElementById('key-display');
-            el.innerText = (el.innerText.includes("Anzeigen")) ? "Anki-1" : "Anki-1 (Klicken zum Anzeigen)";
-        }
-    </script>
+    <nav class="bottom-nav">
+        <a href="index.html">Start</a>
+        <a href="stream.html">Stream</a>
+        <a href="Shop.html">Shop</a>
+        <a href="Partnerschaft.html">Partner</a>
+    </nav>
 </body>
 </html>
