@@ -4,80 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synchronisieren</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
-        .banner { position: fixed; top: 0; left: 0; width: 100%; height: 60vh; background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png'); background-size: cover; background-position: center; z-index: -1; }
+        
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
+            background-size: cover; background-position: center; z-index: -1;
+        }
         .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
         .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+
         .content { margin-top: 35vh; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); padding: 20px; position: relative; }
+        .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
+        .device-card { flex: 0 0 140px; height: 200px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; cursor: pointer; }
+        .add-plus-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; cursor: pointer; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
         .modal-content { background: #111; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #333; width: 80%; max-width: 300px; }
-        .add-plus-placeholder { width: 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; cursor: pointer; }
     </style>
 </head>
 <body>
+
     <div class="banner">
         <div class="banner-logo"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;"></div>
         <div class="banner-overlay"></div>
     </div>
 
-    <!-- Modal für Code-Generierung/Eingabe -->
     <div id="codeModal" class="modal">
         <div class="modal-content">
             <div id="modal-body">
                 <p id="modal-text">Code eingeben:</p>
                 <div id="input-area">
-                    <input type="text" id="groupCode" maxlength="6" placeholder="000000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center; font-size: 1.5rem;">
+                    <input type="text" id="groupCode" maxlength="5" placeholder="00000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center; font-size: 1.5rem;">
                     <button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px; cursor: pointer;">Verbinden</button>
                 </div>
-                <div id="timer-display" style="color: #888; margin-top: 10px;"></div>
-                <button onclick="closeModal()" style="margin-top:15px; color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>
+                <div id="timer-display" style="color: #888; margin-top: 10px; font-size: 0.9rem;"></div>
+                <div id="action-area" style="margin-top:15px;">
+                    <button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="content">
-        <button onclick="startPairingProcess()" style="padding: 10px 20px; background: #00d4ff; border: none; border-radius: 20px;">Neuen Code generieren</button>
-        <div id="device-list" style="margin-top:20px;"></div>
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
+
+        <div style="text-align: center; margin-top: -20px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <a href="#" id="mainButton" onclick="handleButtonClick()" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer;">
+                   Code eingeben
+                </a>
+            </div>
+            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
+                Synchronisiere dein Gerät mit einem 60-Sekunden-Code. Voraussetzung: beide Geräte sind mit dem selben Router Verbunden.
+            </div>
+
+            <div style="text-align: left;">
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
+                <div class="fav-container" id="device-list">
+                    <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // TRAGE HIER DEINE DATEN EIN
-        const supabase = supabase.createClient('URL_HIER', 'KEY_HIER');
+        let isGrouped = false;
+        let generatedCode = "";
+        let pairingTimer, countdownInterval;
+
+        // Hilfsfunktionen für Geräte-Identität
+        function getDeviceId() {
+            let id = localStorage.getItem('ankinox_device_id');
+            if (!id) {
+                id = 'dev_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('ankinox_device_id', id);
+            }
+            return id;
+        }
+
+        function getDeviceType() {
+            const ua = navigator.userAgent;
+            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
+            if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Smartphone";
+            return "Desktop";
+        }
+
+        function updateDeviceList() {
+            const list = document.getElementById('device-list');
+            if (isGrouped) {
+                list.innerHTML = `
+                    <div class="device-card" onclick="leaveGroup()">
+                        <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
+                    </div>
+                    <div class="device-card" onclick="kickDevice()">
+                        <p>💻 Verbundenes Gerät<br><small>(Entfernen)</small></p>
+                    </div>
+                    <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
+                `;
+            } else {
+                list.innerHTML = `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
+            }
+        }
+
+        function leaveGroup() {
+            if(confirm("Möchtest du die Gruppe wirklich verlassen?")) {
+                isGrouped = false;
+                document.getElementById('mainButton').innerText = "Code eingeben";
+                updateDeviceList();
+                // Hier später: fetch('/api/leave-group', { method: 'POST', body: JSON.stringify({ device_id: getDeviceId() }) });
+            }
+        }
+
+        function kickDevice() {
+            if(confirm("Möchtest du das verbundene Gerät entfernen?")) {
+                isGrouped = false;
+                document.getElementById('mainButton').innerText = "Code eingeben";
+                updateDeviceList();
+                // Hier später: fetch('/api/kick-device', { ... });
+            }
+        }
 
         async function startPairingProcess() {
-            const code = Math.floor(100000 + Math.random() * 900000).toString();
-            // Eintrag in Supabase 'groups' Tabelle
-            const { data, error } = await supabase.from('groups').insert([{ 
-                group_key: code, 
-                status: 'active',
-                expires_at: new Date(Date.now() + 60000).toISOString()
-            }]).select().single();
+            // Anfrage an Server zum Generieren des Codes
+            try {
+                const response = await fetch('/api/generate-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ device_id: getDeviceId(), device_type: getDeviceType() })
+                });
+                const data = await response.json();
+                generatedCode = data.code; // Code kommt vom Server
+            } catch (e) {
+                alert("Verbindungsfehler zum Server.");
+                return;
+            }
 
-            if (error) return alert("Fehler beim Erstellen");
-
-            document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong>" + code + "</strong>";
+            document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
+            document.getElementById('input-area').style.display = 'none';
             document.getElementById('codeModal').style.display = 'flex';
+
+            let timeRemaining = 60; 
+            document.getElementById('timer-display').innerText = "Gültig für: 1:00 min";
+            countdownInterval = setInterval(() => {
+                timeRemaining--;
+                let mins = Math.floor(timeRemaining / 60);
+                let secs = timeRemaining % 60;
+                document.getElementById('timer-display').innerText = `Gültig für: ${mins}:${secs < 10 ? '0'+secs : secs} sek`;
+                if (timeRemaining <= 0) clearInterval(countdownInterval);
+            }, 1000);
+
+            pairingTimer = setTimeout(() => {
+                generatedCode = ""; 
+                document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
+                document.getElementById('timer-display').innerText = "";
+                document.getElementById('action-area').innerHTML = "<button onclick='startPairingProcess()' style='color:#00d4ff; background:none; border:1px solid #00d4ff; padding:5px 20px; border-radius:20px; cursor:pointer;'>Neuen Code anfordern</button><br><br><button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+            }, 60000); 
+        }
+
+        function handleButtonClick() {
+            if (!isGrouped) {
+                document.getElementById('modal-text').innerText = "Code eingeben:";
+                document.getElementById('input-area').style.display = 'block';
+                document.getElementById('timer-display').innerText = "";
+                document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+                document.getElementById('codeModal').style.display = 'flex';
+            }
         }
 
         async function confirmCode() {
             const input = document.getElementById('groupCode').value;
-            // Prüfen ob Code in Supabase existiert und aktiv ist
-            const { data, error } = await supabase.from('groups')
-                .select('*').eq('group_key', input).eq('status', 'active').single();
+            
+            // Server-Prüfung
+            try {
+                const response = await fetch('/api/verify-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        code: input, 
+                        device_id: getDeviceId(), 
+                        device_type: getDeviceType() 
+                    })
+                });
+                const data = await response.json();
 
-            if (data) {
-                await supabase.from('groups').update({ status: 'linked' }).eq('id', data.id);
-                alert("Erfolgreich verknüpft!");
-                closeModal();
-            } else {
-                alert("Code ungültig oder abgelaufen.");
+                if (data.success) {
+                    isGrouped = true;
+                    document.getElementById('mainButton').innerText = "Anki-Schlüssel: " + data.group_key; // Schlüssel vom Server
+                    updateDeviceList();
+                    closeModal();
+                } else {
+                    alert("Ungültiger oder abgelaufener Code.");
+                }
+            } catch (e) {
+                alert("Verbindungsfehler.");
             }
         }
 
-        function closeModal() { document.getElementById('codeModal').style.display = 'none'; }
+        function closeModal() {
+            generatedCode = ""; 
+            clearInterval(countdownInterval);
+            clearTimeout(pairingTimer);
+            document.getElementById('codeModal').style.display = 'none';
+            document.getElementById('input-area').style.display = 'block';
+            document.getElementById('timer-display').innerText = "";
+            document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+        }
     </script>
 </body>
 </html>
