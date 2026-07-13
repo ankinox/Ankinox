@@ -3,45 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synchronisieren</title>
+    <title>Synchronisieren - Ankinox</title>
 
     <style>
-        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        .banner {
-            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
-            /* Neues Bannerbild für Favoriten */
-            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
-            background-size: cover; background-position: center; z-index: -1;
-        }
-
+        .banner { position: fixed; top: 0; left: 0; width: 100%; height: 60vh; background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png'); background-size: cover; background-position: center; z-index: -1; }
         .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+
+        .content { margin-top: 35vh; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); padding: 20px; position: relative; }
         
-        .banner-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
-        }
-
-        .content {
-            margin-top: 35vh; 
-            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%);
-            padding: 20px;
-            position: relative;
-        }
-
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background-color: #0a0a0a; display: flex; justify-content: space-around; 
-            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
-        }
-        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+        .btn-ui { text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; background: transparent; display: inline-block; }
         
         .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
-        .add-plus-placeholder {
-            flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555;
-        }
+        .device-slot { flex: 0 0 140px; height: 200px; background: #1a1a1a; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1px solid #333; }
+        .add-plus { border: 1px dashed #555; color: #555; font-size: 40px; cursor: pointer; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+        
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -57,22 +40,28 @@
         <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" 
              style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
 
-        <div style="text-align: center; margin-top: -20px;">
-            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
-                <a href="syncro.html" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold;">
-                   Dein Gruppen Schlüssel
-                </a>
-            </div>
-            
-            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
-                Synchronisiere deine Geräte mit einem 5 Minuten Code. Voraussetzung: beide Geräte sind mit dem selben Router Verbunden.
+        <div style="text-align: center; margin-top: -20px;" id="status-area">
+            <!-- Zustand: Nicht verbunden -->
+            <div id="state-not-connected">
+                <button class="btn-ui" onclick="showInput()">Gerät verbinden (+)</button>
+                <div id="code-input-area" class="hidden" style="margin-top: 20px;">
+                    <input type="text" placeholder="5-Minuten-Code" style="padding: 10px; border-radius: 5px; border:none; width: 150px; text-align:center;">
+                    <button class="btn-ui" style="padding: 10px 20px;" onclick="connectDevice()">OK</button>
+                </div>
             </div>
 
-            <div style="text-align: left;">
-                <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
-                <div class="fav-container">
-                    <div class="add-plus-placeholder">+</div>
-                </div>
+            <!-- Zustand: Verbunden -->
+            <div id="state-connected" class="hidden">
+                <div class="btn-ui" onclick="toggleKey()" id="key-display" style="margin-bottom: 10px;">Anki-1 (Klicken zum Anzeigen)</div>
+                <br>
+                <button onclick="leaveGroup()" style="background:none; color:#ff4444; border:1px solid #ff4444; padding:5px 15px; border-radius:5px; cursor:pointer;">Gruppe verlassen</button>
+            </div>
+        </div>
+
+        <div style="text-align: left; margin-top: 40px;">
+            <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
+            <div class="fav-container" id="device-list">
+                <div class="device-slot add-plus" onclick="showInput()">+</div>
             </div>
         </div>
     </div>
@@ -83,5 +72,49 @@
         <a href="Shop.html">Shop</a>
         <a href="Partnerschaft.html">Partner</a>
     </nav>
+
+    <script>
+        // Init ID
+        if (!localStorage.getItem('ankinox_device_id')) {
+            localStorage.setItem('ankinox_device_id', 'ank-' + Math.random().toString(36).substr(2, 9));
+        }
+
+        let keyVisible = false;
+        const realKey = "Anki-1";
+
+        function showInput() { document.getElementById('code-input-area').classList.remove('hidden'); }
+        
+        function toggleKey() {
+            const el = document.getElementById('key-display');
+            keyVisible = !keyVisible;
+            el.innerText = keyVisible ? realKey : "Anki-1 (Klicken zum Anzeigen)";
+        }
+
+        function connectDevice() {
+            // UI Switch
+            document.getElementById('state-not-connected').classList.add('hidden');
+            document.getElementById('state-connected').classList.remove('hidden');
+            renderDevices();
+        }
+
+        function leaveGroup() {
+            if(confirm("Wirklich aus der Gruppe austreten?")) {
+                document.getElementById('state-connected').classList.add('hidden');
+                document.getElementById('state-not-connected').classList.remove('hidden');
+                document.getElementById('device-list').innerHTML = '<div class="device-slot add-plus" onclick="showInput()">+</div>';
+            }
+        }
+
+        function renderDevices() {
+            const container = document.getElementById('device-list');
+            container.innerHTML = '';
+            // Eigenes Gerät
+            container.innerHTML += `<div class="device-slot"><p>📱 Mein Gerät</p></div>`;
+            // Partner Gerät
+            container.innerHTML += `<div class="device-slot"><p>💻 Tablet</p><button onclick="this.parentElement.remove()" style="margin-top:10px; color:#ff4444; border:none; background:none; cursor:pointer;">Entfernen</button></div>`;
+            // Plus
+            container.innerHTML += `<div class="device-slot add-plus" onclick="showInput()">+</div>`;
+        }
+    </script>
 </body>
 </html>
