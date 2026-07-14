@@ -63,7 +63,7 @@
             </div>
 
             <div style="text-align: left;">
-                <h2 style="font-size: 20px; margin-bottom: 15px;">Musik Favoriten</h2>
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Musik Favoriten der Gruppe</h2>
                 <div id="favorites-container" class="fav-container">
                     <!-- Favoriten werden hier geladen -->
                 </div>
@@ -81,18 +81,13 @@
     <script>
         async function loadMusicFavorites() {
             const container = document.getElementById('favorites-container');
-            const deviceId = localStorage.getItem('anki_device_id');
+            const groupName = localStorage.getItem('last_known_group') || "Anki-1";
             
-            if (!deviceId) {
-                container.innerHTML = '<div class="add-plus-placeholder">+</div>';
-                return;
-            }
-
-            // Hier filtern wir explizit nach 'music'
+            // Abfrage: Suche alle Musik-Einträge der Gruppe
             const { data, error } = await window.supabaseInstance
                 .from('favorites')
                 .select('*')
-                .eq('user_id', deviceId)
+                .eq('group_name', groupName)
                 .eq('media_type', 'music') 
                 .order('created_at', { ascending: false });
 
@@ -101,8 +96,19 @@
                 return;
             }
 
-            container.innerHTML = '';
+            // Duplikate entfernen (anhand der page_url)
+            const uniqueFavorites = [];
+            const seenUrls = new Set();
+
             data.forEach(item => {
+                if (!seenUrls.has(item.page_url)) {
+                    uniqueFavorites.push(item);
+                    seenUrls.add(item.page_url);
+                }
+            });
+
+            container.innerHTML = '';
+            uniqueFavorites.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'fav-card';
                 card.innerHTML = `
