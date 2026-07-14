@@ -107,12 +107,12 @@
         let isProcessing = false;
         let initialDeviceCount = 0;
 
-        // Funktion nur für den eigenen Nutzer-Scope
-        async function updateMyFavoritesGroup(targetGroupName) {
+        // Funktion zur Synchronisation der Favoriten-Gruppenzugehörigkeit
+        async function syncFavoritesGroup(userId, targetGroupName) {
             await window.supabaseInstance
                 .from('favorites')
                 .update({ group_name: targetGroupName })
-                .eq('user_id', myDeviceId);
+                .eq('user_id', userId);
         }
 
         async function getPublicIPv4() {
@@ -198,10 +198,8 @@
         async function handleDeviceRemoval(idToRemove, targetGroup) {
             await window.supabaseInstance.from('active_sessions').delete().eq('device_id', idToRemove);
             
-            // Nur eigene Favoriten auf ID zurücksetzen
-            if (idToRemove === myDeviceId) {
-                await updateMyFavoritesGroup(myDeviceId);
-            }
+            // Favoriten auf individuelle ID zurücksetzen beim Verlassen
+            await syncFavoritesGroup(idToRemove, idToRemove);
             
             const { data: remaining } = await window.supabaseInstance
                 .from('active_sessions')
@@ -365,8 +363,8 @@
                 await window.supabaseInstance.from('active_sessions').upsert({ device_id: creatorMeta.id, group_name: targetGroup, device_type: creatorMeta.type });
                 await window.supabaseInstance.from('active_sessions').upsert({ device_id: myDeviceId, group_name: targetGroup, device_type: myDeviceType });
 
-                // Nur eigene Favoriten auf Gruppennamen updaten
-                await updateMyFavoritesGroup(targetGroup);
+                // Favoriten des neuen Nutzers auf Gruppennamen updaten
+                await syncFavoritesGroup(myDeviceId, targetGroup);
 
                 document.getElementById('input-area').style.display = 'none';
                 document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Erfolgreich hinzugefügt!</span>";
@@ -402,3 +400,6 @@
     </script>
 </body>
 </html>
+
+
+Gebe mir das ganze script ohne was anderes zu ändern oder zu löschen.
