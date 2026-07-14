@@ -88,9 +88,10 @@
             checkSession();
         });
 
-        let isGrouped = false, generatedCode = "", dbEntryId = null, currentAnkiGroup = "", pairingPoller = null;
+        let isGrouped = false, generatedCode = "", dbEntryId = null, currentAnkiGroup = "", pairingPoller = null, countdownInterval = null;
 
         function showStatus(message, isError = false) {
+            clearInterval(countdownInterval);
             document.getElementById('modal-text').innerHTML = `<span style="color: ${isError ? '#ff4444' : '#00d4ff'}">${message}</span>`;
             document.getElementById('input-area').style.display = 'none';
             document.getElementById('timer-display').style.display = 'none';
@@ -147,6 +148,7 @@
         }
 
         function resetModalUI() {
+            clearInterval(countdownInterval);
             document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
             document.getElementById('input-area').style.display = 'block';
             document.getElementById('timer-display').style.display = 'block';
@@ -168,6 +170,17 @@
 
                 if (error) throw error;
                 dbEntryId = data.id;
+
+                let timeLeft = 60;
+                document.getElementById('timer-display').innerText = `Code gültig für: ${timeLeft}s`;
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('timer-display').innerText = `Code gültig für: ${timeLeft}s`;
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        closeModal();
+                    }
+                }, 1000);
 
                 pairingPoller = setInterval(async () => {
                     const { data: checkData } = await window.supabaseInstance.from('groups').select('id').eq('id', dbEntryId).single();
@@ -191,7 +204,6 @@
 
                 if (error || !groupData) { throw new Error("Code ungültig."); }
                 
-                // Sperre: Nicht mit sich selbst verbinden
                 const { data: myCheck } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
                 if (myCheck) { throw new Error("Du bist bereits verbunden."); }
 
@@ -213,6 +225,7 @@
 
         async function closeModal() {
             clearInterval(pairingPoller);
+            clearInterval(countdownInterval);
             if (dbEntryId) { await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId); }
             document.getElementById('codeModal').style.display = 'none';
             resetModalUI();
