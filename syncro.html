@@ -5,21 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synchronisieren</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
-        .banner { position: fixed; top: 0; left: 0; width: 100%; height: 60vh; background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png'); background-size: cover; background-position: center; z-index: -1; }
+        
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
+            background-size: cover; background-position: center; z-index: -1;
+        }
         .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
         .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+
         .content { margin-top: 35vh; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); padding: 20px; position: relative; }
         .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; }
         .device-card { flex: 0 0 140px; height: 200px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; position: relative; }
         .add-plus-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; cursor: pointer; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
         .modal-content { background: #111; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #333; width: 80%; max-width: 300px; }
     </style>
 </head>
 <body>
+
     <div class="banner">
         <div class="banner-logo"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/06/file_00000000fae07246aee954a7e9b9ef573991694793848018843.png" style="width: 100px;"></div>
         <div class="banner-overlay"></div>
@@ -27,69 +36,201 @@
 
     <div id="codeModal" class="modal">
         <div class="modal-content">
-            <p id="modal-text">Code eingeben:</p>
-            <div id="input-area">
-                <input type="text" id="groupCode" maxlength="5" style="width: 80%; padding: 10px; background: #000; color: white; text-align: center; font-size: 1.5rem; border: 1px solid #333;">
-                <br><br><button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px;">Verbinden</button>
+            <div id="modal-body">
+                <p id="modal-text">Code eingeben:</p>
+                <div id="input-area">
+                    <input type="text" id="groupCode" maxlength="5" placeholder="00000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #333; background: #000; color: white; text-align: center; font-size: 1.5rem;">
+                    <button onclick="confirmCode()" style="color: #00d4ff; background: none; border: 1px solid #00d4ff; padding: 5px 20px; border-radius: 20px; cursor: pointer;">Verbinden</button>
+                </div>
+                <div id="timer-display" style="color: #888; margin-top: 10px; font-size: 0.9rem;"></div>
+                <div id="action-area" style="margin-top:15px;">
+                    <button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>
+                </div>
             </div>
-            <div id="action-area" style="margin-top:15px;"><button onclick="closeModal()" style="color: #555; background: none; border: none;">Abbrechen</button></div>
         </div>
     </div>
 
     <div class="content">
-        <h2 style="font-size: 20px;">Synchronisierte Geräte</h2>
-        <div class="fav-container" id="device-list"></div>
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
+
+        <div style="text-align: center; margin-top: -20px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <a href="#" id="mainButton" onclick="handleButtonClick()" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer;">
+                   Code eingeben
+                </a>
+            </div>
+            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
+                Synchronisiere dein Gerät mit einem 60-Sekunden-Code. Voraussetzung: beide Geräte befinden sich im selben Router Netzwerk.
+            </div>
+
+            <div style="text-align: left;">
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Synchronisierte Geräte</h2>
+                <div class="fav-container" id="device-list">
+                    <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        window.onerror = function(msg, url, line) { alert("Systemfehler: " + msg); };
+        
         let myDeviceId = localStorage.getItem('anki_device_id') || 'dev_' + Math.random().toString(36).substr(2, 9);
         localStorage.setItem('anki_device_id', myDeviceId);
-        
-        // Gerätetyp bestimmen
-        let deviceType = /Mobi|Android/i.test(navigator.userAgent) ? '📱' : '💻';
+        let myDeviceType = /Mobi|Android/i.test(navigator.userAgent) ? '📱 Handy' : '💻 PC/Tablet';
 
-        window.supabaseInstance = supabase.createClient('https://kynhrpdxhkjaeeexalje.supabase.co', 'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ');
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof supabase === 'undefined') { alert("Netzwerkfehler: Bibliothek konnte nicht geladen werden."); return; }
+            window.supabaseInstance = supabase.createClient(
+                'https://kynhrpdxhkjaeeexalje.supabase.co', 
+                'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
+            );
+            checkSession();
+        });
+
+        let isGrouped = false, generatedCode = "", dbEntryId = null, currentAnkiGroup = "", pairingPoller = null;
+
+        function showStatus(message, isError = false) {
+            document.getElementById('modal-text').innerHTML = `<span style="color: ${isError ? '#ff4444' : '#00d4ff'}">${message}</span>`;
+            document.getElementById('input-area').style.display = 'none';
+            document.getElementById('timer-display').style.display = 'none';
+            document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: white; border: 1px solid #555; padding: 5px 20px; border-radius: 20px; cursor: pointer;">OK</button>';
+        }
+
+        async function checkSession() {
+            const { data } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('group_name')
+                .eq('device_id', myDeviceId)
+                .maybeSingle();
+
+            if (data) {
+                currentAnkiGroup = data.group_name;
+                isGrouped = true;
+                document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
+                updateDeviceList();
+            } else {
+                isGrouped = false;
+                currentAnkiGroup = "";
+                document.getElementById('mainButton').innerText = "Code eingeben";
+                updateDeviceList();
+            }
+        }
 
         async function updateDeviceList() {
-            const { data: mySession } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
-            if (!mySession) {
-                document.getElementById('device-list').innerHTML = `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
+            const list = document.getElementById('device-list');
+            if (!isGrouped) {
+                list.innerHTML = `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
                 return;
             }
+            
+            const { data: devices } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('device_id, device_type')
+                .eq('group_name', currentAnkiGroup);
 
-            const { data: devices } = await window.supabaseInstance.from('active_sessions').select('*').eq('group_name', mySession.group_name);
-            let html = '';
+            let html = "";
             devices.forEach(d => {
+                const isMe = d.device_id === myDeviceId;
                 html += `<div class="device-card">
-                            <p>${d.device_type} ${d.device_id === myDeviceId ? '(Ich)' : ''}<br><small>${d.device_id.substr(0,8)}</small></p>
-                            ${d.device_id !== myDeviceId ? `<button onclick="removeDevice('${d.device_id}')" style="background:red; border:none; color:white; border-radius:5px;">X</button>` : `<button onclick="leaveGroup()" style="background:#444; border:none; color:white; border-radius:5px;">Verlassen</button>`}
+                            <p>${d.device_type || '❓'}<br><small>${isMe ? 'Du' : 'Partner'}</small></p>
+                            ${!isMe ? `<button onclick="removeDevice('${d.device_id}')" style="background:#ff4444; border:none; color:white; border-radius:5px; padding:5px 10px; cursor:pointer;">X</button>` : `<button onclick="leaveGroup()" style="background:#444; border:none; color:white; border-radius:5px; padding:5px 10px; cursor:pointer;">Verlassen</button>`}
                         </div>`;
             });
             html += `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
-            document.getElementById('device-list').innerHTML = html;
+            list.innerHTML = html;
         }
 
-        async function confirmCode() {
-            const input = document.getElementById('groupCode').value;
-            const { data: groupData } = await window.supabaseInstance.from('groups').select('*').eq('group_key', input).single();
-            if (!groupData) { alert("Code ungültig"); return; }
-
-            // Prüfen ob bereits in Gruppe
-            const { data: existing } = await window.supabaseInstance.from('active_sessions').select('*').eq('device_id', myDeviceId).maybeSingle();
-            if (existing) { alert("Du bist schon in einer Gruppe!"); return; }
-
-            await window.supabaseInstance.from('active_sessions').insert([{ group_name: 'Anki-1', device_id: myDeviceId, device_type: deviceType }]);
-            await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
-            closeModal();
+        async function removeDevice(id) {
+            await window.supabaseInstance.from('active_sessions').delete().eq('device_id', id);
             updateDeviceList();
         }
 
-        async function removeDevice(id) { await window.supabaseInstance.from('active_sessions').delete().eq('device_id', id); updateDeviceList(); }
-        async function leaveGroup() { await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId); updateDeviceList(); }
-        function startPairingProcess() { document.getElementById('codeModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('codeModal').style.display = 'none'; }
-        
-        updateDeviceList();
+        function resetModalUI() {
+            document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
+            document.getElementById('input-area').style.display = 'block';
+            document.getElementById('timer-display').style.display = 'block';
+            document.getElementById('groupCode').value = "";
+            document.getElementById('modal-text').innerText = "Code eingeben:";
+        }
+
+        async function startPairingProcess() {
+            const modal = document.getElementById('codeModal');
+            modal.style.display = 'flex';
+            document.getElementById('modal-text').innerText = "Erstelle Code...";
+            document.getElementById('input-area').style.display = 'none';
+
+            try {
+                generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
+                const { data, error } = await window.supabaseInstance.from('groups').insert([{ 
+                    group_key: generatedCode, status: 'active', created_at: new Date().toISOString()
+                }]).select().single();
+
+                if (error) throw error;
+                dbEntryId = data.id;
+
+                pairingPoller = setInterval(async () => {
+                    const { data: checkData } = await window.supabaseInstance.from('groups').select('id').eq('id', dbEntryId).single();
+                    if (!checkData) {
+                        clearInterval(pairingPoller);
+                        showStatus("Verbindung erfolgreich!");
+                        setTimeout(checkSession, 1000);
+                    }
+                }, 1000);
+
+                document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
+            } catch (err) {
+                showStatus("Fehler: " + err.message, true);
+            }
+        }
+
+        async function confirmCode() {
+            try {
+                const input = document.getElementById('groupCode').value;
+                const { data: groupData, error } = await window.supabaseInstance.from('groups').select('*').eq('group_key', input).single();
+
+                if (error || !groupData) { throw new Error("Code ungültig."); }
+                
+                // Sperre: Nicht mit sich selbst verbinden
+                const { data: myCheck } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
+                if (myCheck) { throw new Error("Du bist bereits verbunden."); }
+
+                const { data: all } = await window.supabaseInstance.from('active_sessions').select('group_name');
+                const used = all ? all.map(i => parseInt(i.group_name.split('-')[1]) || 0) : [];
+                let counter = 1;
+                while(used.includes(counter)) counter++;
+                let targetGroupName = `Anki-${counter}`;
+                
+                await window.supabaseInstance.from('active_sessions').insert([{ group_name: targetGroupName, device_id: myDeviceId, device_type: myDeviceType }]);
+                await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
+                
+                closeModal();
+                checkSession();
+            } catch (err) {
+                showStatus("Fehler: " + err.message, true);
+            }
+        }
+
+        async function closeModal() {
+            clearInterval(pairingPoller);
+            if (dbEntryId) { await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId); }
+            document.getElementById('codeModal').style.display = 'none';
+            resetModalUI();
+        }
+
+        function handleButtonClick() {
+            if (!isGrouped) {
+                resetModalUI();
+                document.getElementById('codeModal').style.display = 'flex';
+            }
+        }
+
+        async function leaveGroup() { 
+            if(confirm("Gruppe verlassen?")) { 
+                await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
+                location.reload();
+            } 
+        }
     </script>
 </body>
 </html>
