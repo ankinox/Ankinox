@@ -97,11 +97,22 @@
         }
 
         async function checkSession() {
-            const { data } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).single();
+            // Nur noch Server-Abfrage: In welcher Gruppe ist diese DeviceID?
+            const { data } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('group_name')
+                .eq('device_id', myDeviceId)
+                .maybeSingle();
+
             if (data) {
                 currentAnkiGroup = data.group_name;
                 isGrouped = true;
                 document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
+                updateDeviceList();
+            } else {
+                isGrouped = false;
+                currentAnkiGroup = "";
+                document.getElementById('mainButton').innerText = "Code eingeben";
                 updateDeviceList();
             }
         }
@@ -162,6 +173,9 @@
 
             if (error || !data) { showStatus("Code ungültig oder abgelaufen.", true); return; }
 
+            // Erst alte Session löschen, um Konsistenz zu erzwingen
+            await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
+
             const { data: active } = await window.supabaseInstance.from('active_sessions').select('group_name');
             const usedNumbers = active ? active.map(item => parseInt(item.group_name.split('-')[1])) : [];
             let counter = 1;
@@ -212,7 +226,7 @@
             if(confirm("Gruppe verlassen?")) { 
                 await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
                 isGrouped = false; 
-                location.reload();
+                checkSession(); // UI aktualisieren statt Neuladen
             } 
         }
     </script>
