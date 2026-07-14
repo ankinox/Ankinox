@@ -89,8 +89,18 @@
         });
 
         let isGrouped = false, dbEntryId = null, currentAnkiGroup = "", pairingPoller = null, countdownInterval = null;
+        let isProcessing = false;
+
+        // Hilfsfunktion zur Ermittlung der öffentlichen IP-Adresse (Router-Netzwerk)
+        async function getPublicIP() {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            if(!data.ip) throw new Error("IP-Adresse konnte nicht verifiziert werden.");
+            return data.ip;
+        }
 
         function showStatus(message, isError = false) {
+            isProcessing = false;
             clearInterval(countdownInterval);
             clearTimeout(pairingPoller);
             document.getElementById('modal-text').innerHTML = `<span style="color: ${isError ? '#ff4444' : '#00d4ff'}">${message}</span>`;
@@ -111,8 +121,9 @@
                 isGrouped = true;
                 document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
                 
+                // Realtime-Kanal steuert automatische Ansichts-Updates bei Änderungen (Kicks/Beitritte)
                 window.supabaseInstance.channel('group_' + currentAnkiGroup)
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'active_sessions', filter: `group_name=eq.${currentAnkiGroup}` }, () => location.reload())
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'active_sessions' }, () => location.reload())
                     .subscribe();
 
                 updateDeviceList();
@@ -137,23 +148,52 @@
                 .eq('group_name', currentAnkiGroup);
 
             let html = "";
-            devices.forEach(d => {
-                const isMe = d.device_id === myDeviceId;
-                html += `<div class="device-card">
-                            <p>${d.device_type || '❓'}<br><small>${isMe ? 'Du' : 'Partner'}</small></p>
-                            ${!isMe ? `<button onclick="removeDevice('${d.device_id}')" style="background:#ff4444; border:none; color:white; border-radius:5px; padding:5px 10px; cursor:pointer;">X</button>` : `<button onclick="leaveGroup()" style="background:#444; border:none; color:white; border-radius:5px; padding:5px 10px; cursor:pointer;">Verlassen</button>`}
-                        </div>`;
-            });
+            if (devices) {
+                devices.forEach(d => {
+                    const isMe = d.device_id === myDeviceId;
+                    html += `<div class="device-card">
+                                <p>${d.device_type || '❓'}<br><small>${isMe ? 'Du' : 'Partner'}</small></p>
+                                ${!isMe ? `<button onclick="removeDevice('${d.device_id}')" style="background:#ff4444; border:none; color:white; border-radius:5px; padding:5px 10px; cursor:pointer;">X</button>` : `<button onclick="leaveGroup()" style="background:#444; border:none; color:white; border-radius:5px; padding:5px 10px; cursor:pointer;">Verlassen</button>`}
+                            </div>`;
+                });
+            }
             html += `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
             list.innerHTML = html;
         }
 
-        async function removeDevice(id) {
-            await window.supabaseInstance.from('active_sessions').delete().eq('device_id', id);
+        // Steuert das Entfernen und die dynamische Gruppenauflösung
+        async function handleDeviceRemoval(idToRemove, targetGroup) {
+            // 1. Gerät austragen
+            await window.supabaseInstance.from('active_sessions').delete().eq('device_id', idToRemove);
+            
+            // 2. Prüfen, wie viele Geräte jetzt noch in der Gruppe verbleiben
+            const { data: remaining } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('device_id')
+                .eq('group_name', targetGroup);
+            
+            // 3. Wenn nur noch 1 oder kein Gerät existiert -> Gruppe komplett auflösen
+            if (!remaining || remaining.length <= 1) {
+                await window.supabaseInstance.from('active_sessions').delete().eq('group_name', targetGroup);
+            }
+            
             location.reload();
         }
 
+        async function removeDevice(id) {
+            if(confirm("Gerät aus der Gruppe entfernen?")) {
+                await handleDeviceRemoval(id, currentAnkiGroup);
+            }
+        }
+
+        async function leaveGroup() { 
+            if(confirm("Gruppe verlassen?")) { 
+                await handleDeviceRemoval(myDeviceId, currentAnkiGroup);
+            } 
+        }
+
         function resetModalUI() {
+            isProcessing = false;
             clearInterval(countdownInterval);
             clearTimeout(pairingPoller);
             document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
@@ -163,31 +203,25 @@
             document.getElementById('modal-text').innerText = "Code eingeben:";
         }
 
+        // GERÄT A: Code auf dem Server generieren
         async function startPairingProcess() {
+            if (isProcessing) return;
+            isProcessing = true;
+
             const modal = document.getElementById('codeModal');
             modal.style.display = 'flex';
             document.getElementById('modal-text').innerText = "Erstelle Code...";
             document.getElementById('input-area').style.display = 'none';
 
             try {
-                if (!isGrouped || !currentAnkiGroup) {
-                    const { data: all, error: fetchErr } = await window.supabaseInstance.from('active_sessions').select('group_name');
-                    if (fetchErr) throw fetchErr;
-                    
-                    const used = all ? all.map(i => {
-                        const parts = i.group_name.split('-');
-                        return parts.length > 1 ? parseInt(parts[1]) || 0 : 0;
-                    }) : [];
-                    
-                    let counter = 1;
-                    while(used.includes(counter)) counter++;
-                    currentAnkiGroup = `Anki-${counter}`;
-                }
-
+                const myIp = await getPublicIP();
                 let code = Math.floor(10000 + Math.random() * 90000).toString();
+                
                 const { data, error: groupErr } = await window.supabaseInstance.from('groups').insert([{ 
                     group_key: code, 
-                    group_name: currentAnkiGroup,
+                    creator_device_id: myDeviceId,
+                    creator_ip: myIp,
+                    creator_device_type: myDeviceType,
                     status: 'active',
                     created_at: new Date().toISOString()
                 }]).select().single();
@@ -200,69 +234,55 @@
                 countdownInterval = setInterval(() => {
                     timeLeft--;
                     document.getElementById('timer-display').innerText = `Code gültig für: ${timeLeft}s`;
-                    if (timeLeft <= 0) {
-                        clearInterval(countdownInterval);
-                        closeModal();
-                    }
+                    if (timeLeft <= 0) closeModal();
                 }, 1000);
 
                 document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + code + "</strong>";
 
-                // Starte das sichere, überlappungsfreie Polling
-                pairingPoller = setTimeout(pollPairingStatus, 1000);
+                pairingPoller = setTimeout(pollPairingStatus, 1500);
 
             } catch (err) {
                 showStatus("Fehler: " + err.message, true);
             }
         }
 
-        // Exklusive, asynchrone Kontrollschleife per setTimeout
+        // GERÄT A Poller: Wartet exklusiv auf den Eintrag in active_sessions durch Gerät B
         async function pollPairingStatus() {
             if (!dbEntryId) return;
 
             try {
-                const { data: checkData, error: pollErr } = await window.supabaseInstance.from('groups').select('*').eq('id', dbEntryId).maybeSingle();
-                
-                if (pollErr) {
-                    // Bei Netzwerk-Schluckauf einfach nach 1 Sekunde neu versuchen
-                    pairingPoller = setTimeout(pollPairingStatus, 1000);
-                    return;
-                }
-                
-                if (!checkData) return; // Code abgelaufen oder gelöscht
+                const { data: session } = await window.supabaseInstance
+                    .from('active_sessions')
+                    .select('group_name')
+                    .eq('device_id', myDeviceId)
+                    .maybeSingle();
 
-                if (checkData.status === 'paired') {
-                    // Erfolg! Schleife wird NICHT neu geplant.
-                    try {
-                        await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
-                        const { error: sessionErr } = await window.supabaseInstance.from('active_sessions').insert([{ 
-                            group_name: currentAnkiGroup, 
-                            device_id: myDeviceId, 
-                            device_type: myDeviceType 
-                        }]);
-                        if (sessionErr) throw sessionErr;
-
-                        await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId);
-                        location.reload();
-                    } catch (err) {
-                        showStatus("Fehler beim Beitritt: " + err.message, true);
-                    }
+                if (session) {
+                    // Benachrichtigung anzeigen, sobald alle Prüfungen auf B durch sind
+                    document.getElementById('timer-display').style.display = 'none';
+                    document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Code exakt! Alle Überprüfungen durch.<br>Verbindung wird hergestellt...</span>";
+                    setTimeout(() => location.reload(), 2000);
                     return;
                 }
 
-                // Wenn immer noch 'active', plane den nächsten Check in 1 Sekunde
-                pairingPoller = setTimeout(pollPairingStatus, 1000);
-
+                pairingPoller = setTimeout(pollPairingStatus, 1500);
             } catch (e) {
-                showStatus("Fehler beim Beitritt: " + e.message, true);
+                pairingPoller = setTimeout(pollPairingStatus, 1500);
             }
         }
 
+        // GERÄT B: Gibt Code ein und führt die komplette hierarchische Logik aus
         async function confirmCode() {
+            if (isProcessing) return;
+            isProcessing = true;
+
             try {
                 const input = document.getElementById('groupCode').value.trim();
                 if (!input) throw new Error("Bitte gib einen Code ein.");
 
+                const myIp = await getPublicIP();
+
+                // 1. ÜBERPRÜFUNG: Code-Match holen
                 const { data: groupData, error: groupErr } = await window.supabaseInstance
                     .from('groups')
                     .select('*')
@@ -271,32 +291,68 @@
                     .maybeSingle();
 
                 if (groupErr) throw groupErr;
-                if (!groupData) throw new Error("Code ungültig oder abgelaufen."); 
-                
-                await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
+                if (!groupData) throw new Error("Code ungültig oder abgelaufen.");
 
-                const { error: joinErr } = await window.supabaseInstance.from('active_sessions').insert([{ 
-                    group_name: groupData.group_name, 
+                // 2. ÜBERPRÜFUNG: Selbes Router-Netzwerk (Öffentliche IP abgleichen)
+                if (groupData.creator_ip !== myIp) {
+                    throw new Error("Sicherheits-Abbruch: Geräte befinden sich nicht im selben Router-Netzwerk.");
+                }
+
+                // 3. ÜBERPRÜFUNG: Befindet sich bereits einer der beiden in einer Gruppe?
+                const { data: checkA } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', groupData.creator_device_id).maybeSingle();
+                const { data: checkB } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
+
+                let targetGroup = null;
+                if (checkA) {
+                    targetGroup = checkA.group_name;
+                } else if (checkB) {
+                    targetGroup = checkB.group_name;
+                }
+
+                // Wenn keiner in einer Gruppe ist -> Chronologische, lückenlose Gruppenplatzierung ermitteln
+                if (!targetGroup) {
+                    const { data: allSessions } = await window.supabaseInstance.from('active_sessions').select('group_name');
+                    const usedNumbers = allSessions ? allSessions.map(s => {
+                        const parts = s.group_name.split('-');
+                        return parts.length > 1 ? parseInt(parts[1]) || 0 : 0;
+                    }) : [];
+                    
+                    let counter = 1;
+                    while (usedNumbers.includes(counter)) {
+                        counter++;
+                    }
+                    targetGroup = `Anki-${counter}`;
+                }
+
+                // 4. AUSFÜHRUNG: Gerät B schreibt als "Single Writer" JETZT beide Datensätze
+                await window.supabaseInstance.from('active_sessions').upsert({ 
+                    group_name: targetGroup, 
+                    device_id: groupData.creator_device_id, 
+                    device_type: groupData.creator_device_type 
+                });
+
+                await window.supabaseInstance.from('active_sessions').upsert({ 
+                    group_name: targetGroup, 
                     device_id: myDeviceId, 
                     device_type: myDeviceType 
-                }]);
-                
-                if (joinErr) throw joinErr;
-                
-                const { error: updateErr } = await window.supabaseInstance
-                    .from('groups')
-                    .update({ status: 'paired' })
-                    .eq('id', groupData.id);
+                });
 
-                if (updateErr) throw updateErr;
+                // Code verbrauchen -> Löst zeitgleich den Reload-Zustand auf Gerät A aus
+                await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
+
+                // Erfolgsmeldung anzeigen
+                document.getElementById('input-area').style.display = 'none';
+                document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Code exakt! Alle Überprüfungen durch.<br>Verbindung wird hergestellt...</span>";
                 
-                location.reload();
+                setTimeout(() => location.reload(), 2000);
+
             } catch (err) {
                 showStatus("Fehler: " + err.message, true);
             }
         }
 
         async function closeModal() {
+            isProcessing = false;
             clearTimeout(pairingPoller);
             clearInterval(countdownInterval);
             if (dbEntryId) { await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId); }
@@ -309,13 +365,6 @@
                 resetModalUI();
                 document.getElementById('codeModal').style.display = 'flex';
             }
-        }
-
-        async function leaveGroup() { 
-            if(confirm("Gruppe verlassen?")) { 
-                await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
-                location.reload();
-            } 
         }
     </script>
 </body>
