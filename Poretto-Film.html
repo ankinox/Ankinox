@@ -95,33 +95,40 @@
             localStorage.setItem('anki_device_id', 'user_' + Math.random().toString(36).substr(2, 9));
         }
 
+        async function getActiveScope() {
+            const deviceId = localStorage.getItem('anki_device_id');
+            const { data } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('group_name')
+                .eq('device_id', deviceId)
+                .maybeSingle();
+            return data ? data.group_name : deviceId;
+        }
+
         async function toggleFavorite(btn) {
             const mediaId = btn.getAttribute('data-id');
             const mediaTitle = btn.getAttribute('data-title');
             const mediaType = btn.getAttribute('data-type');
             const deviceId = localStorage.getItem('anki_device_id');
-            const groupName = localStorage.getItem('last_known_group') || "Anki-1";
+            const activeScope = await getActiveScope();
             const pageUrl = window.location.href;
             const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
 
-            // Prüfen, ob irgendjemand in der Gruppe den Film favorisiert hat
             const { data: existing } = await window.supabaseInstance
                 .from('favorites')
                 .select('id')
                 .eq('media_id', mediaId)
-                .eq('group_name', groupName)
+                .eq('group_name', activeScope)
                 .maybeSingle();
 
             if (existing) {
-                // Wenn existiert, für ALLE in der Gruppe löschen
-                await window.supabaseInstance.from('favorites').delete().eq('media_id', mediaId).eq('group_name', groupName);
+                await window.supabaseInstance.from('favorites').delete().eq('id', existing.id);
                 btn.classList.remove('active');
                 btn.innerText = "♥ Favorit";
             } else {
-                // Hinzufügen (für die Gruppe)
                 await window.supabaseInstance.from('favorites').insert({
                     user_id: deviceId, 
-                    group_name: groupName,
+                    group_name: activeScope,
                     media_id: mediaId,
                     media_type: mediaType,
                     title: mediaTitle,
@@ -135,14 +142,13 @@
 
         window.addEventListener('load', async () => {
             const btn = document.getElementById('favBtn');
-            const groupName = localStorage.getItem('last_known_group') || "Anki-1";
+            const activeScope = await getActiveScope();
             
-            // Check: Hat irgendwer in der Gruppe diesen Film favorisiert?
             const { data } = await window.supabaseInstance
                 .from('favorites')
                 .select('id')
                 .eq('media_id', btn.getAttribute('data-id'))
-                .eq('group_name', groupName)
+                .eq('group_name', activeScope)
                 .maybeSingle();
 
             if (data) {
