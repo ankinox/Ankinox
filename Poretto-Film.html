@@ -7,7 +7,6 @@
     <!-- Supabase Client einbinden -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Initialisierung mit deinen Daten
         window.supabaseInstance = supabase.createClient(
             'https://kynhrpdxhkjaeeexalje.supabase.co', 
             'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
@@ -15,7 +14,7 @@
     </script>
 
     <meta property="og:title" content="Poretto – Der magische Stuhl">
-    <meta property="og:description" content="Ein Kurzfilm über Freundschaft und Neuanfänge. Begleite Poretto auf ihrer Reise.">
+    <meta property="og:description" content="Ein Kurzfilm über Freundschaft und Neuanfänge.">
     <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png">
     <meta property="og:url" content="https://ankinox.github.io/Ankinox/Poretto-Film.html">
     <meta property="og:type" content="video.movie">
@@ -77,7 +76,7 @@
             </div>
 
             <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 30px; font-size: 0.95rem;">
-                Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden. Der Stuhl ist Porettos Freund-Ersatz, bis sie eines Tages nach einem Umzug erneut seine Hilfe braucht und sich die Geschichte wiederholt. Dies ist ein Kurzfilm über Freundschaft und Neuanfänge.
+                Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.
             </div>
 
             <button onclick="openVideo()" style="display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
@@ -101,24 +100,28 @@
             const mediaTitle = btn.getAttribute('data-title');
             const mediaType = btn.getAttribute('data-type');
             const deviceId = localStorage.getItem('anki_device_id');
-            const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
+            const groupName = localStorage.getItem('last_known_group') || "Anki-1";
             const pageUrl = window.location.href;
+            const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
 
+            // Prüfen, ob irgendjemand in der Gruppe den Film favorisiert hat
             const { data: existing } = await window.supabaseInstance
                 .from('favorites')
                 .select('id')
                 .eq('media_id', mediaId)
-                .eq('user_id', deviceId)
+                .eq('group_name', groupName)
                 .maybeSingle();
 
             if (existing) {
-                await window.supabaseInstance.from('favorites').delete().eq('id', existing.id);
+                // Wenn existiert, für ALLE in der Gruppe löschen
+                await window.supabaseInstance.from('favorites').delete().eq('media_id', mediaId).eq('group_name', groupName);
                 btn.classList.remove('active');
                 btn.innerText = "♥ Favorit";
             } else {
+                // Hinzufügen (für die Gruppe)
                 await window.supabaseInstance.from('favorites').insert({
-                    user_id: deviceId,
-                    group_name: localStorage.getItem('last_known_group') || "Anki-1",
+                    user_id: deviceId, 
+                    group_name: groupName,
                     media_id: mediaId,
                     media_type: mediaType,
                     title: mediaTitle,
@@ -132,8 +135,16 @@
 
         window.addEventListener('load', async () => {
             const btn = document.getElementById('favBtn');
-            const deviceId = localStorage.getItem('anki_device_id');
-            const { data } = await window.supabaseInstance.from('favorites').select('id').eq('media_id', btn.getAttribute('data-id')).eq('user_id', deviceId).maybeSingle();
+            const groupName = localStorage.getItem('last_known_group') || "Anki-1";
+            
+            // Check: Hat irgendwer in der Gruppe diesen Film favorisiert?
+            const { data } = await window.supabaseInstance
+                .from('favorites')
+                .select('id')
+                .eq('media_id', btn.getAttribute('data-id'))
+                .eq('group_name', groupName)
+                .maybeSingle();
+
             if (data) {
                 btn.classList.add('active');
                 btn.innerText = "★ Favorisiert";
@@ -143,7 +154,7 @@
         function openVideo() { document.getElementById('video-popup').style.display = 'block'; }
         function closeVideo() { document.getElementById('video-popup').style.display = 'none'; }
         document.getElementById('share-button').addEventListener('click', async () => {
-            try { await navigator.share({ title: 'Poretto', text: 'Schau dir Poretto und der Magische Stuhl an!', url: window.location.href }); } catch (err) {}
+            try { await navigator.share({ title: 'Poretto', text: 'Schau dir Poretto an!', url: window.location.href }); } catch (err) {}
         });
     </script>
 </body>
