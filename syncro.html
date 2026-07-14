@@ -109,13 +109,6 @@
                 currentAnkiGroup = data.group_name;
                 isGrouped = true;
                 document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
-                
-                // Realtime-Kanal einrichten, um Änderungen in der Gruppe zu empfangen
-                window.supabaseInstance.channel('group_changes_' + currentAnkiGroup)
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'active_sessions', filter: 'group_name=eq.' + currentAnkiGroup }, 
-                    () => { location.reload(); })
-                    .subscribe();
-
                 updateDeviceList();
             } else {
                 isGrouped = false;
@@ -150,8 +143,8 @@
         }
 
         async function removeDevice(id) {
-            // Wenn ich jemanden lösche, lösche ich den Eintrag
             await window.supabaseInstance.from('active_sessions').delete().eq('device_id', id);
+            updateDeviceList();
         }
 
         function resetModalUI() {
@@ -211,9 +204,13 @@
 
                 if (error || !groupData) { throw new Error("Code ungültig."); }
                 
+                // Prüfen ob bereits in einer Gruppe
                 const { data: myCheck } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
                 if (myCheck) { throw new Error("Du bist bereits verbunden."); }
 
+                // Wenn der Code gültig ist, treten wir einer Gruppe bei.
+                // Da der Code in der Tabelle 'groups' existiert, gehen wir davon aus, dass wir mit dem Gerät verbinden, das den Code erstellt hat.
+                // Da wir keine direkten Partner-IDs in der 'groups'-Tabelle haben, erstellen wir einen neuen Gruppen-Namen.
                 const { data: all } = await window.supabaseInstance.from('active_sessions').select('group_name');
                 const used = all ? all.map(i => parseInt(i.group_name.split('-')[1]) || 0) : [];
                 let counter = 1;
@@ -247,14 +244,7 @@
 
         async function leaveGroup() { 
             if(confirm("Gruppe verlassen?")) { 
-                // Wenn ich gehe, prüfe ich, ob ich der letzte war
-                const { data: others } = await window.supabaseInstance.from('active_sessions').select('device_id').eq('group_name', currentAnkiGroup);
-                if (others.length <= 1) {
-                    // Lösche alle Reste der Gruppe
-                    await window.supabaseInstance.from('active_sessions').delete().eq('group_name', currentAnkiGroup);
-                } else {
-                    await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
-                }
+                await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
                 location.reload();
             } 
         }
