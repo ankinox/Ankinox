@@ -90,6 +90,7 @@
 
         let isGrouped = false, dbEntryId = null, currentAnkiGroup = "", pairingPoller = null, countdownInterval = null;
         let isProcessing = false;
+        let initialDeviceCount = 0; // Speichert, wie viele Geräte vor dem Pairing in der Gruppe waren
 
         async function getPublicIPv4() {
             const res = await fetch('https://api4.ipify.org?format=json');
@@ -210,11 +211,22 @@
                 const myIp = await getPublicIPv4();
                 let code = Math.floor(10000 + Math.random() * 90000).toString();
                 
+                // Ermitteln, wie viele Geräte JETZT gerade in unserer Gruppe sind
+                if (isGrouped && currentAnkiGroup) {
+                    const { data: existingDevices } = await window.supabaseInstance
+                        .from('active_sessions')
+                        .select('device_id')
+                        .eq('group_name', currentAnkiGroup);
+                    initialDeviceCount = existingDevices ? existingDevices.length : 1;
+                } else {
+                    initialDeviceCount = 0;
+                }
+
                 const metaPackage = JSON.stringify({
                     id: myDeviceId,
                     type: myDeviceType,
                     ip: myIp,
-                    fallbackName: currentAnkiGroup
+                    fallbackName: currentAnkiGroup // Nimmt die existierende Gruppe mit, falls vorhanden
                 });
 
                 const { data, error: groupErr } = await window.supabaseInstance.from('groups').insert([{ 
@@ -248,17 +260,33 @@
             if (!dbEntryId) return;
 
             try {
-                const { data: session } = await window.supabaseInstance
-                    .from('active_sessions')
-                    .select('group_name')
-                    .eq('device_id', myDeviceId)
-                    .maybeSingle();
+                // NEUE LOGIK: Wenn wir bereits eine Gruppe haben, prüfen wir, ob die Anzahl der Geräte gestiegen ist
+                if (isGrouped && currentAnkiGroup) {
+                    const { data: devices } = await window.supabaseInstance
+                        .from('active_sessions')
+                        .select('device_id')
+                        .eq('group_name', currentAnkiGroup);
+                    
+                    if (devices && devices.length > initialDeviceCount) {
+                        document.getElementById('timer-display').style.display = 'none';
+                        document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Neues Gerät verbunden!<br>Aktualisiere...</span>";
+                        setTimeout(() => location.reload(), 1500);
+                        return;
+                    }
+                } else {
+                    // Standard-Logik für komplett neue Gruppen
+                    const { data: session } = await window.supabaseInstance
+                        .from('active_sessions')
+                        .select('group_name')
+                        .eq('device_id', myDeviceId)
+                        .maybeSingle();
 
-                if (session) {
-                    document.getElementById('timer-display').style.display = 'none';
-                    document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Verbindung erfolgreich!<br>Lade Daten...</span>";
-                    setTimeout(() => location.reload(), 1500);
-                    return;
+                    if (session) {
+                        document.getElementById('timer-display').style.display = 'none';
+                        document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Verbindung erfolgreich!<br>Lade Daten...</span>";
+                        setTimeout(() => location.reload(), 1500);
+                        return;
+                    }
                 }
 
                 pairingPoller = setTimeout(pollPairingStatus, 1500);
@@ -293,6 +321,7 @@
                     throw new Error("Sicherheits-Abbruch: Nicht dasselbe Router-Netzwerk.<br><br><small style='color:#aaa;'>Tipp: Schalte am Handy kurz mobile Daten (5G/LTE) oder VPN aus.</small>");
                 }
 
+                // Prüfen, ob eins der beiden Geräte bereits eine Gruppe besitzt
                 const { data: checkA } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', creatorMeta.id).maybeSingle();
                 const { data: checkB } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
 
@@ -301,8 +330,11 @@
                     targetGroup = checkA.group_name;
                 } else if (checkB) {
                     targetGroup = checkB.group_name;
+                } else if (creatorMeta.fallbackName) {
+                    targetGroup = creatorMeta.fallbackName;
                 }
 
+                // Wenn absolut kein Gerät eine Gruppe hat -> Neue Gruppennummer generieren
                 if (!targetGroup) {
                     const { data: allSessions } = await window.supabaseInstance.from('active_sessions').select('group_name');
                     const usedNumbers = allSessions ? allSessions.map(s => {
@@ -317,22 +349,23 @@
                     targetGroup = `Anki-${counter}`;
                 }
 
-                // BEIDE GERÄTE EINTRAGEN
-                await window.supabaseInstance.from('active_sessions').upsert({ 
+                // JETZT SCHREIBEN: Beide explizit nacheinander eintragen, um Lücken auszuschließen
+                const { error: errA } = await window.supabaseInstance.from('active_sessions').upsert({ 
+                    device_id: creatorMeta.id,
                     group_name: targetGroup, 
-                    device_id: creatorMeta.id, 
                     device_type: creatorMeta.type 
-                });
+                }, { onConflict: 'device_id' });
+                if (errA) throw errA;
 
-                await window.supabaseInstance.from('active_sessions').upsert({ 
+                const { error: errB } = await window.supabaseInstance.from('active_sessions').upsert({ 
+                    device_id: myDeviceId,
                     group_name: targetGroup, 
-                    device_id: myDeviceId, 
                     device_type: myDeviceType 
-                });
+                }, { onConflict: 'device_id' });
+                if (errB) throw errB;
 
-                // ÄNDERUNG HIER: Erst dem Server Zeit geben, Realtime-Daten an Gerät A zu senden, dann löschen!
                 document.getElementById('input-area').style.display = 'none';
-                document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Code exakt!<br>Verbindung wird hergestellt...</span>";
+                document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Erfolgreich hinzugefügt!<br>Gruppe wird geladen...</span>";
                 
                 setTimeout(async () => {
                     await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
@@ -348,7 +381,10 @@
             isProcessing = false;
             clearTimeout(pairingPoller);
             clearInterval(countdownInterval);
-            if (dbEntryId) { await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId); }
+            if (dbEntryId) { 
+                await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId); 
+                dbEntryId = null;
+            }
             document.getElementById('codeModal').style.display = 'none';
             resetModalUI();
         }
