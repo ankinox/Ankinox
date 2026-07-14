@@ -81,7 +81,7 @@
             );
         });
 
-        let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null, currentAnkiGroup = "";
+        let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null, currentAnkiGroup = "", pairingPoller = null;
 
         function resetModalUI() {
             document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
@@ -105,6 +105,15 @@
             if (error) { console.error("DB Fehler:", error); alert("Fehler: " + error.message); return; }
             
             dbEntryId = data.id;
+
+            pairingPoller = setInterval(async () => {
+                const { data: checkData } = await window.supabaseInstance.from('groups').select('id').eq('id', dbEntryId).single();
+                if (!checkData) {
+                    clearInterval(pairingPoller);
+                    closeModal();
+                    setTimeout(loadGroupStatus, 500);
+                }
+            }, 1000);
 
             document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
             document.getElementById('input-area').style.display = 'none';
@@ -148,8 +157,8 @@
                     isGrouped = true;
                     document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
                     updateDeviceList();
-                    closeModal();
                     await window.supabaseInstance.from('groups').delete().eq('id', data.id);
+                    closeModal();
                     alert("Verbindung erfolgreich! Zugewiesen zu: " + currentAnkiGroup);
                 }
             } else {
@@ -157,7 +166,18 @@
             }
         }
 
+        async function loadGroupStatus() {
+            const { data } = await window.supabaseInstance.from('active_sessions').select('group_name').limit(1);
+            if (data && data.length > 0) {
+                currentAnkiGroup = data[0].group_name;
+                isGrouped = true;
+                document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
+                updateDeviceList();
+            }
+        }
+
         async function closeModal() {
+            clearInterval(pairingPoller);
             if (dbEntryId) {
                 await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId);
                 dbEntryId = null;
