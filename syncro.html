@@ -158,6 +158,9 @@
 
             let html = "";
             if (devices) {
+                // Sortierung: Das eigene Gerät immer nach vorne
+                devices.sort((a, b) => (a.device_id === myDeviceId ? -1 : (b.device_id === myDeviceId ? 1 : 0)));
+
                 devices.forEach(d => {
                     const isMe = d.device_id === myDeviceId;
                     html += `<div class="device-card">
