@@ -169,7 +169,7 @@
             document.getElementById('input-area').style.display = 'none';
 
             try {
-                // Wenn wir noch in keiner Gruppe sind, bestimmen wir eine neue
+                // Bestimme Gruppen-Namen (Noch KEIN Eintrag in active_sessions!)
                 if (!isGrouped || !currentAnkiGroup) {
                     const { data: all, error: fetchErr } = await window.supabaseInstance.from('active_sessions').select('group_name');
                     if (fetchErr) throw fetchErr;
@@ -184,15 +184,7 @@
                     currentAnkiGroup = `Anki-${counter}`;
                 }
 
-                // Ersteller-Eintrag in active_sessions absichern (per upsert)
-                const { error: sessionErr } = await window.supabaseInstance.from('active_sessions').upsert([{ 
-                    group_name: currentAnkiGroup, 
-                    device_id: myDeviceId, 
-                    device_type: myDeviceType 
-                }], { onConflict: 'device_id' });
-                
-                if (sessionErr) throw sessionErr;
-
+                // Code in die 'groups'-Tabelle eintragen
                 let code = Math.floor(10000 + Math.random() * 90000).toString();
                 const { data, error: groupErr } = await window.supabaseInstance.from('groups').insert([{ 
                     group_key: code, 
@@ -217,13 +209,36 @@
 
                 document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + code + "</strong>";
 
+                // Poller überwacht die DB-Zeile auf Status-Änderung zu 'paired'
                 pairingPoller = setInterval(async () => {
-                    const { data: checkData, error: pollErr } = await window.supabaseInstance.from('groups').select('id').eq('id', dbEntryId).maybeSingle();
+                    const { data: checkData, error: pollErr } = await window.supabaseInstance.from('groups').select('*').eq('id', dbEntryId).maybeSingle();
                     if (pollErr) return;
                     
                     if (!checkData) {
+                        // Zeile wurde gelöscht (Abbruch)
                         clearInterval(pairingPoller);
-                        location.reload();
+                        return;
+                    }
+
+                    if (checkData.status === 'paired') {
+                        clearInterval(pairingPoller);
+                        try {
+                            // Partner hat den Code erfolgreich eingegeben! 
+                            // Jetzt trägt sich der Ersteller (Gerät A) ebenfalls ein.
+                            await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
+                            const { error: sessionErr } = await window.supabaseInstance.from('active_sessions').insert([{ 
+                                group_name: currentAnkiGroup, 
+                                device_id: myDeviceId, 
+                                device_type: myDeviceType 
+                            }]);
+                            if (sessionErr) throw sessionErr;
+
+                            // Code endgültig löschen
+                            await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId);
+                            location.reload();
+                        } catch (err) {
+                            showStatus("Fehler beim Beitritt: " + err.message, true);
+                        }
                     }
                 }, 1000);
             } catch (err) {
@@ -236,24 +251,36 @@
                 const input = document.getElementById('groupCode').value.trim();
                 if (!input) throw new Error("Bitte gib einen Code ein.");
 
-                // Code prüfen
-                const { data: groupData, error: groupErr } = await window.supabaseInstance.from('groups').select('*').eq('group_key', input).maybeSingle();
+                // Code in der DB suchen (muss noch 'active' sein)
+                const { data: groupData, error: groupErr } = await window.supabaseInstance
+                    .from('groups')
+                    .select('*')
+                    .eq('group_key', input)
+                    .eq('status', 'active')
+                    .maybeSingle();
 
                 if (groupErr) throw groupErr;
                 if (!groupData) throw new Error("Code ungültig oder abgelaufen."); 
                 
-                // Beitritt zur bestehenden Gruppe (per upsert, um alte Gruppen-Sitzungen zu überschreiben)
-                const { error: joinErr } = await window.supabaseInstance.from('active_sessions').upsert([{ 
+                // 1. Alten Gruppensitzungs-Eintrag für Gerät B löschen
+                await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
+
+                // 2. Gerät B trägt sich in die active_sessions ein
+                const { error: joinErr } = await window.supabaseInstance.from('active_sessions').insert([{ 
                     group_name: groupData.group_name, 
                     device_id: myDeviceId, 
                     device_type: myDeviceType 
-                }], { onConflict: 'device_id' });
+                }]);
                 
                 if (joinErr) throw joinErr;
                 
-                // Erst wenn der Beitritt in der DB erfolgreich war, löschen wir den Code
-                const { error: delErr } = await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
-                if (delErr) throw delErr;
+                // 3. Status auf 'paired' setzen, damit Gerät A weiß, dass es beitreten kann
+                const { error: updateErr } = await window.supabaseInstance
+                    .from('groups')
+                    .update({ status: 'paired' })
+                    .eq('id', groupData.id);
+
+                if (updateErr) throw updateErr;
                 
                 location.reload();
             } catch (err) {
