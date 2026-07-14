@@ -174,19 +174,33 @@
 
             if (error || !groupData) { showStatus("Code ungültig.", true); return; }
 
-            // Finde freie Gruppennummer
-            const { data: all } = await window.supabaseInstance.from('active_sessions').select('group_name');
-            const used = all ? all.map(i => parseInt(i.group_name.split('-')[1]) || 0) : [];
-            let counter = 1;
-            while(used.includes(counter)) counter++;
-            let newGroupName = `Anki-${counter}`;
+            // Prüfe, ob ich selbst schon in einer Gruppe bin
+            const { data: mySession } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
+            
+            // Finde heraus, ob es andere Gruppen gibt oder ob ich einen Partner finde
+            const { data: allSessions } = await window.supabaseInstance.from('active_sessions').select('group_name');
+            
+            let targetGroup = "";
 
-            // Beide Geräte in die neue Gruppe eintragen
-            await window.supabaseInstance.from('active_sessions').insert([{ group_name: newGroupName, device_id: myDeviceId }]);
+            if (mySession) {
+                // Ich bin schon in einer Gruppe, der andere kommt zu mir
+                targetGroup = mySession.group_name;
+            } else {
+                // Ich bin in keiner Gruppe, prüfe ob es eine neue Gruppe braucht
+                const used = allSessions ? allSessions.map(i => parseInt(i.group_name.split('-')[1]) || 0) : [];
+                let counter = 1;
+                while(used.includes(counter)) counter++;
+                targetGroup = `Anki-${counter}`;
+                await window.supabaseInstance.from('active_sessions').insert([{ group_name: targetGroup, device_id: myDeviceId }]);
+            }
+
+            // Beitretendes Gerät (der Partner) wird in meine Gruppe eingetragen
+            // (Hier wird davon ausgegangen, dass der Partner beim Pairing-Prozess aktiv ist)
+            await window.supabaseInstance.from('active_sessions').insert([{ group_name: targetGroup, device_id: 'partner_' + Math.random() }]); 
             
             await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
             
-            currentAnkiGroup = newGroupName;
+            currentAnkiGroup = targetGroup;
             isGrouped = true;
             closeModal();
             checkSession();
