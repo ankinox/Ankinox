@@ -79,15 +79,28 @@
     </nav>
 
     <script>
+        async function getActiveScope() {
+            const deviceId = localStorage.getItem('anki_device_id');
+            if (!deviceId) return "Anki-1";
+
+            const { data } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('group_name')
+                .eq('device_id', deviceId)
+                .maybeSingle();
+            
+            return data ? data.group_name : deviceId;
+        }
+
         async function loadFavorites() {
             const container = document.getElementById('favorites-container');
-            const groupName = localStorage.getItem('last_known_group') || "Anki-1";
+            const activeScope = await getActiveScope();
             
-            // Abfrage: Suche alle Einträge der Gruppe
+            // Abfrage: Suche alle Einträge für diesen Scope
             const { data, error } = await window.supabaseInstance
                 .from('favorites')
                 .select('*')
-                .eq('group_name', groupName)
+                .eq('group_name', activeScope)
                 .order('created_at', { ascending: false });
 
             if (error || !data || data.length === 0) {
