@@ -60,7 +60,7 @@
                 </a>
             </div>
             <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
-                Synchronisiere dein Gerät mit einem 60-Sekunden-Code. Voraussetzung: beide Geräte sind mit dem selben Router verbunden.
+                Synchronisiere dein Gerät mit einem 60-Sekunden-Code.
             </div>
 
             <div style="text-align: left;">
@@ -73,10 +73,13 @@
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(
-            'https://kynhrpdxhkjaeeexalje.supabase.co', 
-            'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
-        );
+        document.addEventListener("DOMContentLoaded", () => {
+            const { createClient } = window.supabase;
+            window.supabaseInstance = createClient(
+                'https://kynhrpdxhkjaeeexalje.supabase.co', 
+                'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
+            );
+        });
 
         let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null;
 
@@ -85,20 +88,19 @@
             document.getElementById('input-area').style.display = 'block';
             document.getElementById('groupCode').value = "";
             document.getElementById('modal-text').innerText = "Code eingeben:";
-            document.getElementById('timer-display').innerText = "";
         }
 
         async function startPairingProcess() {
+            if (!window.supabaseInstance) return;
             generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
-            let now = new Date().toISOString();
-            let expireDate = new Date(Date.now() + 60000).toISOString();
             
-            // last_active_at wird hier mit übergeben, um den Fehler zu beheben
-            const { data, error } = await supabase.from('groups').insert([{ 
+            let expireDate = new Date(Date.now() + 60000).toISOString();
+            // Die Korrektur: Hinzufügen von last_active_at, um die Datenbank-Restriktion zu erfüllen
+            const { data, error } = await window.supabaseInstance.from('groups').insert([{ 
                 group_key: generatedCode, 
                 status: 'active',
                 expires_at: expireDate,
-                last_active_at: now
+                last_active_at: new Date().toISOString()
             }]).select().single();
 
             if (error) { console.error("DB Fehler:", error); alert("Fehler: " + error.message); return; }
@@ -122,7 +124,7 @@
             pairingTimer = setTimeout(async () => {
                 generatedCode = ""; 
                 if (dbEntryId) {
-                    await supabase.from('groups').delete().eq('id', dbEntryId);
+                    await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId);
                     dbEntryId = null;
                 }
                 document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
@@ -133,14 +135,14 @@
 
         async function confirmCode() {
             const input = document.getElementById('groupCode').value;
-            const { data, error } = await supabase.from('groups').select('*').eq('group_key', input).single();
+            const { data, error } = await window.supabaseInstance.from('groups').select('*').eq('group_key', input).single();
 
             if (data) {
                 isGrouped = true;
                 document.getElementById('mainButton').innerText = "Anki-Schlüssel: " + input;
                 updateDeviceList();
                 closeModal();
-                await supabase.from('groups').delete().eq('id', data.id);
+                await window.supabaseInstance.from('groups').delete().eq('id', data.id);
             } else {
                 alert("Code ungültig oder abgelaufen.");
             }
@@ -148,7 +150,7 @@
 
         async function closeModal() {
             if (dbEntryId) {
-                await supabase.from('groups').delete().eq('id', dbEntryId);
+                await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId);
                 dbEntryId = null;
             }
             clearInterval(countdownInterval);
@@ -169,9 +171,6 @@
             list.innerHTML = isGrouped ? `
                 <div class="device-card" onclick="leaveGroup()">
                     <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
-                </div>
-                <div class="device-card">
-                    <p>💻 Verbundenes Gerät<br><small>Aktiv</small></p>
                 </div>
                 <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
             ` : `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
