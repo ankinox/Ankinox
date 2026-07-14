@@ -73,12 +73,14 @@
     </div>
 
     <script>
+        window.onerror = function(msg, url, line) { alert("Fehler: " + msg + " in Zeile " + line); };
+        
         let myDeviceId = localStorage.getItem('anki_device_id') || 'dev_' + Math.random().toString(36).substr(2, 9);
         localStorage.setItem('anki_device_id', myDeviceId);
 
         document.addEventListener("DOMContentLoaded", () => {
-            const { createClient } = window.supabase;
-            window.supabaseInstance = createClient(
+            if (typeof supabase === 'undefined') { alert("Supabase-Bibliothek nicht geladen!"); return; }
+            window.supabaseInstance = supabase.createClient(
                 'https://kynhrpdxhkjaeeexalje.supabase.co', 
                 'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
             );
@@ -114,7 +116,7 @@
                 last_active_at: new Date().toISOString()
             }]).select().single();
 
-            if (error) { console.error("DB Fehler:", error); alert("Fehler: " + error.message); return; }
+            if (error) { alert("DB Fehler (Insert): " + error.message); return; }
             dbEntryId = data.id;
 
             pairingPoller = setInterval(async () => {
@@ -155,6 +157,8 @@
             const input = document.getElementById('groupCode').value;
             const { data, error } = await window.supabaseInstance.from('groups').select('*').eq('group_key', input).single();
 
+            if (error) { alert("Datenbank-Fehler (Select): " + error.message); return; }
+
             if (data) {
                 const { data: active } = await window.supabaseInstance.from('active_sessions').select('group_name');
                 const usedNumbers = active ? active.map(item => parseInt(item.group_name.split('-')[1])) : [];
@@ -167,14 +171,14 @@
                     device_id: myDeviceId 
                 }]);
                 
-                if (!insertError) {
-                    isGrouped = true;
-                    document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
-                    updateDeviceList();
-                    await window.supabaseInstance.from('groups').delete().eq('id', data.id);
-                    closeModal();
-                    alert("Verbindung erfolgreich! Zugewiesen zu: " + currentAnkiGroup);
-                }
+                if (insertError) { alert("Datenbank-Fehler (Insert): " + insertError.message); return; }
+                
+                isGrouped = true;
+                document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
+                updateDeviceList();
+                await window.supabaseInstance.from('groups').delete().eq('id', data.id);
+                closeModal();
+                alert("Verbindung erfolgreich! Zugewiesen zu: " + currentAnkiGroup);
             } else {
                 alert("Code ungültig oder abgelaufen.");
             }
