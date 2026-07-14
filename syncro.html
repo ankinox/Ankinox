@@ -204,9 +204,13 @@
 
                 if (error || !groupData) { throw new Error("Code ungültig."); }
                 
+                // Prüfen ob bereits in einer Gruppe
                 const { data: myCheck } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
                 if (myCheck) { throw new Error("Du bist bereits verbunden."); }
 
+                // Wenn der Code gültig ist, treten wir einer Gruppe bei.
+                // Da der Code in der Tabelle 'groups' existiert, gehen wir davon aus, dass wir mit dem Gerät verbinden, das den Code erstellt hat.
+                // Da wir keine direkten Partner-IDs in der 'groups'-Tabelle haben, erstellen wir einen neuen Gruppen-Namen.
                 const { data: all } = await window.supabaseInstance.from('active_sessions').select('group_name');
                 const used = all ? all.map(i => parseInt(i.group_name.split('-')[1]) || 0) : [];
                 let counter = 1;
