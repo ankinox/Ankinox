@@ -97,7 +97,6 @@
         }
 
         async function checkSession() {
-            // Nur noch Server-Abfrage: In welcher Gruppe ist diese DeviceID?
             const { data } = await window.supabaseInstance
                 .from('active_sessions')
                 .select('group_name')
@@ -173,7 +172,6 @@
 
             if (error || !data) { showStatus("Code ungültig oder abgelaufen.", true); return; }
 
-            // Erst alte Session löschen, um Konsistenz zu erzwingen
             await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
 
             const { data: active } = await window.supabaseInstance.from('active_sessions').select('group_name');
@@ -186,7 +184,11 @@
                 group_name: currentAnkiGroup, device_id: myDeviceId 
             }]);
             
-            if (insertError) { showStatus("Fehler bei der Zuweisung.", true); return; }
+            if (insertError) { 
+                showStatus("Fehler: " + insertError.message, true); 
+                console.error("Supabase Fehler:", insertError);
+                return; 
+            }
             
             isGrouped = true;
             document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
@@ -226,7 +228,7 @@
             if(confirm("Gruppe verlassen?")) { 
                 await window.supabaseInstance.from('active_sessions').delete().eq('device_id', myDeviceId);
                 isGrouped = false; 
-                checkSession(); // UI aktualisieren statt Neuladen
+                checkSession();
             } 
         }
     </script>
