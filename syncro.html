@@ -81,7 +81,7 @@
             );
         });
 
-        let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null;
+        let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null, currentAnkiGroup = "";
 
         function resetModalUI() {
             document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
@@ -95,7 +95,6 @@
             generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
             
             let expireDate = new Date(Date.now() + 60000).toISOString();
-            // Die Korrektur: Hinzufügen von last_active_at, um die Datenbank-Restriktion zu erfüllen
             const { data, error } = await window.supabaseInstance.from('groups').insert([{ 
                 group_key: generatedCode, 
                 status: 'active',
@@ -138,11 +137,21 @@
             const { data, error } = await window.supabaseInstance.from('groups').select('*').eq('group_key', input).single();
 
             if (data) {
-                isGrouped = true;
-                document.getElementById('mainButton').innerText = "Anki-Schlüssel: " + input;
-                updateDeviceList();
-                closeModal();
-                await window.supabaseInstance.from('groups').delete().eq('id', data.id);
+                const { data: existingGroups } = await window.supabaseInstance.from('active_sessions').select('group_name');
+                let counter = 1;
+                while (existingGroups.some(g => g.group_name === `Anki-${counter}`)) { counter++; }
+                currentAnkiGroup = `Anki-${counter}`;
+
+                const { error: insertError } = await window.supabaseInstance.from('active_sessions').insert([{ group_name: currentAnkiGroup, status: 'occupied' }]);
+                
+                if (!insertError) {
+                    isGrouped = true;
+                    document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
+                    updateDeviceList();
+                    closeModal();
+                    await window.supabaseInstance.from('groups').delete().eq('id', data.id);
+                    alert("Verbindung erfolgreich! Zugewiesen zu: " + currentAnkiGroup);
+                }
             } else {
                 alert("Code ungültig oder abgelaufen.");
             }
@@ -170,13 +179,20 @@
             const list = document.getElementById('device-list');
             list.innerHTML = isGrouped ? `
                 <div class="device-card" onclick="leaveGroup()">
-                    <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
+                    <p>📱 ${currentAnkiGroup}<br><small>(Gruppe verlassen)</small></p>
                 </div>
                 <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
             ` : `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
         }
 
-        function leaveGroup() { if(confirm("Gruppe verlassen?")) { isGrouped = false; document.getElementById('mainButton').innerText = "Code eingeben"; updateDeviceList(); } }
+        async function leaveGroup() { 
+            if(confirm("Gruppe verlassen?")) { 
+                await window.supabaseInstance.from('active_sessions').delete().eq('group_name', currentAnkiGroup);
+                isGrouped = false; 
+                document.getElementById('mainButton').innerText = "Code eingeben"; 
+                updateDeviceList(); 
+            } 
+        }
     </script>
 </body>
 </html>
