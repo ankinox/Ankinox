@@ -60,7 +60,7 @@
                 </a>
             </div>
             <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
-                Synchronisiere dein Gerät mit einem 60-Sekunden-Code. Voraussetzung: beide Geräte befinden sich im selben Router Netzwerk.
+                Synchronisiere dein Gerät mit einem 60-Secunden-Code. Voraussetzung: beide Geräte befinden sich im selben Router Netzwerk.
             </div>
 
             <div style="text-align: left;">
@@ -91,7 +91,6 @@
         let isGrouped = false, dbEntryId = null, currentAnkiGroup = "", pairingPoller = null, countdownInterval = null;
         let isProcessing = false;
 
-        // Hilfsfunktion zur Ermittlung der öffentlichen IP-Adresse (Router-Netzwerk)
         async function getPublicIP() {
             const res = await fetch('https://api.ipify.org?format=json');
             const data = await res.json();
@@ -121,7 +120,6 @@
                 isGrouped = true;
                 document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
                 
-                // Realtime-Kanal steuert automatische Ansichts-Updates bei Änderungen (Kicks/Beitritte)
                 window.supabaseInstance.channel('group_' + currentAnkiGroup)
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'active_sessions' }, () => location.reload())
                     .subscribe();
@@ -161,18 +159,14 @@
             list.innerHTML = html;
         }
 
-        // Steuert das Entfernen und die dynamische Gruppenauflösung
         async function handleDeviceRemoval(idToRemove, targetGroup) {
-            // 1. Gerät austragen
             await window.supabaseInstance.from('active_sessions').delete().eq('device_id', idToRemove);
             
-            // 2. Prüfen, wie viele Geräte jetzt noch in der Gruppe verbleiben
             const { data: remaining } = await window.supabaseInstance
                 .from('active_sessions')
                 .select('device_id')
                 .eq('group_name', targetGroup);
             
-            // 3. Wenn nur noch 1 oder kein Gerät existiert -> Gruppe komplett auflösen
             if (!remaining || remaining.length <= 1) {
                 await window.supabaseInstance.from('active_sessions').delete().eq('group_name', targetGroup);
             }
@@ -203,7 +197,7 @@
             document.getElementById('modal-text').innerText = "Code eingeben:";
         }
 
-        // GERÄT A: Code auf dem Server generieren
+        // GERÄT A: Generiert den Code und packt Metadaten in 'group_name'
         async function startPairingProcess() {
             if (isProcessing) return;
             isProcessing = true;
@@ -217,11 +211,17 @@
                 const myIp = await getPublicIP();
                 let code = Math.floor(10000 + Math.random() * 90000).toString();
                 
+                // Wir packen alle Infos in ein Text-Paket für die existierende Tabellenspalte
+                const metaPackage = JSON.stringify({
+                    id: myDeviceId,
+                    ip: myIp,
+                    type: myDeviceType,
+                    fallbackName: currentAnkiGroup
+                });
+
                 const { data, error: groupErr } = await window.supabaseInstance.from('groups').insert([{ 
                     group_key: code, 
-                    creator_device_id: myDeviceId,
-                    creator_ip: myIp,
-                    creator_device_type: myDeviceType,
+                    group_name: metaPackage, 
                     status: 'active',
                     created_at: new Date().toISOString()
                 }]).select().single();
@@ -246,7 +246,6 @@
             }
         }
 
-        // GERÄT A Poller: Wartet exklusiv auf den Eintrag in active_sessions durch Gerät B
         async function pollPairingStatus() {
             if (!dbEntryId) return;
 
@@ -258,7 +257,6 @@
                     .maybeSingle();
 
                 if (session) {
-                    // Benachrichtigung anzeigen, sobald alle Prüfungen auf B durch sind
                     document.getElementById('timer-display').style.display = 'none';
                     document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Code exakt! Alle Überprüfungen durch.<br>Verbindung wird hergestellt...</span>";
                     setTimeout(() => location.reload(), 2000);
@@ -271,7 +269,7 @@
             }
         }
 
-        // GERÄT B: Gibt Code ein und führt die komplette hierarchische Logik aus
+        // GERÄT B: Verarbeitet die hierarchische Validierungsreihenfolge exklusiv
         async function confirmCode() {
             if (isProcessing) return;
             isProcessing = true;
@@ -282,7 +280,7 @@
 
                 const myIp = await getPublicIP();
 
-                // 1. ÜBERPRÜFUNG: Code-Match holen
+                // 1. ÜBERPRÜFUNG: Code-Übereinstimmung auf dem Server abgleichen
                 const { data: groupData, error: groupErr } = await window.supabaseInstance
                     .from('groups')
                     .select('*')
@@ -293,13 +291,16 @@
                 if (groupErr) throw groupErr;
                 if (!groupData) throw new Error("Code ungültig oder abgelaufen.");
 
-                // 2. ÜBERPRÜFUNG: Selbes Router-Netzwerk (Öffentliche IP abgleichen)
-                if (groupData.creator_ip !== myIp) {
+                // Metadaten-Paket von Gerät A entpacken
+                const creatorMeta = JSON.parse(groupData.group_name);
+
+                // 2. ÜBERPRÜFUNG: Befinden sich beide Geräte im selben Router-Netzwerk?
+                if (creatorMeta.ip !== myIp) {
                     throw new Error("Sicherheits-Abbruch: Geräte befinden sich nicht im selben Router-Netzwerk.");
                 }
 
-                // 3. ÜBERPRÜFUNG: Befindet sich bereits einer der beiden in einer Gruppe?
-                const { data: checkA } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', groupData.creator_device_id).maybeSingle();
+                // 3. ÜBERPRÜFUNG: Befindet sich bereits ein Gerät in einer bestehenden Gruppe?
+                const { data: checkA } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', creatorMeta.id).maybeSingle();
                 const { data: checkB } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
 
                 let targetGroup = null;
@@ -309,7 +310,7 @@
                     targetGroup = checkB.group_name;
                 }
 
-                // Wenn keiner in einer Gruppe ist -> Chronologische, lückenlose Gruppenplatzierung ermitteln
+                // Wenn keins der Geräte in einer Gruppe ist -> Chronologische Lückenfüllung
                 if (!targetGroup) {
                     const { data: allSessions } = await window.supabaseInstance.from('active_sessions').select('group_name');
                     const usedNumbers = allSessions ? allSessions.map(s => {
@@ -324,11 +325,11 @@
                     targetGroup = `Anki-${counter}`;
                 }
 
-                // 4. AUSFÜHRUNG: Gerät B schreibt als "Single Writer" JETZT beide Datensätze
+                // 4. AUSFÜHRUNG: Beide eintragen (.upsert überschreibt/erstellt ohne Key-Konflikt)
                 await window.supabaseInstance.from('active_sessions').upsert({ 
                     group_name: targetGroup, 
-                    device_id: groupData.creator_device_id, 
-                    device_type: groupData.creator_device_type 
+                    device_id: creatorMeta.id, 
+                    device_type: creatorMeta.type 
                 });
 
                 await window.supabaseInstance.from('active_sessions').upsert({ 
@@ -337,10 +338,10 @@
                     device_type: myDeviceType 
                 });
 
-                // Code verbrauchen -> Löst zeitgleich den Reload-Zustand auf Gerät A aus
+                // Code endgültig verbrauchen (löschen löst den Zustand auf Gerät A aus)
                 await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
 
-                // Erfolgsmeldung anzeigen
+                // Beide signalisieren optisch Erfolg
                 document.getElementById('input-area').style.display = 'none';
                 document.getElementById('modal-text').innerHTML = "<span style='color:#00d4ff; font-weight:bold;'>Code exakt! Alle Überprüfungen durch.<br>Verbindung wird hergestellt...</span>";
                 
