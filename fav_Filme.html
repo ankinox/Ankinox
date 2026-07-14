@@ -81,22 +81,37 @@
     <script>
         async function loadMovieFavorites() {
             const container = document.getElementById('favorites-container');
-            const groupName = localStorage.getItem('last_known_group') || "Anki-1";
+            const myDeviceId = localStorage.getItem('anki_device_id');
             
-            // Abfrage: Suche alle Filme der Gruppe
-            const { data, error } = await window.supabaseInstance
-                .from('favorites')
-                .select('*')
-                .eq('group_name', groupName)
-                .eq('media_type', 'movie') 
-                .order('created_at', { ascending: false });
+            if (!myDeviceId) {
+                container.innerHTML = '<div class="add-plus-placeholder">+</div>';
+                return;
+            }
+
+            // 1. Prüfen, ob das Gerät aktuell einer Gruppe angehört
+            const { data: session } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('group_name')
+                .eq('device_id', myDeviceId)
+                .maybeSingle();
+
+            // 2. Abfrage-Logik: Filter auf Gruppe oder eigene ID, immer zusätzlich mit 'movie' Filter
+            let query = window.supabaseInstance.from('favorites').select('*').eq('media_type', 'movie');
+            
+            if (session && session.group_name) {
+                query = query.eq('group_name', session.group_name);
+            } else {
+                query = query.eq('group_name', myDeviceId);
+            }
+
+            const { data, error } = await query.order('created_at', { ascending: false });
 
             if (error || !data || data.length === 0) {
                 container.innerHTML = '<div class="add-plus-placeholder">+</div>';
                 return;
             }
 
-            // Duplikate entfernen
+            // Duplikate entfernen (anhand der page_url)
             const uniqueFavorites = [];
             const seenUrls = new Set();
 
