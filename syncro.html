@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synchronisieren</title>
-    <!-- Supabase Bibliothek -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -74,101 +73,102 @@
     </div>
 
     <script>
-    const supabase = window.supabase.createClient(
-        'https://kynhrpdxhkjaeeexalje.supabase.co', 
-        'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
-    );
+        // Supabase fest integriert
+        const supabase = window.supabase.createClient(
+            'https://kynhrpdxhkjaeeexalje.supabase.co', 
+            'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
+        );
 
-    let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null;
+        let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null;
 
-    function resetModalUI() {
-        document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
-        document.getElementById('input-area').style.display = 'block';
-        document.getElementById('groupCode').value = "";
-        document.getElementById('modal-text').innerText = "Code eingeben:";
-        document.getElementById('timer-display').innerText = "";
-    }
-
-    async function startPairingProcess() {
-        generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
-        let expireDate = new Date(Date.now() + 60000).toISOString();
-        
-        const { data, error } = await supabase.from('groups').insert([{ 
-            group_key: generatedCode, 
-            status: 'active',
-            expires_at: expireDate 
-        }]).select().single();
-
-        if (error) { console.error("DB Fehler:", error); alert("Server-Verbindungsfehler."); return; }
-        
-        dbEntryId = data.id;
-        document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
-        document.getElementById('input-area').style.display = 'none';
-        document.getElementById('codeModal').style.display = 'flex';
-
-        let timeRemaining = 60; 
-        countdownInterval = setInterval(() => {
-            timeRemaining--;
-            document.getElementById('timer-display').innerText = `Gültig für: ${timeRemaining} sek`;
-            if (timeRemaining <= 0) clearInterval(countdownInterval);
-        }, 1000);
-
-        pairingTimer = setTimeout(async () => {
-            if (dbEntryId) await supabase.from('groups').delete().eq('id', dbEntryId);
-            document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
-            resetModalUI();
-        }, 60000); 
-    }
-
-    async function confirmCode() {
-        const input = document.getElementById('groupCode').value;
-        const { data, error } = await supabase.from('groups').select('*').eq('group_key', input).single();
-
-        if (data) {
-            isGrouped = true;
-            document.getElementById('mainButton').innerText = "Verbunden: " + input;
-            updateDeviceList();
-            closeModal();
-            await supabase.from('groups').delete().eq('id', data.id);
-        } else {
-            alert("Code ungültig.");
+        function resetModalUI() {
+            document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
+            document.getElementById('input-area').style.display = 'block';
+            document.getElementById('groupCode').value = "";
+            document.getElementById('modal-text').innerText = "Code eingeben:";
+            document.getElementById('timer-display').innerText = "";
         }
-    }
 
-    function closeModal() {
-        clearInterval(countdownInterval);
-        clearTimeout(pairingTimer);
-        document.getElementById('codeModal').style.display = 'none';
-        resetModalUI();
-    }
-
-    function handleButtonClick() {
-        if (!isGrouped) {
-            resetModalUI();
+        async function startPairingProcess() {
+            generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
+            let expireDate = new Date(Date.now() + 60000).toISOString();
+            
+            const { data, error } = await supabase.from('groups').insert([{ 
+                group_key: generatedCode, 
+                status: 'active',
+                expires_at: expireDate 
+            }]).select().single();
+            
+            if (error) { console.error("DB Fehler:", error); alert("Server-Verbindungsfehler."); return; }
+            
+            dbEntryId = data.id;
+            document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
+            document.getElementById('input-area').style.display = 'none';
             document.getElementById('codeModal').style.display = 'flex';
+
+            let timeRemaining = 60; 
+            countdownInterval = setInterval(() => {
+                timeRemaining--;
+                document.getElementById('timer-display').innerText = `Gültig für: ${timeRemaining} sek`;
+                if (timeRemaining <= 0) clearInterval(countdownInterval);
+            }, 1000);
+
+            pairingTimer = setTimeout(async () => {
+                if (dbEntryId) await supabase.from('groups').delete().eq('id', dbEntryId);
+                document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
+                resetModalUI();
+            }, 60000); 
         }
-    }
 
-    function updateDeviceList() {
-        const list = document.getElementById('device-list');
-        list.innerHTML = isGrouped ? `
-            <div class="device-card">
-                <p>📱 Host Gerät<br><small>Verbunden</small></p>
-            </div>
-            <div class="device-card" onclick="kickDevice()">
-                <p>💻 PC/Tablet<br><small>(Entfernen)</small></p>
-            </div>
-            <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
-        ` : `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
-    }
+        async function confirmCode() {
+            const input = document.getElementById('groupCode').value;
+            const { data, error } = await supabase.from('groups').select('*').eq('group_key', input).single();
 
-    function kickDevice() { 
-        if(confirm("Gerät entfernen?")) { 
-            isGrouped = false; 
-            document.getElementById('mainButton').innerText = "Code eingeben"; 
-            updateDeviceList(); 
-        } 
-    }
-</script>
+            if (data) {
+                isGrouped = true;
+                document.getElementById('mainButton').innerText = "Anki-Schlüssel: " + input;
+                updateDeviceList();
+                closeModal();
+                await supabase.from('groups').delete().eq('id', data.id);
+            } else {
+                alert("Code ungültig.");
+            }
+        }
+
+        function closeModal() {
+            clearInterval(countdownInterval);
+            clearTimeout(pairingTimer);
+            document.getElementById('codeModal').style.display = 'none';
+            resetModalUI();
+        }
+
+        function handleButtonClick() {
+            if (!isGrouped) {
+                resetModalUI();
+                document.getElementById('codeModal').style.display = 'flex';
+            }
+        }
+
+        function updateDeviceList() {
+            const list = document.getElementById('device-list');
+            list.innerHTML = isGrouped ? `
+                <div class="device-card">
+                    <p>📱 Mein Gerät (Host)<br><small>Verbunden</small></p>
+                </div>
+                <div class="device-card" onclick="kickDevice()">
+                    <p>💻 Verbundenes Gerät<br><small>(Entfernen)</small></p>
+                </div>
+                <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
+            ` : `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
+        }
+
+        function kickDevice() { 
+            if(confirm("Gerät entfernen?")) { 
+                isGrouped = false; 
+                document.getElementById('mainButton').innerText = "Code eingeben"; 
+                updateDeviceList(); 
+            } 
+        }
+    </script>
 </body>
 </html>
