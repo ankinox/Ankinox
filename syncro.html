@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synchronisieren</title>
+    <!-- Supabase Bibliothek -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -34,6 +35,7 @@
         <div class="banner-overlay"></div>
     </div>
 
+    <!-- Modal für Code-Eingabe/Anzeige -->
     <div id="codeModal" class="modal">
         <div class="modal-content">
             <div id="modal-body">
@@ -50,6 +52,7 @@
         </div>
     </div>
 
+    <!-- Hauptbereich -->
     <div class="content">
         <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
 
@@ -60,7 +63,7 @@
                 </a>
             </div>
             <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
-                Synchronisiere dein Gerät mit einem 60-Sekunden-Code. Voraussetzung: beide Geräte sind mit dem selben Router verbunden.
+                Synchronisiere dein Gerät mit einem 60-Sekunden-Code.
             </div>
 
             <div style="text-align: left;">
@@ -73,11 +76,13 @@
     </div>
 
     <script>
-        // Supabase fest integriert
-        const supabase = window.supabase.createClient(
-            'https://kynhrpdxhkjaeeexalje.supabase.co', 
-            'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
-        );
+        document.addEventListener("DOMContentLoaded", () => {
+            const { createClient } = window.supabase;
+            window.supabaseInstance = createClient(
+                'https://kynhrpdxhkjaeeexalje.supabase.co', 
+                'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
+            );
+        });
 
         let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null;
 
@@ -86,56 +91,70 @@
             document.getElementById('input-area').style.display = 'block';
             document.getElementById('groupCode').value = "";
             document.getElementById('modal-text').innerText = "Code eingeben:";
-            document.getElementById('timer-display').innerText = "";
         }
 
         async function startPairingProcess() {
+            if (!window.supabaseInstance) return;
             generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
-            let expireDate = new Date(Date.now() + 60000).toISOString();
             
-            const { data, error } = await supabase.from('groups').insert([{ 
+            // Korrigierter Insert: Enthält nun expires_at, um Tabellen-Pflichtfelder zu bedienen
+            let expireDate = new Date(Date.now() + 60000).toISOString();
+            const { data, error } = await window.supabaseInstance.from('groups').insert([{ 
                 group_key: generatedCode, 
                 status: 'active',
                 expires_at: expireDate 
             }]).select().single();
-            
-            if (error) { console.error("DB Fehler:", error); alert("Server-Verbindungsfehler."); return; }
+
+            if (error) { console.error("DB Fehler:", error); alert("Fehler: " + error.message); return; }
             
             dbEntryId = data.id;
+
             document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
             document.getElementById('input-area').style.display = 'none';
             document.getElementById('codeModal').style.display = 'flex';
 
             let timeRemaining = 60; 
+            document.getElementById('timer-display').innerText = "Gültig für: 1:00 min";
+            
             countdownInterval = setInterval(() => {
                 timeRemaining--;
-                document.getElementById('timer-display').innerText = `Gültig für: ${timeRemaining} sek`;
+                let secs = timeRemaining % 60;
+                document.getElementById('timer-display').innerText = `Gültig für: 0:${secs < 10 ? '0'+secs : secs} sek`;
                 if (timeRemaining <= 0) clearInterval(countdownInterval);
             }, 1000);
 
             pairingTimer = setTimeout(async () => {
-                if (dbEntryId) await supabase.from('groups').delete().eq('id', dbEntryId);
+                generatedCode = ""; 
+                if (dbEntryId) {
+                    await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId);
+                    dbEntryId = null;
+                }
                 document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
-                resetModalUI();
+                document.getElementById('timer-display').innerText = "";
+                document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Schließen</button>";
             }, 60000); 
         }
 
         async function confirmCode() {
             const input = document.getElementById('groupCode').value;
-            const { data, error } = await supabase.from('groups').select('*').eq('group_key', input).single();
+            const { data, error } = await window.supabaseInstance.from('groups').select('*').eq('group_key', input).single();
 
             if (data) {
                 isGrouped = true;
                 document.getElementById('mainButton').innerText = "Anki-Schlüssel: " + input;
                 updateDeviceList();
                 closeModal();
-                await supabase.from('groups').delete().eq('id', data.id);
+                await window.supabaseInstance.from('groups').delete().eq('id', data.id);
             } else {
-                alert("Code ungültig.");
+                alert("Code ungültig oder abgelaufen.");
             }
         }
 
-        function closeModal() {
+        async function closeModal() {
+            if (dbEntryId) {
+                await window.supabaseInstance.from('groups').delete().eq('id', dbEntryId);
+                dbEntryId = null;
+            }
             clearInterval(countdownInterval);
             clearTimeout(pairingTimer);
             document.getElementById('codeModal').style.display = 'none';
@@ -152,23 +171,14 @@
         function updateDeviceList() {
             const list = document.getElementById('device-list');
             list.innerHTML = isGrouped ? `
-                <div class="device-card">
-                    <p>📱 Mein Gerät (Host)<br><small>Verbunden</small></p>
-                </div>
-                <div class="device-card" onclick="kickDevice()">
-                    <p>💻 Verbundenes Gerät<br><small>(Entfernen)</small></p>
+                <div class="device-card" onclick="leaveGroup()">
+                    <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
                 </div>
                 <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
             ` : `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
         }
 
-        function kickDevice() { 
-            if(confirm("Gerät entfernen?")) { 
-                isGrouped = false; 
-                document.getElementById('mainButton').innerText = "Code eingeben"; 
-                updateDeviceList(); 
-            } 
-        }
+        function leaveGroup() { if(confirm("Gruppe verlassen?")) { isGrouped = false; document.getElementById('mainButton').innerText = "Code eingeben"; updateDeviceList(); } }
     </script>
 </body>
 </html>
