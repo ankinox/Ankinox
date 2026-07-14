@@ -145,27 +145,36 @@
 
         async function startPairingProcess() {
             if (!window.supabaseInstance) return;
-            generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
             
-            const { data, error } = await window.supabaseInstance.from('groups').insert([{ 
-                group_key: generatedCode, status: 'active', created_at: new Date().toISOString()
-            }]).select().single();
-
-            if (error) { showStatus("Netzwerkfehler: Bitte WLAN prüfen.", true); return; }
-            dbEntryId = data.id;
-
-            pairingPoller = setInterval(async () => {
-                const { data: checkData } = await window.supabaseInstance.from('groups').select('id').eq('id', dbEntryId).single();
-                if (!checkData) {
-                    clearInterval(pairingPoller);
-                    showStatus("Verbindung erfolgreich!");
-                    setTimeout(checkSession, 1000);
-                }
-            }, 1000);
-
-            document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
+            // Modal erzwingen
+            const modal = document.getElementById('codeModal');
+            modal.style.display = 'flex';
+            document.getElementById('modal-text').innerText = "Erstelle Code...";
             document.getElementById('input-area').style.display = 'none';
-            document.getElementById('codeModal').style.display = 'flex';
+
+            try {
+                generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
+                
+                const { data, error } = await window.supabaseInstance.from('groups').insert([{ 
+                    group_key: generatedCode, status: 'active', created_at: new Date().toISOString()
+                }]).select().single();
+
+                if (error) throw error;
+                dbEntryId = data.id;
+
+                pairingPoller = setInterval(async () => {
+                    const { data: checkData } = await window.supabaseInstance.from('groups').select('id').eq('id', dbEntryId).single();
+                    if (!checkData) {
+                        clearInterval(pairingPoller);
+                        showStatus("Verbindung erfolgreich!");
+                        setTimeout(checkSession, 1000);
+                    }
+                }, 1000);
+
+                document.getElementById('modal-text').innerHTML = "Dein Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
+            } catch (err) {
+                showStatus("Fehler: Konnte keinen Code erstellen.", true);
+            }
         }
 
         async function confirmCode() {
@@ -174,29 +183,22 @@
 
             if (error || !groupData) { showStatus("Code ungültig.", true); return; }
 
-            // ÜBERPRÜFUNG: Bin ich schon in einer Gruppe?
             const { data: mySession } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', myDeviceId).maybeSingle();
             
             let targetGroupName = "";
 
             if (mySession) {
-                // Ich bin in einer Gruppe -> Partner kommt zu mir
                 targetGroupName = mySession.group_name;
             } else {
-                // Ich bin in keiner Gruppe -> Neue Gruppe für beide erstellen
                 const { data: all } = await window.supabaseInstance.from('active_sessions').select('group_name');
                 const used = all ? all.map(i => parseInt(i.group_name.split('-')[1]) || 0) : [];
                 let counter = 1;
                 while(used.includes(counter)) counter++;
                 targetGroupName = `Anki-${counter}`;
-                // Mich selbst eintragen
                 await window.supabaseInstance.from('active_sessions').insert([{ group_name: targetGroupName, device_id: myDeviceId }]);
             }
 
-            // Partner in die Gruppe eintragen (übernimm den Partner-Device-ID vom Pairing-Prozess, hier als Platzhalter)
-            // Hinweis: Der andere Teilnehmer müsste hier idealerweise seine eigene Device-ID registrieren.
             await window.supabaseInstance.from('active_sessions').insert([{ group_name: targetGroupName, device_id: 'partner_' + Math.random().toString(36).substr(2, 5) }]);
-            
             await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
             
             currentAnkiGroup = targetGroupName;
