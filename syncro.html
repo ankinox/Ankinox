@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synchronisieren</title>
+    <!-- WICHTIG: Die Supabase Bibliothek muss hier rein -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
@@ -73,45 +74,20 @@
     </div>
 
     <script>
-        let isGrouped = false;
-        let generatedCode = "";
-        let pairingTimer, countdownInterval;
+        const supabase = supabase.createClient('https://kynhrpdxhkjaeeexalje.supabase.co', 'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ');
+        let isGrouped = false, generatedCode = "", pairingTimer, countdownInterval, dbEntryId = null;
 
-        function updateDeviceList() {
-            const list = document.getElementById('device-list');
-            if (isGrouped) {
-                list.innerHTML = `
-                    <div class="device-card" onclick="leaveGroup()">
-                        <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
-                    </div>
-                    <div class="device-card" onclick="kickDevice()">
-                        <p>💻 Verbundenes Gerät<br><small>(Entfernen)</small></p>
-                    </div>
-                    <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
-                `;
-            } else {
-                list.innerHTML = `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
-            }
+        function resetModalUI() {
+            document.getElementById('action-area').innerHTML = '<button onclick="closeModal()" style="color: #555; background: none; border: none; cursor: pointer;">Abbrechen</button>';
+            document.getElementById('input-area').style.display = 'block';
+            document.getElementById('groupCode').value = "";
         }
 
-        function leaveGroup() {
-            if(confirm("Möchtest du die Gruppe wirklich verlassen?")) {
-                isGrouped = false;
-                document.getElementById('mainButton').innerText = "Code eingeben";
-                updateDeviceList();
-            }
-        }
-
-        function kickDevice() {
-            if(confirm("Möchtest du das verbundene Gerät entfernen?")) {
-                isGrouped = false;
-                document.getElementById('mainButton').innerText = "Code eingeben";
-                updateDeviceList();
-            }
-        }
-
-        function startPairingProcess() {
+        async function startPairingProcess() {
             generatedCode = Math.floor(10000 + Math.random() * 90000).toString();
+            const { data, error } = await supabase.from('groups').insert([{ group_key: generatedCode, status: 'active' }]).select().single();
+            if (!error) dbEntryId = data.id;
+
             document.getElementById('modal-text').innerHTML = "Dein 60-Sekunden-Code:<br><strong style='font-size:2rem; color:#00d4ff;'>" + generatedCode + "</strong>";
             document.getElementById('input-area').style.display = 'none';
             document.getElementById('codeModal').style.display = 'flex';
@@ -120,49 +96,63 @@
             document.getElementById('timer-display').innerText = "Gültig für: 1:00 min";
             countdownInterval = setInterval(() => {
                 timeRemaining--;
-                let mins = Math.floor(timeRemaining / 60);
                 let secs = timeRemaining % 60;
-                document.getElementById('timer-display').innerText = `Gültig für: ${mins}:${secs < 10 ? '0'+secs : secs} sek`;
+                document.getElementById('timer-display').innerText = `Gültig für: 0:${secs < 10 ? '0'+secs : secs} sek`;
                 if (timeRemaining <= 0) clearInterval(countdownInterval);
             }, 1000);
 
-            pairingTimer = setTimeout(() => {
+            pairingTimer = setTimeout(async () => {
                 generatedCode = ""; 
+                if (dbEntryId) await supabase.from('groups').delete().eq('id', dbEntryId);
                 document.getElementById('modal-text').innerHTML = "Code abgelaufen.";
                 document.getElementById('timer-display').innerText = "";
-                document.getElementById('action-area').innerHTML = "<button onclick='startPairingProcess()' style='color:#00d4ff; background:none; border:1px solid #00d4ff; padding:5px 20px; border-radius:20px; cursor:pointer;'>Neuen Code anfordern</button><br><br><button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+                document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Schließen</button>";
             }, 60000); 
+        }
+
+        async function confirmCode() {
+            const input = document.getElementById('groupCode').value;
+            const { data } = await supabase.from('groups').select('*').eq('group_key', input).single();
+            if (data) {
+                isGrouped = true;
+                document.getElementById('mainButton').innerText = "Anki-Schlüssel: " + input;
+                updateDeviceList();
+                closeModal();
+                await supabase.from('groups').delete().eq('id', data.id);
+            } else { alert("Code ungültig oder abgelaufen."); }
+        }
+
+        async function closeModal() {
+            if (dbEntryId) await supabase.from('groups').delete().eq('id', dbEntryId);
+            clearInterval(countdownInterval);
+            clearTimeout(pairingTimer);
+            document.getElementById('codeModal').style.display = 'none';
+            resetModalUI();
         }
 
         function handleButtonClick() {
             if (!isGrouped) {
                 document.getElementById('modal-text').innerText = "Code eingeben:";
-                document.getElementById('input-area').style.display = 'block';
-                document.getElementById('timer-display').innerText = "";
-                document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
+                resetModalUI();
                 document.getElementById('codeModal').style.display = 'flex';
             }
         }
 
-        function confirmCode() {
-            const input = document.getElementById('groupCode').value;
-            if (generatedCode !== "" && input === generatedCode) {
-                isGrouped = true;
-                document.getElementById('mainButton').innerText = "Anki-Schlüssel: ANKI-X-99";
-                updateDeviceList();
-                closeModal();
-            } else { alert("Ungültiger oder abgelaufener Code."); }
+        function updateDeviceList() {
+            const list = document.getElementById('device-list');
+            list.innerHTML = isGrouped ? `
+                <div class="device-card" onclick="leaveGroup()">
+                    <p>📱 Mein Gerät (Host)<br><small>(Gruppe verlassen)</small></p>
+                </div>
+                <div class="device-card" onclick="kickDevice()">
+                    <p>💻 Verbundenes Gerät<br><small>(Entfernen)</small></p>
+                </div>
+                <div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>
+            ` : `<div class="add-plus-placeholder" onclick="startPairingProcess()">+</div>`;
         }
 
-        function closeModal() {
-            generatedCode = ""; 
-            clearInterval(countdownInterval);
-            clearTimeout(pairingTimer);
-            document.getElementById('codeModal').style.display = 'none';
-            document.getElementById('input-area').style.display = 'block';
-            document.getElementById('timer-display').innerText = "";
-            document.getElementById('action-area').innerHTML = "<button onclick='closeModal()' style='color:#555; background:none; border:none; cursor:pointer;'>Abbrechen</button>";
-        }
+        function leaveGroup() { if(confirm("Gruppe verlassen?")) { isGrouped = false; document.getElementById('mainButton').innerText = "Code eingeben"; updateDeviceList(); } }
+        function kickDevice() { if(confirm("Gerät entfernen?")) { isGrouped = false; document.getElementById('mainButton').innerText = "Code eingeben"; updateDeviceList(); } }
     </script>
 </body>
 </html>
