@@ -224,10 +224,17 @@
                 
                 // Beitritt zur bestehenden Gruppe
                 await window.supabaseInstance.from('active_sessions').insert([{ group_name: groupData.group_name, device_id: myDeviceId, device_type: myDeviceType }]);
+                
+                // Lokalen Status sofort setzen
+                currentAnkiGroup = groupData.group_name;
+                isGrouped = true;
+                
                 await window.supabaseInstance.from('groups').delete().eq('id', groupData.id);
                 
                 closeModal();
                 checkSession();
+                document.getElementById('mainButton').innerText = "Gruppe: " + currentAnkiGroup;
+                updateDeviceList();
             } catch (err) {
                 showStatus("Fehler: " + err.message, true);
             }
