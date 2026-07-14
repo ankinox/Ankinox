@@ -102,6 +102,7 @@
             const mediaType = btn.getAttribute('data-type');
             const deviceId = localStorage.getItem('anki_device_id');
             const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
+            const pageUrl = window.location.href;
 
             const { data: existing } = await window.supabaseInstance
                 .from('favorites')
@@ -121,7 +122,8 @@
                     media_id: mediaId,
                     media_type: mediaType,
                     title: mediaTitle,
-                    image_url: bannerUrl
+                    image_url: bannerUrl,
+                    page_url: pageUrl
                 });
                 btn.classList.add('active');
                 btn.innerText = "★ Favorisiert";
