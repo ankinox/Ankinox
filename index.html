@@ -86,6 +86,18 @@
 
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
+        
+        const bannerContainer = document.getElementById('banner-container');
+        let touchstartX = 0;
+        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        bannerContainer.addEventListener('touchend', e => {
+            let diff = e.changedTouches[0].screenX - touchstartX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) manualUpdate((idx + 1) % data.length);
+                else manualUpdate((idx - 1 + data.length) % data.length);
+            }
+        });
+
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
         function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
         function updateBanner(i) {
@@ -110,12 +122,7 @@
         let hasDeletedInManualMode = false;
 
         function canScroll() { return carousel.scrollWidth > carousel.clientWidth; }
-
-        function fillToFour() {
-            while (carousel.children.length < 4) {
-                carousel.appendChild(carousel.firstElementChild.cloneNode(true));
-            }
-        }
+        function fillToFour() { while (carousel.children.length < 4) { carousel.appendChild(carousel.firstElementChild.cloneNode(true)); } }
 
         function startCarousel() {
             if (!canScroll()) return;
