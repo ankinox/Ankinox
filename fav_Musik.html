@@ -88,23 +88,35 @@
                 return;
             }
 
-            // 1. Prüfen, ob das Gerät aktuell einer Gruppe angehört
-            const { data: session } = await window.supabaseInstance
+            // 1. Eigene Gruppe finden
+            const { data: sessionData } = await window.supabaseInstance
                 .from('active_sessions')
                 .select('group_name')
                 .eq('device_id', myDeviceId)
                 .maybeSingle();
-
-            // 2. Abfrage-Logik: Filter auf Gruppe oder eigene ID, immer zusätzlich mit 'music' Filter
-            let query = window.supabaseInstance.from('favorites').select('*').eq('media_type', 'music');
             
-            if (session && session.group_name) {
-                query = query.eq('group_name', session.group_name);
-            } else {
-                query = query.eq('group_name', myDeviceId);
+            const groupName = sessionData ? sessionData.group_name : null;
+
+            // 2. Alle device_ids in dieser Gruppe finden
+            let userIds = [myDeviceId];
+            if (groupName) {
+                const { data: groupMembers } = await window.supabaseInstance
+                    .from('active_sessions')
+                    .select('device_id')
+                    .eq('group_name', groupName);
+                
+                if (groupMembers) {
+                    userIds = groupMembers.map(m => m.device_id);
+                }
             }
 
-            const { data, error } = await query.order('created_at', { ascending: false });
+            // 3. Favoriten für alle gefundenen user_ids laden (gefiltert nach 'music')
+            const { data, error } = await window.supabaseInstance
+                .from('favorites')
+                .select('*')
+                .in('device_id', userIds)
+                .eq('media_type', 'music')
+                .order('created_at', { ascending: false });
 
             if (error || !data || data.length === 0) {
                 container.innerHTML = '<div class="add-plus-placeholder">+</div>';
