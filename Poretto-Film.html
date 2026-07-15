@@ -95,7 +95,7 @@
             localStorage.setItem('anki_device_id', 'user_' + Math.random().toString(36).substr(2, 9));
         }
 
-        async function getActiveScope() {
+        async function getGroupScope() {
             const deviceId = localStorage.getItem('anki_device_id');
             const { data } = await window.supabaseInstance
                 .from('active_sessions')
@@ -110,10 +110,11 @@
             const mediaTitle = btn.getAttribute('data-title');
             const mediaType = btn.getAttribute('data-type');
             const deviceId = localStorage.getItem('anki_device_id');
-            const activeScope = await getActiveScope();
+            const activeScope = await getGroupScope();
             const pageUrl = window.location.href;
             const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
 
+            // Prüfen, ob für diese Gruppe bereits favorisiert
             const { data: existing } = await window.supabaseInstance
                 .from('favorites')
                 .select('id')
@@ -127,7 +128,7 @@
                 btn.innerText = "♥ Favorit";
             } else {
                 await window.supabaseInstance.from('favorites').insert({
-                    user_id: deviceId, 
+                    device_id: deviceId, 
                     group_name: activeScope,
                     media_id: mediaId,
                     media_type: mediaType,
@@ -140,10 +141,11 @@
             }
         }
 
-        window.addEventListener('load', async () => {
+        window.onload = async () => {
             const btn = document.getElementById('favBtn');
-            const activeScope = await getActiveScope();
+            const activeScope = await getGroupScope();
             
+            // Status für Gruppe prüfen
             const { data } = await window.supabaseInstance
                 .from('favorites')
                 .select('id')
@@ -155,7 +157,7 @@
                 btn.classList.add('active');
                 btn.innerText = "★ Favorisiert";
             }
-        });
+        };
 
         function openVideo() { document.getElementById('video-popup').style.display = 'block'; }
         function closeVideo() { document.getElementById('video-popup').style.display = 'none'; }
