@@ -79,28 +79,38 @@
     </nav>
 
     <script>
-        async function getActiveScope() {
+        async function loadFavorites() {
+            const container = document.getElementById('favorites-container');
             const deviceId = localStorage.getItem('anki_device_id');
-            if (!deviceId) return "Anki-1";
+            if (!deviceId) return;
 
-            const { data } = await window.supabaseInstance
+            // 1. Eigene Gruppe finden
+            const { data: sessionData } = await window.supabaseInstance
                 .from('active_sessions')
                 .select('group_name')
                 .eq('device_id', deviceId)
                 .maybeSingle();
             
-            return data ? data.group_name : deviceId;
-        }
+            const groupName = sessionData ? sessionData.group_name : null;
 
-        async function loadFavorites() {
-            const container = document.getElementById('favorites-container');
-            const activeScope = await getActiveScope();
-            
-            // Abfrage: Suche alle Einträge für diesen Scope
+            // 2. Alle device_ids in dieser Gruppe finden
+            let userIds = [deviceId];
+            if (groupName) {
+                const { data: groupMembers } = await window.supabaseInstance
+                    .from('active_sessions')
+                    .select('device_id')
+                    .eq('group_name', groupName);
+                
+                if (groupMembers) {
+                    userIds = groupMembers.map(m => m.device_id);
+                }
+            }
+
+            // 3. Favoriten für alle gefundenen user_ids laden
             const { data, error } = await window.supabaseInstance
                 .from('favorites')
                 .select('*')
-                .eq('group_name', activeScope)
+                .in('device_id', userIds)
                 .order('created_at', { ascending: false });
 
             if (error || !data || data.length === 0) {
