@@ -95,14 +95,27 @@
             localStorage.setItem('anki_device_id', 'user_' + Math.random().toString(36).substr(2, 9));
         }
 
-        async function getGroupScope() {
+        async function getRelevantDeviceIds() {
             const deviceId = localStorage.getItem('anki_device_id');
-            const { data } = await window.supabaseInstance
+            let allIds = [deviceId]; 
+
+            const { data: mySession } = await window.supabaseInstance
                 .from('active_sessions')
                 .select('group_name')
                 .eq('device_id', deviceId)
                 .maybeSingle();
-            return data ? data.group_name : deviceId;
+
+            if (mySession && mySession.group_name) {
+                const { data: groupMembers } = await window.supabaseInstance
+                    .from('active_sessions')
+                    .select('device_id')
+                    .eq('group_name', mySession.group_name);
+                
+                if (groupMembers) {
+                    allIds = groupMembers.map(member => member.device_id);
+                }
+            }
+            return allIds;
         }
 
         async function toggleFavorite(btn) {
@@ -110,26 +123,24 @@
             const mediaTitle = btn.getAttribute('data-title');
             const mediaType = btn.getAttribute('data-type');
             const deviceId = localStorage.getItem('anki_device_id');
-            const activeScope = await getGroupScope();
+            const relevantIds = await getRelevantDeviceIds();
             const pageUrl = window.location.href;
             const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
 
-            // Prüfen, ob für diese Gruppe bereits favorisiert
-            const { data: existing } = await window.supabaseInstance
+            const { data: existingFavs } = await window.supabaseInstance
                 .from('favorites')
                 .select('id')
                 .eq('media_id', mediaId)
-                .eq('group_name', activeScope)
-                .maybeSingle();
+                .in('device_id', relevantIds);
 
-            if (existing) {
-                await window.supabaseInstance.from('favorites').delete().eq('id', existing.id);
+            if (existingFavs && existingFavs.length > 0) {
+                const idsToDelete = existingFavs.map(fav => fav.id);
+                await window.supabaseInstance.from('favorites').delete().in('id', idsToDelete);
                 btn.classList.remove('active');
                 btn.innerText = "♥ Favorit";
             } else {
                 await window.supabaseInstance.from('favorites').insert({
                     device_id: deviceId, 
-                    group_name: activeScope,
                     media_id: mediaId,
                     media_type: mediaType,
                     title: mediaTitle,
@@ -143,17 +154,16 @@
 
         window.onload = async () => {
             const btn = document.getElementById('favBtn');
-            const activeScope = await getGroupScope();
+            const mediaId = btn.getAttribute('data-id');
+            const relevantIds = await getRelevantDeviceIds();
             
-            // Status für Gruppe prüfen
             const { data } = await window.supabaseInstance
                 .from('favorites')
                 .select('id')
-                .eq('media_id', btn.getAttribute('data-id'))
-                .eq('group_name', activeScope)
-                .maybeSingle();
+                .eq('media_id', mediaId)
+                .in('device_id', relevantIds);
 
-            if (data) {
+            if (data && data.length > 0) {
                 btn.classList.add('active');
                 btn.innerText = "★ Favorisiert";
             }
