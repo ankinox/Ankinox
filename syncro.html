@@ -8,8 +8,43 @@
 
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
-        body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
+        body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
+        /* Footer-Styling */
+        .site-footer {
+            margin-top: 50px;
+            padding: 20px 20px 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #070707;
+            position: relative;
+            z-index: 100;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        .copyright {
+            color: #555;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
             background-image: url('https://res.cloudinary.com/pqb6wtea/image/upload/v1784127467/file_00000000191871f49ef96b4a05bd92db_h9quek.png');
@@ -79,6 +114,19 @@
             </div>
         </div>
     </div>
+
+    <!-- Rechtssichere Fußnote (Footer) -->
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="impressum.html">Impressum</a>
+            <a href="mailto:kontakt@ankinox.com">Kontakt</a>
+            <a href="mailto:support@ankinox.com">Support</a>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Ankinox. Alle Rechte an eigenen Inhalten vorbehalten.<br>
+            Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.
+        </div>
+    </footer>
 
     <nav class="bottom-nav">
         <a href="index.html">Start</a>
