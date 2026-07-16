@@ -39,6 +39,12 @@
             position: relative; 
         }
 
+        /* Begrenzt die Inhaltsbreite auf PCs, um unschönes Strecken zu verhindern */
+        .content-inner {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         /* Video Popup-Stile */
         #video-popup { 
             display: none; 
@@ -123,32 +129,34 @@
     </div>
 
     <div class="content">
-        <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127490/file_00000000d13071f49b02e87cff4df211_dmfvvi.png" style="width: 100%; max-width: 225px; display: block; margin: -180px auto -60px auto;">
+        <div class="content-inner">
+            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127490/file_00000000d13071f49b02e87cff4df211_dmfvvi.png" style="width: 100%; max-width: 225px; display: block; margin: -180px auto -60px auto;">
 
-        <div style="text-align: center;">
-            <div style="color: #bbb; margin-bottom: 10px;">
-                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span>  Kurzfilm • Drama
+            <div style="text-align: center;">
+                <div style="color: #bbb; margin-bottom: 10px;">
+                    <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span>  Kurzfilm • Drama
+                </div>
+                <div style="color: #00d4ff; font-size: 30px; margin-bottom: 5px;">★★★☆☆</div>
+                <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 20px;">Durchschnitt: 3.5</div>
+
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                    <button id="favBtn" class="fav-btn" data-id="QXM4Ucsf5XA" data-type="movie" data-title="Poretto" onclick="toggleFavorite(this)">♥ Favorit</button>
+                    <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
+                </div>
+
+                <div class="meta-details">
+                    <div class="meta-row"><span class="meta-label">Veröffentlichung:</span><span class="meta-value">21. März 2014</span></div>
+                    <div class="meta-row"><span class="meta-label">Regie:</span><span class="meta-value">Yōjirō Arai</span></div>
+                    <div class="meta-row"><span class="meta-label">Studio:</span><span class="meta-value">Noitamina, Studio Colorido</span></div>
+                    <div class="meta-row"><span class="meta-label">Dauer:</span><span class="meta-value">3:40 Min.</span></div>
+                </div>
+
+                <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 20px; font-size: 0.95rem;">
+                    Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.
+                </div>
+
+                <button onclick="openVideo()" style="display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
             </div>
-            <div style="color: #00d4ff; font-size: 30px; margin-bottom: 5px;">★★★☆☆</div>
-            <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 20px;">Durchschnitt: 3.5</div>
-
-            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
-                <button id="favBtn" class="fav-btn" data-id="QXM4Ucsf5XA" data-type="movie" data-title="Poretto" onclick="toggleFavorite(this)">♥ Favorit</button>
-                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
-            </div>
-
-            <div class="meta-details">
-                <div class="meta-row"><span class="meta-label">Veröffentlichung:</span><span class="meta-value">21. März 2014</span></div>
-                <div class="meta-row"><span class="meta-label">Regie:</span><span class="meta-value">Yōjirō Arai</span></div>
-                <div class="meta-row"><span class="meta-label">Studio:</span><span class="meta-value">Noitamina, Studio Colorido</span></div>
-                <div class="meta-row"><span class="meta-label">Dauer:</span><span class="meta-value">3:40 Min.</span></div>
-            </div>
-
-            <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 20px; font-size: 0.95rem;">
-                Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.
-            </div>
-
-            <button onclick="openVideo()" style="display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
         </div>
     </div>
 
