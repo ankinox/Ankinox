@@ -50,11 +50,12 @@
             background: rgba(5, 5, 5, 0.95); 
         }
         #video-container { position: relative; width: 100%; padding-top: 56.25%; }
-        #video-container iframe, #video-container video {
+        #video-container iframe {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             border: none;
+            background: #000;
         }
 
         #close-btn { 
@@ -105,11 +106,13 @@
     <div id="video-popup">
         <span id="close-btn" onclick="closeVideo()">✕</span>
         <div id="video-container">
-            <!-- Dieses native Video-Element holt sich den Stream und triggert den echten, systemweiten PiP-Modus beim Minimieren -->
-            <video id="native-pip-player" playsinline controls style="display: none;"></video>
-            
-            <!-- Standard YouTube Iframe (Fallback für PCs) mit freigegebenen Berechtigungen für Pop-up-Wiedergabe -->
-            <iframe id="yt-iframe" width="100%" height="250" src="https://www.youtube.com/embed/videoseries?list=PLRaI73il2WqIyi8v53CMK3QgXFTGs67Yh&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" sandbox="allow-scripts allow-same-origin allow-presentation; allow-popups" allowfullscreen></iframe>
+            <!-- WICHTIG: allow="picture-in-picture" gibt dem Browser das Recht, das Video auszukoppeln -->
+            <iframe id="yt-player" 
+                    src="https://www.youtube-nocookie.com/embed/QXM4Ucsf5XA?enablejsapi=1&rel=0&playsinline=1" 
+                    title="Poretto Player" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+            </iframe>
         </div>
     </div>
 
@@ -169,54 +172,19 @@
     </nav>
 
     <script>
-        const nativePlayer = document.getElementById('native-pip-player');
-        const ytIframe = document.getElementById('yt-iframe');
         const videoPopup = document.getElementById('video-popup');
+        const ytPlayer = document.getElementById('yt-player');
 
-        // Umwandlung des YouTube Links in ein direkt lesbares Format für den nativen Handy-Player
-        const youtubeVideoId = "QXM4Ucsf5XA"; 
-        
         function openVideo() {
             videoPopup.style.display = 'block';
-
-            // Überprüfen, ob wir auf einem Mobilgerät sind und ob Picture-in-Picture unterstützt wird
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile && 'pictureInPictureEnabled' in document) {
-                ytIframe.style.display = 'none';
-                nativePlayer.style.display = 'block';
-                
-                // Wir nutzen einen herstellerunabhängigen YouTube-Direkt-Streamer
-                nativePlayer.src = `https://www.youtube.com/watch?v=${youtubeVideoId}`;
-                
-                nativePlayer.play().then(() => {
-                    // Startet das echte, frei verschiebbare PiP-Fenster deines Handys
-                    nativePlayer.requestPictureInPicture().catch(err => {
-                        console.log("Natives PiP fehlgeschlagen, Fallback auf YouTube-Iframe:", err);
-                        useIframeFallback();
-                    });
-                }).catch(() => {
-                    useIframeFallback();
-                });
-            } else {
-                useIframeFallback();
-            }
-        }
-
-        function useIframeFallback() {
-            nativePlayer.style.display = 'none';
-            ytIframe.style.display = 'block';
-            ytIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            // Startet das Video automatisch über die YouTube-API, sobald das Popup öffnet
+            ytPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         }
 
         function closeVideo() {
             videoPopup.style.display = 'none';
-            if (document.pictureInPictureElement) {
-                document.exitPictureInPicture();
-            }
-            nativePlayer.pause();
-            nativePlayer.src = "";
-            ytIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            // Pausiert das Video, wenn das Popup geschlossen wird
+            ytPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
         }
 
         // --- Supabase Logik ---
