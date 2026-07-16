@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poretto</title>
-    <!-- Supabase Client einbinden -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         window.supabaseInstance = supabase.createClient(
@@ -39,35 +38,6 @@
             position: relative; 
         }
 
-        /* Video Popup-Stile */
-        #video-popup { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; 
-            height: auto; 
-            z-index: 10000; 
-            background: rgba(5, 5, 5, 0.95); 
-        }
-        #video-container { position: relative; width: 100%; padding-top: 56.25%; }
-        #video-container iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border: none;
-            background: #000;
-        }
-
-        #close-btn { 
-            position: absolute; 
-            top: 10px; right: 10px; 
-            color: white; 
-            font-size: 30px; 
-            cursor: pointer; 
-            z-index: 10001; 
-            text-shadow: 0 0 5px rgba(0,0,0,0.8); 
-        }
-
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
 
@@ -84,7 +54,6 @@
             text-align: left;
         }
         .meta-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .meta-row:last-child { margin-bottom: 0; }
         .meta-label { color: #777; font-weight: bold; }
         .meta-value { color: #ddd; text-align: right; }
 
@@ -93,28 +62,13 @@
             text-align: center;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             background-color: #050505;
-            position: relative;
-            z-index: 10;
         }
         .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 12px; }
         .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; }
-        .copyright { color: #444; font-size: 0.75rem; line-height: 1.4; }
+        .copyright { color: #444; font-size: 0.75rem; }
     </style>
 </head>
 <body>
-
-    <div id="video-popup">
-        <span id="close-btn" onclick="closeVideo()">✕</span>
-        <div id="video-container">
-            <!-- WICHTIG: allow="picture-in-picture" gibt dem Browser das Recht, das Video auszukoppeln -->
-            <iframe id="yt-player" 
-                    src="https://www.youtube-nocookie.com/embed/QXM4Ucsf5XA?enablejsapi=1&rel=0&playsinline=1" 
-                    title="Poretto Player" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-            </iframe>
-        </div>
-    </div>
 
     <div class="banner">
         <div class="banner-logo">
@@ -128,7 +82,7 @@
 
         <div style="text-align: center;">
             <div style="color: #bbb; margin-bottom: 10px;">
-                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span>  Kurzfilm • Drama
+                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span> Kurzfilm • Drama
             </div>
             <div style="color: #00d4ff; font-size: 30px; margin-bottom: 5px;">★★★☆☆</div>
             <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 20px;">Durchschnitt: 3.5</div>
@@ -149,7 +103,7 @@
                 Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.
             </div>
 
-            <button onclick="openVideo()" style="display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
+            <button onclick="playNative()" style="display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
         </div>
     </div>
 
@@ -159,9 +113,7 @@
             <a href="mailto:kontakt@ankinox.com">Kontakt</a>
             <a href="mailto:support@ankinox.com">Support</a>
         </div>
-        <div class="copyright">
-            &copy; 2026 Ankinox. Alle Rechte an eigenen Inhalten vorbehalten.
-        </div>
+        <div class="copyright">&copy; 2026 Ankinox. Alle Rechte vorbehalten.</div>
     </footer>
 
     <nav class="bottom-nav">
@@ -172,19 +124,11 @@
     </nav>
 
     <script>
-        const videoPopup = document.getElementById('video-popup');
-        const ytPlayer = document.getElementById('yt-player');
-
-        function openVideo() {
-            videoPopup.style.display = 'block';
-            // Startet das Video automatisch über die YouTube-API, sobald das Popup öffnet
-            ytPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        }
-
-        function closeVideo() {
-            videoPopup.style.display = 'none';
-            // Pausiert das Video, wenn das Popup geschlossen wird
-            ytPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        // Native Wiedergabe starten
+        function playNative() {
+            // Direktes Öffnen des YouTube-Videos sorgt dafür, dass der Browser
+            // das Video als Haupt-Element erkennt und PiP zulässt.
+            window.location.href = "https://www.youtube.com/watch?v=QXM4Ucsf5XA";
         }
 
         // --- Supabase Logik ---
