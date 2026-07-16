@@ -108,8 +108,8 @@
             <!-- Dieses native Video-Element holt sich den Stream und triggert den echten, systemweiten PiP-Modus beim Minimieren -->
             <video id="native-pip-player" playsinline controls style="display: none;"></video>
             
-            <!-- Standard YouTube Iframe (Fallback für PCs) -->
-            <iframe id="yt-iframe" width="100%" height="250" src="https://www.youtube.com/embed/videoseries?list=PLRaI73il2WqIyi8v53CMK3QgXFTGs67Yh&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+            <!-- Standard YouTube Iframe (Fallback für PCs) mit freigegebenen Berechtigungen für Pop-up-Wiedergabe -->
+            <iframe id="yt-iframe" width="100%" height="250" src="https://www.youtube.com/embed/videoseries?list=PLRaI73il2WqIyi8v53CMK3QgXFTGs67Yh&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" sandbox="allow-scripts allow-same-origin allow-presentation; allow-popups" allowfullscreen></iframe>
         </div>
     </div>
 
