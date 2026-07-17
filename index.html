@@ -178,11 +178,12 @@
         function startCarousel() {
             if (!canScroll()) return;
             isManual = false;
+            clearInterval(scrollTimer);
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
                 if (carousel.scrollLeft >= 160) {
                     carousel.appendChild(carousel.firstElementChild);
-                    carousel.scrollLeft = 0;
+                    carousel.scrollLeft -= 160;
                 }
             }, 30);
         }
