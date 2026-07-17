@@ -15,7 +15,6 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        /* Footer-Styling */
         .site-footer {
             margin-top: 50px;
             padding: 20px 20px 40px 20px;
@@ -108,7 +107,6 @@
         </div>
     </div>
 
-    <!-- Rechtssichere Fußnote (Footer) -->
     <footer class="site-footer">
         <div class="footer-links">
             <a href="impressum.html">Impressum</a>
@@ -174,22 +172,17 @@
         const carousel = document.getElementById('ankinox-carousel');
         let scrollTimer, resumeTimer;
         let isManual = false;
-        let hasDeletedInManualMode = false;
 
         function canScroll() { return carousel.scrollWidth > carousel.clientWidth; }
-        function fillToFour() { while (carousel.children.length < 4) { carousel.appendChild(carousel.firstElementChild.cloneNode(true)); } }
 
         function startCarousel() {
             if (!canScroll()) return;
             isManual = false;
-            hasDeletedInManualMode = false;
-            fillToFour();
             scrollTimer = setInterval(() => {
                 carousel.scrollLeft += 1;
                 if (carousel.scrollLeft >= 160) {
-                    carousel.removeChild(carousel.firstElementChild);
+                    carousel.appendChild(carousel.firstElementChild);
                     carousel.scrollLeft = 0;
-                    fillToFour(); 
                 }
             }, 30);
         }
@@ -198,26 +191,21 @@
 
         carousel.addEventListener('touchstart', () => { 
             isManual = true;
-            hasDeletedInManualMode = false;
             clearInterval(scrollTimer); 
             clearTimeout(resumeTimer); 
         });
-        
-        carousel.addEventListener('scroll', () => {
-            if (isManual && !hasDeletedInManualMode && carousel.children.length > 3 && carousel.scrollLeft >= 160) {
-                carousel.removeChild(carousel.firstElementChild);
-                carousel.scrollLeft = 0;
-                hasDeletedInManualMode = true;
-            }
-        });
 
         carousel.addEventListener('touchend', () => { 
-            resumeTimer = setTimeout(() => { startCarousel(); }, 3000); 
+            resumeTimer = setTimeout(() => { if (!isManual || canScroll()) startCarousel(); }, 3000); 
         });
 
         window.addEventListener('resize', () => {
-            if (!canScroll()) { clearInterval(scrollTimer); }
-            else if (!isManual && !scrollTimer) { startCarousel(); }
+            clearInterval(scrollTimer);
+            if (canScroll()) {
+                startCarousel();
+            } else {
+                carousel.scrollLeft = 0;
+            }
         });
     </script>
 </body>
