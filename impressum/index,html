@@ -251,7 +251,7 @@
 
     <!-- Feste Navigationsleiste unten -->
     <nav class="bottom-nav">
-        <a href="/index.html">Start</a>
+        <a href="/Startseite">Start</a>
         <a href="/stream">Stream</a>
         <a href="/Shop">Shop</a>
         <a href="/Partnerschaft">Partner</a>
