@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impressum – Ankinox</title>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding-bottom: 120px; /* Genug Platz für Footer + feste Navigation */
+            background-color: #050505; 
+            color: white; 
+            font-family: sans-serif; 
+        }
+        
+        /* Hintergrund-Aura für den magischen Ankinox-Look */
+        .ambient-glow {
+            position: fixed;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            height: 50vh;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, rgba(0, 212, 255, 0.05) 50%, rgba(5, 5, 5, 0) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Banner-Bereich analog zur Hauptseite */
+        .header-section {
+            padding: 30px 20px 10px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container img {
+            width: 120px;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            background: linear-gradient(90deg, #7000ff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Elegante, abgerundete Boxen im Glass-Look */
+        .legal-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(112, 0, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 0 20px 20px 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .legal-card h2 {
+            font-size: 16px;
+            color: #00d4ff;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-left: 3px solid #7000ff;
+            padding-left: 8px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .legal-card p, .legal-card address {
+            color: #cccccc;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            font-style: normal;
+            margin: 0 0 10px 0;
+        }
+
+        .legal-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .legal-card a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .legal-card a:hover {
+            color: #bf00ff;
+        }
+
+        /* Zurück-Button */
+        .back-btn {
+            display: block;
+            width: calc(100% - 40px);
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 14px;
+            background: transparent;
+            color: #7000ff;
+            border: 2px solid #7000ff;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #7000ff;
+            color: white;
+            box-shadow: 0 0 15px rgba(112, 0, 255, 0.4);
+        }
+
+        /* Footer */
+        .site-footer {
+            margin-top: 50px;
+            padding: 20px 20px 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #070707;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        .copyright {
+            color: #555;
+            font-size: 0.75rem;
+        }
+
+        /* Feste Navigation ganz unten */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: #0a0a0a; 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 15px 0; 
+            border-top: 1px solid #333; 
+            z-index: 9999; 
+        }
+        
+        .bottom-nav a { 
+            color: #555; 
+            text-decoration: none; 
+            font-size: 1.2rem; 
+        }
+        
+        .bottom-nav a.active {
+            color: #00d4ff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Magisches Hintergrundleuchten -->
+    <div class="ambient-glow"></div>
+
+    <!-- Header-Bereich mit Logo -->
+    <div class="header-section">
+        <div class="logo-container">
+            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" alt="Ankinox Logo">
+        </div>
+        <h1>Impressum</h1>
+        <p style="color: #666; font-size: 0.85rem; margin: 0;">Angaben gemäß § 5 DDG</p>
+    </div>
+
+    <!-- 1. WICHTIGER RECHTLICHER HINWEIS: Klärt die Rollenverteilung sofort auf -->
+    <div class="legal-card" style="border-color: rgba(0, 212, 255, 0.3); background: rgba(0, 212, 255, 0.01);">
+        <h2>Geltungsbereich</h2>
+        <p>Dieses Impressum gilt für das Online-Angebot der Webseite <strong>ankinox.com</strong> sowie für unseren offiziellen YouTube-Kanal <strong>Ankinox</strong>.</p>
+        <p style="margin-top: 10px; font-size: 0.85rem; color: #888;">
+            <em>Hinweis zur Webseite:</em> Diese Webseite dient ausschließlich unkommerziellen Informations- und Vermittlungszwecken für das YouTube-Projekt. Über diese Webseite werden keine direkten Verträge geschlossen, keine Werbung geschaltet und keine direkten Einnahmen generiert.
+        </p>
+    </div>
+
+    <!-- 2. Diensteanbieter / Betreiber (Aktuell privat geschützt) -->
+    <div class="legal-card">
+        <h2>Diensteanbieter</h2>
+        <address>
+            <strong>Marcobode</strong><br>
+            <span style="color: #666; font-style: italic;">[Anschrift wird hinterlegt, sobald geschäftsmäßige Monetarisierung aktiv ist]</span><br>
+            Deutschland
+        </address>
+    </div>
+
+    <!-- 3. Kontakt -->
+    <div class="legal-card">
+        <h2>Kontakt</h2>
+        <p>
+            E-Mail: <a href="mailto:info@ankinox.com">info@ankinox.com</a>
+        </p>
+    </div>
+
+    <!-- 4. Haftungsausschluss (Disclaimer) & Fremdrechte -->
+    <div class="legal-card">
+        <h2>Haftung & Urheberrecht</h2>
+        <p>
+            Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
+        </p>
+        <p style="margin-top: 10px;">
+            Die durch uns selbst erstellten Inhalte, Designs und Werke auf dieser Webseite unterliegen dem deutschen Urheberrecht. 
+        </p>
+        <p style="margin-top: 10px; color: #aaa; font-style: italic;">
+            Beiträge, Videos, Grafiken und Werke Dritter (wie z. B. von kooperierenden Künstlern oder Studios) sind als solche gekennzeichnet oder unterliegen den Urheber- und Nutzungsrechten der jeweiligen Rechteinhaber. Eine Vervielfältigung oder Verwendung dieser fremden Inhalte ist ohne ausdrückliche Zustimmung des jeweiligen Rechteinhabers nicht gestattet.
+        </p>
+    </div>
+
+    <!-- Zurück zur Startseite Button -->
+    <a href="/index.html" class="back-btn">Zurück zur Startseite</a>
+
+    <!-- Footer mit den Pflichtlinks -->
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="/impressum" style="color: #00d4ff; font-weight: bold;">Impressum</a>
+            <a href="mailto:kontakt@ankinox.com">Kontakt</a>
+            <a href="mailto:support@ankinox.com">Support</a>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Ankinox. Alle Rechte an eigenen Inhalten vorbehalten. Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.
+        </div>
+    </footer>
+
+    <!-- Feste Navigationsleiste unten -->
+    <nav class="bottom-nav">
+        <a href="/Startseite">Start</a>
+        <a href="/stream">Stream</a>
+        <a href="/Shop">Shop</a>
+        <a href="/Partnerschaft">Partner</a>
+    </nav>
+
+</body>
+</html>
