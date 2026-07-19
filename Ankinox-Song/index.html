@@ -180,7 +180,7 @@ Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</d
             const deviceId = localStorage.getItem('anki_device_id');
             const relevantIds = await getRelevantDeviceIds();
             const pageUrl = window.location.href;
-            const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
+            const bannerUrl = 'https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/1784489174693_pzgjqh.png';
 
             const { data: existingFavs } = await window.supabaseInstance.from('favorites').select('id').eq('media_id', mediaId).in('device_id', relevantIds);
 
