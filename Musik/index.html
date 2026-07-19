@@ -48,7 +48,7 @@
             <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
             
             <div style="display:flex; gap:10px; align-items:center; position:relative; z-index:101">
-                <a id="banner-button-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Jetzt anhören</a>
+                <a id="banner-button-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
             </div>
         </div>
     </div>
@@ -73,6 +73,7 @@
 
         <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Neuerscheinungen</h2>
         <div class="scroll-container">
+            <!-- Neu eingefügter Song-Slot -->
             <a href="/Ankinox-Song" style="flex: 0 0 140px; text-decoration: none; color: white;">
                 <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127489/file_000000006e8871f4a74e47a18c61618d_zlvexa.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
                 <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Träume Leben</p>
@@ -125,33 +126,28 @@
             }
         ];
 
+        // ... (restlicher JS Code bleibt identisch)
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
-
         let touchstartX = 0;
         const bannerContainer = document.getElementById('banner-container');
         const SWIPE_THRESHOLD = 50; 
-
         bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
         bannerContainer.addEventListener('touchend', e => {
             let touchendX = e.changedTouches[0].screenX;
             let diff = touchendX - touchstartX;
-            
             if (Math.abs(diff) > SWIPE_THRESHOLD) {
                 if (diff < 0) { manualUpdate((idx + 1) % data.length); }
                 else if (diff > 0) { manualUpdate((idx - 1 + data.length) % data.length); }
             }
         });
-
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
-
         function manualUpdate(i) {
             if (i === idx) return; 
             clearInterval(timer);
             updateBanner(i);
             timer = setInterval(autoUpdate, 5000); 
         }
-
         function updateBanner(i) {
             idx = i;
             document.getElementById('banner-bg').src = data[idx].bg;
@@ -159,17 +155,11 @@
             document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
             document.getElementById('banner-desc').innerText = data[idx].desc;
             document.getElementById('banner-button-link').href = data[idx].url;
-            
-            document.querySelectorAll('.dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === idx);
-            });
-
+            document.querySelectorAll('.dot').forEach((dot, index) => { dot.classList.toggle('active', index === idx); });
             document.querySelectorAll('.progress-bar').forEach((bar, index) => {
                 bar.style.animation = 'none'; 
                 bar.style.width = '0%';
-                if (index === idx) {
-                    setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
-                }
+                if (index === idx) { setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50); }
             });
         }
         updateBanner(0);
