@@ -5,135 +5,77 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ankinox-Träume Leben</title>
-    <!-- Supabase Client einbinden -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        window.supabaseInstance = supabase.createClient(
-            'https://kynhrpdxhkjaeeexalje.supabase.co', 
-            'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
-        );
-    </script>
-
-    <meta property="og:title" content="Nightcore - Ankinox - Träume Leben">
-    <meta property="og:description" content="Ein Song präsentiert von Ankinox Originale.">
-    <meta property="og:image" content="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127489/file_000000006e8871f4a74e47a18c61618d_zlvexa.png">
-    <meta property="og:url" content="/Ankinox-Traeume-Leben">
-    <meta property="og:type" content="video.movie">
-
+    <title>Stream - Ankinox</title>
     <style>
-        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
-        body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
-        
-        .banner {
-            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
-            background-image: url('https://res.cloudinary.com/pqb6wtea/image/upload/v1784127489/file_000000006e8871f4a74e47a18c61618d_zlvexa.png');
-            background-size: cover; background-position: center; z-index: -1;
-        }
-
-        .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; }
-        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.2); }
-        
-        .content { 
-            margin-top: 45vh; 
-            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 5%, #050505 100%); 
-            padding: 30px 20px; 
-            position: relative; 
-        }
-
-        .content-inner {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        /* Video Popup-Stile */
-        #video-popup { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: rgba(5, 5, 5, 0.95); 
-        }
-        #video-container { position: relative; width: 100%; padding-top: 56.25%; }
-        #video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; background: #000; }
-
-        #close-btn { position: absolute; top: 10px; right: 10px; color: white; font-size: 30px; cursor: pointer; z-index: 10001; text-shadow: 0 0 5px rgba(0,0,0,0.8); }
-
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
         .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+        .bottom-nav a#nav-stream { color: #bf00ff; }
+        
+        .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.4); border-radius: 2.5px; overflow: hidden; position: relative; cursor: pointer; }
+        .dot.active { cursor: default; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
+        
+        .scroll-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        
+        .add-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555; }
+        
+        .site-footer { margin-top: 50px; padding: 20px 20px 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); background: #070707; }
+        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; }
+        .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+        .footer-links a:hover { color: #00d4ff; }
+        .copyright { color: #555; font-size: 0.75rem; line-height: 1.4; }
 
-        .fav-btn { background: transparent; color: #00d4ff; border: 2px solid #00d4ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer; }
-        .fav-btn.active { background: #00d4ff !important; color: black !important; }
-
-        .meta-details {
-            margin: 25px auto; /* Zentriert die Tabelle */
-            max-width: 500px; /* Begrenzt die Breite der Tabelle */
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px 5px;
-            font-size: 0.85rem;
-            color: #aaa;
-            text-align: left;
-        }
-        .meta-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .meta-row:last-child { margin-bottom: 0; }
-        .meta-label { color: #777; font-weight: bold; }
-        .meta-value { color: #ddd; text-align: right; }
-
-        .description-text {
-            text-align: left;
-            color: #cccccc;
-            line-height: 1.5;
-            margin: 20px auto;
-            max-width: 500px; /* Selbe Breite wie die Tabelle */
-            font-size: 0.95rem;
-        }
-
-        .site-footer { padding: 35px 20px 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); background-color: #050505; position: relative; z-index: 10; }
-        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 12px; }
-        .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; }
-        .copyright { color: #444; font-size: 0.75rem; line-height: 1.4; }
+        @keyframes load { from { width: 0%; } to { width: 100%; } }
     </style>
 </head>
 <body>
 
-    <div id="video-popup">
-        <span id="close-btn" onclick="closeVideo()">✕</span>
-        <div id="video-container">
-            <iframe id="yt-player" src="https://www.youtube-nocookie.com/embed/sYdgksE5Ymc?enablejsapi=1&rel=0&playsinline=1" title="Ankinox Player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-    </div>
-
-    <div class="banner">
-        <div class="banner-logo">
+    <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
+        <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
+        
+        <div style="position:absolute;top:0;left:0;z-index:10;padding:15px; margin-top: -20px;">
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
         </div>
-        <div class="banner-overlay"></div>
+
+        <div style="position:absolute; bottom:1px; left:30px; z-index:3; max-width:500px">
+            <img id="banner-logo" src="" style="display: block; width: 100%; max-width: 150px; margin-left: -20px; margin-bottom: -70px">
+            <div id="banner-fsk" style="color:#bbb;font-size:13px;margin-bottom:12px"></div>
+            <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
+            
+            <div style="display:flex; gap:10px; align-items:center; position:relative; z-index:101">
+                <a id="banner-button-link" href="#" style="padding: 8px 20px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
+            </div>
+        </div>
     </div>
 
-    <div class="content">
-        <div class="content-inner">
-            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127490/file_00000000d13071f49b02e87cff4df211_dmfvvi.png" style="width: 100%; max-width: 225px; display: block; margin: -180px auto -60px auto;">
+    <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
+        <div id="indicator-box" style="display:flex; gap:10px; width:150px;">
+            <div class="dot" onclick="manualUpdate(0)" id="dot-0"><div class="progress-bar" id="bar-0"></div></div>
+            <div class="dot" onclick="manualUpdate(1)" id="dot-1"><div class="progress-bar" id="bar-1"></div></div>
+            <div class="dot" onclick="manualUpdate(2)" id="dot-2"><div class="progress-bar" id="bar-2"></div></div>
+        </div>
+    </div>
 
-            <div style="color: #bbb; margin-bottom: 10px;">
-                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">Musik</span>  Nightcore • Ankinox Original
-            </div>
-            <div style="color: #00d4ff; font-size: 30px; margin-bottom: 5px;">★★★☆☆</div>
-            <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 20px;">Durchschnitt: 3.5</div>
+    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
+        <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste</h2>
+        <div class="scroll-container">
+            <a href="/fav_Musik" style="flex: 0 0 140px; text-decoration: none; color: white;">
+                <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836723245554507946646987273774.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Musik Favoriten</p>
+            </a>
+            <div class="add-placeholder">+</div>
+        </div>
 
-            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
-                <button id="favBtn" class="fav-btn" data-id="sYdgksE5Ymc" data-type="music" data-title="Nightcore - Ankinox - Träume Leben" onclick="toggleFavorite(this)">♥ Favorit</button>
-                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
-            </div>
-
-            <div class="meta-details">
-                <div class="meta-row"><span class="meta-label">Veröffentlichung:</span><span class="meta-value">19. Juli 2026</span></div>
-                <div class="meta-row"><span class="meta-label">Label:</span><span class="meta-value">Ankinox Originale</span></div>
-                <div class="meta-row"><span class="meta-label">Genre:</span><span class="meta-value">Nightcore</span></div>
-            </div>
-
-            <div class="description-text">
-                Ein exklusiver Track aus den Ankinox Originalen: Träume Leben im Nightcore-Stil.
-            </div>
-
-            <button onclick="openVideo()" style="display: block; width: 90%; max-width: 500px; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
+        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Neuerscheinungen</h2>
+        <div class="scroll-container">
+            <a href="/Ankinox-Song" style="flex: 0 0 140px; text-decoration: none; color: white;">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127489/file_000000006e8871f4a74e47a18c61618d_zlvexa.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Träume Leben</p>
+            </a>
         </div>
     </div>
 
@@ -143,8 +85,10 @@
             <a href="mailto:kontakt@ankinox.com">Kontakt</a>
             <a href="mailto:support@ankinox.com">Support</a>
         </div>
-        <div class="copyright">&copy; 2026 Ankinox. Alle Rechte an eigenen Inhalten vorbehalten.
-Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</div>
+        <div class="copyright">
+            &copy; 2026 Ankinox. Alle Rechte an eigenen Inhalten vorbehalten.<br>
+            Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.
+        </div>
     </footer>
 
     <nav class="bottom-nav">
@@ -155,56 +99,66 @@ Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</d
     </nav>
 
     <script>
-        const videoPopup = document.getElementById('video-popup');
-        const ytPlayer = document.getElementById('yt-player');
-        function openVideo() { videoPopup.style.display = 'block'; ytPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); }
-        function closeVideo() { videoPopup.style.display = 'none'; ytPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); }
-
-        if (!localStorage.getItem('anki_device_id')) { localStorage.setItem('anki_device_id', 'user_' + Math.random().toString(36).substr(2, 9)); }
-
-        async function getRelevantDeviceIds() {
-            const deviceId = localStorage.getItem('anki_device_id');
-            let allIds = [deviceId]; 
-            const { data: mySession } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', deviceId).maybeSingle();
-            if (mySession && mySession.group_name) {
-                const { data: groupMembers } = await window.supabaseInstance.from('active_sessions').select('device_id').eq('group_name', mySession.group_name);
-                if (groupMembers) allIds = groupMembers.map(m => m.device_id);
+        const data = [
+            {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 0</span> Untertitel | Synchro • Kurzfilm • Drama',
+                desc: "Poretto ist ein Mädchen, das alleine ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr verhilft, Freunde zu finden.",
+                url: "/Ankinox-Song"
+            },
+            {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> Partnerschaft • Geldverdienen • Großwerden',
+                desc: "Werde jetzt Ankinox Partner.",
+                url: "/Partnerschaft"
+            },
+            {
+                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
+                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Shop</span> Merchandise • Exklusiv • Fanartikel',
+                desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.",
+                url: "/Shop"
             }
-            return allIds;
-        }
+        ];
 
-        async function toggleFavorite(btn) {
-            const mediaId = btn.getAttribute('data-id');
-            const mediaTitle = btn.getAttribute('data-title');
-            const mediaType = btn.getAttribute('data-type');
-            const deviceId = localStorage.getItem('anki_device_id');
-            const relevantIds = await getRelevantDeviceIds();
-            const pageUrl = window.location.href;
-            const bannerUrl = 'https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png';
-
-            const { data: existingFavs } = await window.supabaseInstance.from('favorites').select('id').eq('media_id', mediaId).in('device_id', relevantIds);
-
-            if (existingFavs && existingFavs.length > 0) {
-                await window.supabaseInstance.from('favorites').delete().in('id', existingFavs.map(f => f.id));
-                btn.classList.remove('active'); btn.innerText = "♥ Favorit";
-            } else {
-                await window.supabaseInstance.from('favorites').insert({ device_id: deviceId, media_id: mediaId, media_type: mediaType, title: mediaTitle, image_url: bannerUrl, page_url: pageUrl });
-                btn.classList.add('active'); btn.innerText = "★ Favorisiert";
+        let idx = 0;
+        let timer = setInterval(autoUpdate, 5000);
+        let touchstartX = 0;
+        const bannerContainer = document.getElementById('banner-container');
+        const SWIPE_THRESHOLD = 50; 
+        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        bannerContainer.addEventListener('touchend', e => {
+            let touchendX = e.changedTouches[0].screenX;
+            let diff = touchendX - touchstartX;
+            if (Math.abs(diff) > SWIPE_THRESHOLD) {
+                if (diff < 0) { manualUpdate((idx + 1) % data.length); }
+                else if (diff > 0) { manualUpdate((idx - 1 + data.length) % data.length); }
             }
-        }
-
-        window.onload = async () => {
-            const btn = document.getElementById('favBtn');
-            const mediaId = btn.getAttribute('data-id');
-            const relevantIds = await getRelevantDeviceIds();
-            const { data } = await window.supabaseInstance.from('favorites').select('id').eq('media_id', mediaId).in('device_id', relevantIds);
-            if (data && data.length > 0) { btn.classList.add('active'); btn.innerText = "★ Favorisiert"; }
-        };
-
-        document.getElementById('share-button').addEventListener('click', async () => {
-            try { await navigator.share({ title: 'Nightcore - Ankinox - Träume Leben', text: 'Schau dir das an!', url: window.location.href }); } catch (err) {}
         });
+        function autoUpdate() { updateBanner((idx + 1) % data.length); }
+        function manualUpdate(i) {
+            if (i === idx) return; 
+            clearInterval(timer);
+            updateBanner(i);
+            timer = setInterval(autoUpdate, 5000); 
+        }
+        function updateBanner(i) {
+            idx = i;
+            document.getElementById('banner-bg').src = data[idx].bg;
+            document.getElementById('banner-logo').src = data[idx].logo;
+            document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
+            document.getElementById('banner-desc').innerText = data[idx].desc;
+            document.getElementById('banner-button-link').href = data[idx].url;
+            document.querySelectorAll('.dot').forEach((dot, index) => { dot.classList.toggle('active', index === idx); });
+            document.querySelectorAll('.progress-bar').forEach((bar, index) => {
+                bar.style.animation = 'none'; 
+                bar.style.width = '0%';
+                if (index === idx) { setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50); }
+            });
+        }
+        updateBanner(0);
     </script>
 </body>
 </html>
-
