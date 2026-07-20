@@ -6,6 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stream - Ankinox</title>
+    <!-- Supabase Client eingebunden -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseInstance = supabase.createClient(
+            'https://kynhrpdxhkjaeeexalje.supabase.co', 
+            'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
+        );
+    </script>
     <style>
         /* Entfernt den blauen Klick-Effekt auf mobilen Geräten überall */
         * {
@@ -34,6 +42,11 @@
         }
         .placeholder-text { font-size: 12px; margin-top: 10px; text-align: center; padding: 0 5px; }
         
+        /* Favoriten Karten Styling */
+        .fav-card { flex: 0 0 140px; text-decoration: none; color: white; }
+        .fav-card img { width: 140px; height: 200px; object-fit: cover; border-radius: 8px; display: block; }
+        .fav-card p { font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
         /* Footer-Styling */
         .site-footer {
             margin-top: 50px;
@@ -104,13 +117,9 @@
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
         
-        <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste</h2>
-        <div class="scroll-container">
-            <a href="/fav_Serien" style="flex: 0 0 140px; text-decoration: none; color: white;">
-                <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/1783672340720577888294818711917.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Serien Favoriten</p>
-            </a>
-            <a href="#" class="add-placeholder" style="color: #555;">+</a>
+        <h2 style="font-size: 20px; margin-bottom: 15px">Meine Serien</h2>
+        <div id="series-favorites-container" class="scroll-container">
+            <!-- Wird dynamisch befüllt -->
         </div>
 
         <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Neuerscheinungen</h2>
@@ -119,7 +128,6 @@
         </div>
     </div>
 
-    <!-- Rechtssichere Fußnote (Footer) -->
     <footer class="site-footer">
         <div class="footer-links">
             <a href="/impressum">Impressum</a>
@@ -134,12 +142,54 @@
 
     <nav class="bottom-nav">
         <a href="/Startseite">Start</a>
-        <a href="/stream">Stream</a>
+        <a href="/stream" id="nav-stream">Stream</a>
         <a href="/Shop">Shop</a>
         <a href="/Partnerschaft">Partner</a>
     </nav>
 
     <script>
+        // Favoriten laden Logik
+        async function loadSeriesFavorites() {
+            const container = document.getElementById('series-favorites-container');
+            const deviceId = localStorage.getItem('anki_device_id');
+            
+            // Basis-Link immer an erster Stelle
+            let htmlContent = `
+                <a href="/fav_Serien" class="fav-card">
+                    <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/1783672340720577888294818711917.png">
+                    <p>Serien Favoriten</p>
+                </a>
+            `;
+
+            if (deviceId) {
+                const { data: favs } = await window.supabaseInstance
+                    .from('favorites')
+                    .select('*')
+                    .eq('device_id', deviceId)
+                    .eq('media_type', 'series')
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (favs && favs.length > 0) {
+                    favs.forEach(item => {
+                        htmlContent += `
+                            <a href="${item.page_url}" class="fav-card">
+                                <img src="${item.image_url}">
+                                <p>${item.title}</p>
+                            </a>
+                        `;
+                    });
+                } else {
+                    htmlContent += '<a href="#" class="add-placeholder">+</a>';
+                }
+            } else {
+                htmlContent += '<a href="#" class="add-placeholder">+</a>';
+            }
+            container.innerHTML = htmlContent;
+        }
+        loadSeriesFavorites();
+
+        // Banner Logik
         const data = [
             {
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png",
@@ -167,29 +217,8 @@
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
 
-        let touchstartX = 0;
-        const bannerContainer = document.getElementById('banner-container');
-        const SWIPE_THRESHOLD = 50; 
-
-        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
-        bannerContainer.addEventListener('touchend', e => {
-            let touchendX = e.changedTouches[0].screenX;
-            let diff = touchendX - touchstartX;
-            
-            if (Math.abs(diff) > SWIPE_THRESHOLD) {
-                if (diff < 0) { manualUpdate((idx + 1) % data.length); }
-                else if (diff > 0) { manualUpdate((idx - 1 + data.length) % data.length); }
-            }
-        });
-
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
-
-        function manualUpdate(i) {
-            if (i === idx) return; 
-            clearInterval(timer);
-            updateBanner(i);
-            timer = setInterval(autoUpdate, 5000); 
-        }
+        function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
 
         function updateBanner(i) {
             idx = i;
@@ -198,18 +227,7 @@
             document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
             document.getElementById('banner-desc').innerText = data[idx].desc;
             document.getElementById('banner-button-link').href = data[idx].url;
-            
-            document.querySelectorAll('.dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === idx);
-            });
-
-            document.querySelectorAll('.progress-bar').forEach((bar, index) => {
-                bar.style.animation = 'none'; 
-                bar.style.width = '0%';
-                if (index === idx) {
-                    setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
-                }
-            });
+            document.querySelectorAll('.dot').forEach((dot, index) => dot.classList.toggle('active', index === idx));
         }
         updateBanner(0);
     </script>
