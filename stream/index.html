@@ -6,6 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stream - Ankinox</title>
+    <!-- Supabase Client einbinden -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseInstance = supabase.createClient(
+            'https://kynhrpdxhkjaeeexalje.supabase.co', 
+            'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
+        );
+    </script>
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
@@ -95,14 +103,8 @@
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif; position: relative; z-index: 10;">
         
         <h2 style="font-size: 20px; margin-bottom: 15px">Meine Liste</h2>
-        <div class="scroll-container">
-            <a href="/fav_Stream" class="fav-placeholder">
-                <div class="fav-placeholder-img">
-                    <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png" alt="Alle Favoriten">
-                </div>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Favoriten</p>
-            </a>
-            <div class="add-plus-placeholder">+</div>
+        <div class="scroll-container" id="favorites-carousel">
+            <!-- Favoriten werden hier geladen -->
         </div>
 
         <h2 class="category-link">Mediathek</h2>
@@ -122,7 +124,6 @@
         </div>
     </div>
 
-    <!-- Rechtssichere Fußnote (Footer) -->
     <footer class="site-footer">
         <div class="footer-links">
             <a href="/impressum">Impressum</a>
@@ -149,6 +150,43 @@
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001c471f48650d13b46e731186595649778490613677.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000000b70720a910c4533cc84f2a84410358198528856596.png", fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Musik</span> • Alle Musikvideos ansehen', btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)", desc: "Musikgenuss pur: Entdecke deine Musik.", url: "/Musik" }
         ];
 
+        async function loadFavorites() {
+            const container = document.getElementById('favorites-carousel');
+            const deviceId = localStorage.getItem('anki_device_id');
+            if (!deviceId) {
+                container.innerHTML = '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
+                return;
+            }
+
+            const { data: sessionData } = await window.supabaseInstance.from('active_sessions').select('group_name').eq('device_id', deviceId).maybeSingle();
+            const groupName = sessionData ? sessionData.group_name : null;
+            let userIds = [deviceId];
+            if (groupName) {
+                const { data: groupMembers } = await window.supabaseInstance.from('active_sessions').select('device_id').eq('group_name', groupName);
+                if (groupMembers) userIds = groupMembers.map(m => m.device_id);
+            }
+
+            const { data: favs } = await window.supabaseInstance.from('favorites').select('*').in('device_id', userIds).order('created_at', { ascending: false }).limit(5);
+
+            if (!favs || favs.length === 0) {
+                container.innerHTML = '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
+                return;
+            }
+
+            container.innerHTML = '';
+            favs.forEach(item => {
+                container.innerHTML += `
+                    <a href="${item.page_url}" class="fav-placeholder">
+                        <div class="fav-placeholder-img"><img src="${item.image_url}"></div>
+                        <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">${item.title}</p>
+                    </a>
+                `;
+            });
+            container.innerHTML += '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
+        }
+
+        loadFavorites();
+
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
         
@@ -163,14 +201,12 @@
             }
         });
 
-        // Karussell Logik
         const mediathek = document.getElementById('mediathek-carousel');
         let scrollTimer, resumeTimer;
         let isManual = false;
         let hasDeletedInManualMode = false;
 
         function canScroll() { return mediathek.scrollWidth > mediathek.clientWidth; }
-
         function fillToFour() {
             while (mediathek.children.length < 4) {
                 mediathek.appendChild(mediathek.firstElementChild.cloneNode(true));
@@ -182,7 +218,6 @@
             isManual = false;
             hasDeletedInManualMode = false;
             fillToFour();
-            
             scrollTimer = setInterval(() => {
                 mediathek.scrollLeft += 1;
                 if (mediathek.scrollLeft >= 160) {
@@ -212,11 +247,6 @@
 
         mediathek.addEventListener('touchend', () => { 
             resumeTimer = setTimeout(() => { startCarousel(); }, 3000); 
-        });
-
-        window.addEventListener('resize', () => {
-            if (!canScroll()) { clearInterval(scrollTimer); }
-            else if (!isManual && !scrollTimer) { startCarousel(); }
         });
 
         function autoUpdate() { updateBanner((idx + 1) % data.length); }
