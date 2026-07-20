@@ -153,8 +153,19 @@
         async function loadFavorites() {
             const container = document.getElementById('favorites-carousel');
             const deviceId = localStorage.getItem('anki_device_id');
+            
+            // Immer den festen "Alle Favoriten" Button als Erstes
+            let htmlContent = `
+                <a href="/fav_Stream" class="fav-placeholder">
+                    <div class="fav-placeholder-img">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png" alt="Alle Favoriten">
+                    </div>
+                    <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Alle Favoriten</p>
+                </a>
+            `;
+
             if (!deviceId) {
-                container.innerHTML = '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
+                container.innerHTML = htmlContent + '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
                 return;
             }
 
@@ -169,24 +180,25 @@
             const { data: favs } = await window.supabaseInstance.from('favorites').select('*').in('device_id', userIds).order('created_at', { ascending: false }).limit(5);
 
             if (!favs || favs.length === 0) {
-                container.innerHTML = '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
-                return;
+                // Wenn keine Favoriten da sind, Plus-Platzhalter anzeigen
+                container.innerHTML = htmlContent + '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
+            } else {
+                // Wenn Favoriten da sind, nur diese anzeigen (Plus-Platzhalter weg)
+                favs.forEach(item => {
+                    htmlContent += `
+                        <a href="${item.page_url}" class="fav-placeholder">
+                            <div class="fav-placeholder-img"><img src="${item.image_url}"></div>
+                            <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">${item.title}</p>
+                        </a>
+                    `;
+                });
+                container.innerHTML = htmlContent;
             }
-
-            container.innerHTML = '';
-            favs.forEach(item => {
-                container.innerHTML += `
-                    <a href="${item.page_url}" class="fav-placeholder">
-                        <div class="fav-placeholder-img"><img src="${item.image_url}"></div>
-                        <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">${item.title}</p>
-                    </a>
-                `;
-            });
-            container.innerHTML += '<a href="/fav_Stream" class="fav-placeholder"><div class="add-plus-placeholder">+</div></a>';
         }
 
         loadFavorites();
 
+        // ... restlicher Code (Banner-Logik etc. unverändert)
         let idx = 0;
         let timer = setInterval(autoUpdate, 5000);
         
