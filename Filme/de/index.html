@@ -2,6 +2,22 @@
 <html lang="de">
 <head>
     <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
+     <!-- Automatische Sprachprüfung und Weiterleitung -->
+    <script>
+        (function() {
+            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
+            const supportedLangs = ['en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            
+            // Prüfen ob die Sprache mit einer der unterstützten übereinstimmt (ersten 2 Zeichen, z.B. 'en-US' -> 'en')
+            const langCode = userLang.substring(0, 2);
+            
+            if (langCode !== 'de' && supportedLangs.includes(langCode)) {
+                // Weiterleitung in den entsprechenden Sprachordner (z.B. /startseite/en oder /startseite/ru)
+                window.location.replace('/Startseite/de' + langCode);
+            }
+        })();
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stream - Ankinox</title>
