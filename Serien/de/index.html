@@ -13,14 +13,14 @@
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'de' && supportedLangs.includes(langCode)) {
-                window.location.replace('/stream/de' + langCode);
+                window.location.replace('/Serien/de' + langCode);
             }
         })();
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream - Ankinox</title>
+    <title>Serien - Ankinox</title>
     <!-- Supabase Client eingebunden -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -241,7 +241,7 @@
 
     <nav class="bottom-nav">
         <a href="/Startseite/de">Start</a>
-        <a href="/stream/de" id="nav-stream">Stream</a>
+        <a href="/stream/de">Stream</a>
         <a href="/Shop/de">Shop</a>
         <a href="/Partnerschaft/de">Partner</a>
     </nav>
