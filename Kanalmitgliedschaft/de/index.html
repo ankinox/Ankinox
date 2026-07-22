@@ -43,6 +43,7 @@
         .lang-dropdown {
             position: relative;
             display: inline-block;
+            z-index: 100000; /* Sehr hoher z-index, damit das Dropdown im Vordergrund bleibt */
         }
         .lang-btn {
             background: rgba(20, 20, 20, 0.8);
@@ -64,7 +65,7 @@
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
-            z-index: 10000;
+            z-index: 100001; /* Garantiert über allem anderen */
             overflow: hidden;
         }
         /* Oben nach unten aufklappen */
@@ -97,7 +98,7 @@
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png');
-            background-size: cover; background-position: center; z-index: -1;
+            background-size: cover; background-position: center; z-index: 1; /* Unter dem Dropdown-Index platziert */
         }
 
         .banner-logo { z-index: 10; }
@@ -108,6 +109,7 @@
             background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 11.5%, #050505 100%);
             padding: 10vh 20px 20px 20px;
             position: relative;
+            z-index: 2;
         }
 
         /* Footer-Styling */
@@ -117,7 +119,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             background: #050505;
             position: relative;
-            z-index: 100;
+            z-index: 2;
         }
 
         .footer-links {
@@ -276,6 +278,18 @@
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
+
+        // Schließt das obere Dropdown sofort beim Scrollen nach unten, 
+        // da der Header-Bereich (und damit der Button) beim Scrollen wegbewegt/überdeckt wird.
+        window.addEventListener('scroll', () => {
+            const topDropdown = document.getElementById('lang-top');
+            if (topDropdown && topDropdown.classList.contains('show')) {
+                // Sobald die Seite gescrollt wird (scrollY > 5), schließt sich das obere Menü
+                if (window.scrollY > 5) {
+                    topDropdown.classList.remove('show');
+                }
+            }
+        }, { passive: true });
 
         // Share Button Script
         document.getElementById('share-button').addEventListener('click', async () => {
