@@ -5,8 +5,6 @@
 
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
 
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stream - Ankinox</title>
@@ -17,10 +15,45 @@
     <meta property="og:url" content="https://ankinox.github.io/"> 
     <meta property="og:type" content="website">
 
+    <!-- Automatische Sprachprüfung und Weiterleitung -->
+    <script>
+        (function() {
+            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
+            const supportedLangs = ['en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            
+            // Prüfen ob die Sprache mit einer der unterstützten übereinstimmt (ersten 2 Zeichen, z.B. 'en-US' -> 'en')
+            const langCode = userLang.substring(0, 2);
+            
+            if (langCode !== 'de' && supportedLangs.includes(langCode)) {
+                // Weiterleitung in den entsprechenden Sprachordner (z.B. /startseite/en oder /startseite/ru)
+                window.location.replace('/startseite/' + langCode);
+            }
+        })();
+    </script>
+
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
+        /* Sprachauswahl Styling */
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+        }
+        .language-selector a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .language-selector a:hover {
+            color: #00d4ff;
+        }
+
         .site-footer {
             margin-top: 50px;
             padding: 20px 20px 40px 20px;
@@ -66,6 +99,17 @@
     </style>
 </head>
 <body>
+
+    <!-- Sprachauswahl OBEN -->
+    <div class="language-selector">
+        <a href="/startseite/de">🇩🇪 Deutsch (DE)</a>
+        <a href="/startseite/en">🇬🇧 English (EN)</a>
+        <a href="/startseite/fr">🇫🇷 Français (FR)</a>
+        <a href="/startseite/es">🇪🇸 Español (ES)</a>
+        <a href="/startseite/ru">🇷🇺 Русский (RU)</a>
+        <a href="/startseite/ja">🇯🇵 日本語 (JA)</a>
+        <a href="/startseite/ko">🇰🇷 한국어 (KO)</a>
+    </div>
 
     <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
         <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
@@ -114,6 +158,17 @@
     </div>
 
     <footer class="site-footer">
+        <!-- Sprachauswahl IM FOOTER -->
+        <div class="language-selector" style="margin-bottom: 20px; background: transparent;">
+            <a href="/startseite/de">🇩🇪 DE</a> | 
+            <a href="/startseite/en">🇬🇧 EN</a> | 
+            <a href="/startseite/fr">🇫🇷 FR</a> | 
+            <a href="/startseite/es">🇪🇸 ES</a> | 
+            <a href="/startseite/ru">🇷🇺 RU</a> | 
+            <a href="/startseite/ja">🇯🇵 JA</a> | 
+            <a href="/startseite/ko">🇰🇷 KO</a>
+        </div>
+
         <div class="footer-links">
             <a href="/impressum">Impressum</a>
             <a href="mailto:kontakt@ankinox.com">Kontakt</a>
