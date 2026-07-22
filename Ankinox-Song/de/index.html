@@ -21,22 +21,6 @@
     <meta property="og:url" content="/Ankinox-Traeume-Leben">
     <meta property="og:type" content="video.movie">
 
-    <!-- Automatische Sprachprüfung und Weiterleitung -->
-    <script>
-        (function() {
-            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
-            const supportedLangs = ['en', 'fr', 'es', 'ru', 'ja', 'ko'];
-            
-            // Prüfen ob die Sprache mit einer der unterstützten übereinstimmt (ersten 2 Zeichen, z.B. 'en-US' -> 'en')
-            const langCode = userLang.substring(0, 2);
-            
-            if (langCode !== 'de' && supportedLangs.includes(langCode)) {
-                // Weiterleitung in den entsprechenden Sprachordner (z.B. /startseite/en oder /startseite/ru)
-                window.location.replace('/Startseite/de' + langCode);
-            }
-        })();
-    </script>
-
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
@@ -109,6 +93,39 @@
     </style>
 </head>
 <body>
+
+     <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
+        <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
+        
+        <!-- Logo links oben & Sprachauswahl rechts oben -->
+        <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:15px; display:flex; justify-content:space-between; align-items:center;">
+            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+            
+            <!-- Sprachauswahl Oben (Klappt nach unten auf) -->
+            <div class="lang-dropdown down" id="lang-top">
+                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
+                <div class="lang-content">
+                    <a href="/Startseite/de">🇩🇪 Deutsch (DE)</a>
+                    <a href="/Startseite/en">🇬🇧 English (EN)</a>
+                    <a href="/Startseite/fr">🇫🇷 Français (FR)</a>
+                    <a href="/Startseite/es">🇪🇸 Español (ES)</a>
+                    <a href="/Startseite/ru">🇷🇺 Русский (RU)</a>
+                    <a href="/Startseite/ja">🇯🇵 日本語 (JA)</a>
+                    <a href="/Startseite/ko">🇰🇷 한국어 (KO)</a>
+                </div>
+            </div>
+        </div>
+
+        <div style="position:absolute; bottom:1px; left:30px; z-index:3; max-width:500px">
+            <img id="banner-logo" src="" style="display: block; width: 100%; max-width: 150px; margin-left: -20px; margin-bottom: -70px">
+            <div id="banner-fsk" style="color:#bbb;font-size:13px;margin-bottom:12px"></div>
+            <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
+            <div style="display:flex; gap:10px; align-items:center; position:relative; z-index:101">
+                <a id="banner-button-link" href="#" style="padding: 8px 20px; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
+            </div>
+        </div>
+    </div>
 
      <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
         <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
