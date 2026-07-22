@@ -64,7 +64,7 @@
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
-            z-index: 2147483647; /* Maximaler Integer-Wert für z-index, garantiert immer im absoluten Vordergrund */
+            z-index: 999999; /* Sehr hoch, damit das aufgeklappte Menü über dem Content liegt */
             overflow: hidden;
         }
         /* Oben nach unten aufklappen */
@@ -97,10 +97,13 @@
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png');
-            background-size: cover; background-position: center; z-index: 1000; /* Höherer z-index, damit der Header-Bereich samt Button immer über dem Content liegt */
+            background-size: cover; background-position: center; 
+            /* z-index entfernt, um zu verhindern, dass die Ebene blockiert wird */
         }
 
-        .banner-logo { z-index: 10; }
+        /* z-index entfernt */
+        .banner-logo { }
+        
         .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.2); }
 
         .content {
@@ -108,7 +111,7 @@
             background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 11.5%, #050505 100%);
             padding: 10vh 20px 20px 20px;
             position: relative;
-            z-index: 500; /* Unter dem Banner, aber über dem Hintergrund */
+            /* z-index entfernt, .content überdeckt den Banner nun automatisch aufgrund der HTML-Reihenfolge */
         }
 
         /* Footer-Styling */
@@ -156,13 +159,13 @@
 <body>
 
     <div class="banner">
-        <!-- Header-Leiste für Logo links und Sprachauswahl rechts exakt auf gleicher Höhe -->
-        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
+        <!-- Header-Leiste für Logo links und Sprachauswahl rechts. z-index entfernt! -->
+        <div style="position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; align-items: center;">
             <div class="banner-logo">
                 <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
             </div>
 
-            <!-- Sprachauswahl rechts oben (gegenüber vom Logo auf exakt gleicher Höhe) -->
+            <!-- Sprachauswahl rechts oben -->
             <div>
                 <div class="lang-dropdown down" id="lang-top">
                     <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
@@ -278,14 +281,30 @@
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Schließt das obere Menü exakt dann, wenn der Button die Position wie auf Bild 1 erreicht (vom Content überlappt wird)
+        // Prüft beim Scrollen, ob die Menüs geschlossen werden sollen
         window.addEventListener('scroll', () => {
+            // 1. Speziell für das obere Menü: Schließt genau dann, wenn der Content den Button überlappt (wie auf Bild 1)
             const topDropdown = document.getElementById('lang-top');
             if (topDropdown && topDropdown.classList.contains('show')) {
-                const rect = topDropdown.getBoundingClientRect();
-                // Wenn der untere Rand des Buttons den oberen Bildschirmrand erreicht oder überschreitet (wird vom hochlaufenden Content verdeckt)
-                if (rect.bottom <= 45) {
-                    topDropdown.classList.remove('show');
+                const btn = topDropdown.querySelector('.lang-btn');
+                const content = document.querySelector('.content');
+                if (btn && content) {
+                    const btnRect = btn.getBoundingClientRect();
+                    const contentRect = content.getBoundingClientRect();
+                    
+                    // Wenn der Content den unteren Rand des Buttons berührt oder darüber hinausgeht
+                    if (contentRect.top <= btnRect.bottom) {
+                        topDropdown.classList.remove('show');
+                    }
+                }
+            }
+
+            // 2. Für das Footer-Menü: Schließt, wenn es aus dem Bildschirm wandert
+            const footerDropdown = document.getElementById('lang-footer');
+            if (footerDropdown && footerDropdown.classList.contains('show')) {
+                const rect = footerDropdown.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    footerDropdown.classList.remove('show');
                 }
             }
         }, { passive: true });
