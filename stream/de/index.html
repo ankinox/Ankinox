@@ -299,6 +299,12 @@
     </nav>
 
     <script>
+        function changeLang(langCode, targetUrl) {
+            localStorage.setItem('userSelectedLang', langCode);
+            sessionStorage.setItem('justSwitched', 'true');
+            window.location.href = targetUrl;
+        }
+        
         const data = [
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000001007246baa1811535dce7ff6896339926578093836.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_0000000058a0720a823da3d2bca122623492259678561224911.png", fsk: '<span style="border:2px solid #228B22;padding:1px 6px;border-radius:4px;font-weight:bold;color:#228B22;box-shadow:0 0 5px #228B22">Filme</span> • Alle Filme ansehen', btnColor: "linear-gradient(90deg, #228B22, #006400)", desc: "Entdecke eine große Auswahl an spannenden Filmen.", url: "/Filme/de" },
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000008cac71f4912ec5893c9dc7507153328058856750682.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000ebf871f4b508c4c0ad6159746969114662329309493.png", fsk: '<span style="border:2px solid #ff00ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff00ff;box-shadow:0 0 5px #ff00ff">Serien</span> • Alle Serien ansehen', btnColor: "linear-gradient(90deg, #ff00ff, #c71585)", desc: "Finde hier deine nächste Lieblingsserie.", url: "/Serien/de" },
