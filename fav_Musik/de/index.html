@@ -56,7 +56,7 @@
             gap: 5px;
         }
         
-        /* Lokales Dropdown für den Footer */
+        /* Lokales Dropdown für den Footer (bleibt wie es ist) */
         .lang-dropdown .lang-content {
             display: none;
             position: absolute;
@@ -159,12 +159,13 @@
 <body>
 
     <div class="banner">
-        <!-- Header-Leiste mit Logo links und Sprachauswahl-Button rechts (exakt auf einer Höhe) -->
-        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
+        <!-- Header-Leiste mit Logo und dem anklickbaren Button im Hintergrund -->
+        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
             <div class="banner-logo">
-                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px; display: block;">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
             </div>
 
+            <!-- NUR der Button im Hintergrund -->
             <div>
                 <div class="lang-dropdown down" id="lang-top">
                     <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
@@ -262,15 +263,18 @@
             if (isTop) {
                 const isOpen = dropdown.classList.toggle('show');
                 if (isOpen) {
+                    // Erst kurz unsichtbar einblenden, damit der Browser die echte Breite (`offsetWidth`) exakt messen kann
                     detachedMenu.style.visibility = 'hidden';
                     detachedMenu.style.display = 'block';
 
                     const btnRect = dropdown.querySelector('.lang-btn').getBoundingClientRect();
                     const menuWidth = detachedMenu.offsetWidth;
 
+                    // Exakt rechtsbündig unter dem Button ausrichten
                     detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
                     detachedMenu.style.left = (btnRect.right - menuWidth) + 'px';
                     
+                    // Sofort sichtbar schalten
                     detachedMenu.style.visibility = 'visible';
                 } else {
                     detachedMenu.style.display = 'none';
