@@ -97,7 +97,7 @@
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png');
-            background-size: cover; background-position: center; z-index: 0; /* Korrigiert von -1 auf 0, damit es kein unerwünschtes Layering erzeugt */
+            background-size: cover; background-position: center; z-index: 0; 
         }
 
         .banner-logo { z-index: 10; }
@@ -108,7 +108,7 @@
             background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 11.5%, #050505 100%);
             padding: 10vh 20px 20px 20px;
             position: relative;
-            z-index: 2; /* Liegt über dem Banner, wodurch das Dropdown aus dem Header nun komplett frei und ohne Überlappung darstellbar ist */
+            z-index: 2; 
         }
 
         /* Footer-Styling */
@@ -278,12 +278,23 @@
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Prüft beim Scrollen, ob die Buttons aus dem sichtbaren Bereich wandern bzw. überdeckt werden, und schließt sie dann
+        // Prüft beim Scrollen, ob der Button aus dem sichtbaren Bereich wandert bzw. überdeckt wird, und schließt sie dann
         window.addEventListener('scroll', () => {
             document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
                 const rect = dropdown.getBoundingClientRect();
-                // Wenn der Button nach oben aus dem Bildschirm verschwunden ist (rect.bottom < 0) 
-                // oder nach unten herauswandert (rect.top > window.innerHeight)
+                
+                // Für das obere Menü (klappt nach unten auf): 
+                // Schließen, sobald der Button oben aus dem Sichtfeld scrollt (rect.top < 0)
+                // Für das untere Menü (klappt nach oben auf): 
+                // Schließen, sobald der Button unten aus dem Sichtfeld scrollt (rect.bottom > window.innerHeight)
+                if (dropdown.classList.contains('down') && rect.top < 0) {
+                    dropdown.classList.remove('show');
+                }
+                if (dropdown.classList.contains('up') && rect.bottom > window.innerHeight) {
+                    dropdown.classList.remove('show');
+                }
+                
+                // Allgemeine Sicherheitsprüfung, falls der Button komplett verschwindet
                 if (rect.bottom < 0 || rect.top > window.innerHeight) {
                     dropdown.classList.remove('show');
                 }
