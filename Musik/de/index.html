@@ -107,7 +107,7 @@
         .fav-card img { width: 140px; height: 200px; object-fit: cover; border-radius: 8px; display: block; }
         .fav-card p { font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .site-footer { margin-top: 50px; padding: 20px 20px 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); background: #070707; }
+        .site-footer { margin-top: 50px; padding: 20px 20px 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); background: #070707; position: relative; z-index: 100; }
         .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; }
         .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
         .footer-links a:hover { color: #00d4ff; }
@@ -225,6 +225,19 @@
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
+
+        // Schließt das Sprachmenü, wenn der gesamte ausgeklappte Block vollständig außerhalb des Bildschirms ist (Scrollen)
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
+                const content = dropdown.querySelector('.lang-content');
+                if (content) {
+                    const rect = content.getBoundingClientRect();
+                    if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
+        }, { passive: true });
 
         // Favoriten laden Logik für Musik
         async function loadMusicFavorites() {
