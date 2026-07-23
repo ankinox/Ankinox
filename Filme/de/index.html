@@ -233,6 +233,19 @@
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
+        // Schließt das Sprachmenü beim Scrollen, wenn der Block außerhalb des Viewports liegt
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
+                const content = dropdown.querySelector('.lang-content');
+                if (content) {
+                    const rect = content.getBoundingClientRect();
+                    if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
+        }, { passive: true });
+
         async function loadFavorites() {
             const container = document.getElementById('favorites-carousel');
             const deviceId = localStorage.getItem('anki_device_id');
