@@ -50,7 +50,9 @@
             align-items: center;
             gap: 5px;
         }
-        .lang-content {
+        
+        /* Lokales Dropdown für den Footer */
+        .lang-dropdown .lang-content {
             display: none;
             position: absolute;
             right: 0;
@@ -59,12 +61,8 @@
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
-            z-index: 10000;
+            z-index: 999999;
             overflow: hidden;
-        }
-        .lang-dropdown.down .lang-content {
-            top: 100%;
-            margin-top: 5px;
         }
         .lang-dropdown.up .lang-content {
             bottom: 100%;
@@ -90,12 +88,19 @@
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
-            background-size: cover; background-position: center; z-index: -1;
+            background-size: cover; background-position: center; z-index: 0;
         }
 
-        .banner-logo { position: absolute; top: -6px; left: 15px; z-index: 10; display: flex; justify-content: space-between; align-items: center; width: 100vw; padding: 15px; box-sizing: border-box; }
+        .banner-logo { z-index: 10; }
         .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
-        .content { margin-top: 35vh; background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); padding: 20px; position: relative; }
+        
+        .content { 
+            margin-top: 35vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); 
+            padding: 20px; 
+            position: relative; 
+            z-index: 2;
+        }
 
         /* Footer-Styling */
         .site-footer {
@@ -103,6 +108,8 @@
             text-align: center;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             background: #050505;
+            position: relative;
+            z-index: 100;
         }
 
         .footer-links {
@@ -143,24 +150,29 @@
 <body>
 
     <div class="banner">
-        <div class="banner-logo">
-            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
-            
-            <!-- Sprachauswahl Oben (Klappt nach unten auf) -->
-            <div class="lang-dropdown down" id="lang-top" style="margin-right: 35px;">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
-                <div class="lang-content">
-                    <a href="/favoriten/de">🇩🇪 Deutsch (DE)</a>
-                    <a href="/favoriten/en">🇬🇧 English (EN)</a>
-                    <a href="/favoriten/fr">🇫🇷 Français (FR)</a>
-                    <a href="/favoriten/es">🇪🇸 Español (ES)</a>
-                    <a href="/favoriten/ru">🇷🇺 Русский (RU)</a>
-                    <a href="/favoriten/ja">🇯🇵 日本語 (JA)</a>
-                    <a href="/favoriten/ko">🇰🇷 한국어 (KO)</a>
+        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
+            <div class="banner-logo">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+            </div>
+
+            <div>
+                <div class="lang-dropdown down" id="lang-top">
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
                 </div>
             </div>
         </div>
         <div class="banner-overlay"></div>
+    </div>
+
+    <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene -->
+    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+        <a href="/favoriten/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇩🇪 Deutsch (DE)</a>
+        <a href="/favoriten/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇬🇧 English (EN)</a>
+        <a href="/favoriten/fr" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇫🇷 Français (FR)</a>
+        <a href="/favoriten/es" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇪🇸 Español (ES)</a>
+        <a href="/favoriten/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇷🇺 Русский (RU)</a>
+        <a href="/favoriten/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇯🇵 日本語 (JA)</a>
+        <a href="/favoriten/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇰🇷 한국어 (KO)</a>
     </div>
 
     <div class="content">
@@ -228,20 +240,82 @@
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
+            const isTop = (id === 'lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
             document.querySelectorAll('.lang-dropdown').forEach(d => {
                 if(d.id !== id) d.classList.remove('show');
             });
-            dropdown.classList.toggle('show');
+
+            if (isTop) {
+                const isOpen = dropdown.classList.toggle('show');
+                if (isOpen) {
+                    detachedMenu.style.visibility = 'hidden';
+                    detachedMenu.style.display = 'block';
+
+                    const btnRect = dropdown.querySelector('.lang-btn').getBoundingClientRect();
+                    const menuWidth = detachedMenu.offsetWidth;
+
+                    detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                    detachedMenu.style.left = (btnRect.right - menuWidth) + 'px';
+                    
+                    detachedMenu.style.visibility = 'visible';
+                } else {
+                    detachedMenu.style.display = 'none';
+                }
+            } else {
+                detachedMenu.style.display = 'none';
+                dropdown.classList.toggle('show');
+            }
         }
 
-        window.addEventListener('click', () => {
-            document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-dropdown') && !e.target.closest('#detached-lang-menu')) {
+                document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+                document.getElementById('detached-lang-menu').style.display = 'none';
+            }
         });
+
+        window.addEventListener('scroll', () => {
+            const topDropdown = document.getElementById('lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            document.querySelectorAll('.lang-dropdown.up.show').forEach(dropdown => {
+                const rect = dropdown.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            if (topDropdown.classList.contains('show')) {
+                const btn = topDropdown.querySelector('.lang-btn');
+                const btnRect = btn.getBoundingClientRect();
+                const centerX = btnRect.left + btnRect.width / 2;
+                const centerY = btnRect.top + btnRect.height / 2;
+
+                if (btnRect.bottom < 0 || btnRect.top > window.innerHeight) {
+                    topDropdown.classList.remove('show');
+                    detachedMenu.style.display = 'none';
+                } else if (centerX >= 0 && centerX <= window.innerWidth && centerY >= 0 && centerY <= window.innerHeight) {
+                    const topElement = document.elementFromPoint(centerX, centerY);
+                    if (topElement && !btn.contains(topElement)) {
+                        topDropdown.classList.remove('show');
+                        detachedMenu.style.display = 'none';
+                    } else {
+                        detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                        detachedMenu.style.left = (btnRect.right - detachedMenu.offsetWidth) + 'px';
+                    }
+                }
+            }
+        }, { passive: true });
 
         async function loadFavorites() {
             const container = document.getElementById('favorites-container');
             const deviceId = localStorage.getItem('anki_device_id');
-            if (!deviceId) return;
+            if (!deviceId) {
+                container.innerHTML = '<div class="add-plus-placeholder">+</div>';
+                return;
+            }
 
             // 1. Eigene Gruppe finden
             const { data: sessionData } = await window.supabaseInstance
