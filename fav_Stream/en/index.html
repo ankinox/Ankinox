@@ -221,13 +221,13 @@
 
     <!-- The expanded language window completely decoupled on the highest layer -->
     <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
-        <a href="/favoriten/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-        <a href="/favoriten/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-        <a href="/favoriten/fr" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-        <a href="/favoriten/es" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-        <a href="/favoriten/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-        <a href="/favoriten/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-        <a href="/favoriten/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+        <a href="#" onclick="changeLang('de', '/favoriten/de'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+        <a href="#" onclick="changeLang('en', '/favoriten/en'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+        <a href="#" onclick="changeLang('fr', '/favoriten/fr'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+        <a href="#" onclick="changeLang('es', '/favoriten/es'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+        <a href="#" onclick="changeLang('ru', '/favoriten/ru'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+        <a href="#" onclick="changeLang('ja', '/favoriten/ja'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+        <a href="#" onclick="changeLang('ko', '/favoriten/ko'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
     </div>
 
     <div class="content">
@@ -261,13 +261,13 @@
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> ▴</div>
                 <div class="lang-content">
-                    <a href="/favoriten/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/favoriten/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/favoriten/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/favoriten/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/favoriten/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/favoriten/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/favoriten/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="#" onclick="changeLang('de', '/favoriten/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="#" onclick="changeLang('en', '/favoriten/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="#" onclick="changeLang('fr', '/favoriten/fr'); return false;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="#" onclick="changeLang('es', '/favoriten/es'); return false;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="#" onclick="changeLang('ru', '/favoriten/ru'); return false;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="#" onclick="changeLang('ja', '/favoriten/ja'); return false;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="#" onclick="changeLang('ko', '/favoriten/ko'); return false;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
