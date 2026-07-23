@@ -6,8 +6,8 @@
    <!-- Automatische Sprachprüfung und Weiterleitung -->
     <script>
         (function() {
-            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
-            const supportedLangs = ['en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            const supportedLangs = ['de', 'fr', 'es', 'ru', 'ja', 'ko'];
             
             // Prüfen ob die Sprache mit einer der unterstützten übereinstimmt (ersten 2 Zeichen, z.B. 'en-US' -> 'en')
             const langCode = userLang.substring(0, 2);
