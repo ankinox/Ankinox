@@ -13,7 +13,7 @@
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'de' && supportedLangs.includes(langCode)) {
-                window.location.replace('/impressum/de' + langCode);
+                window.location.replace('/impressum/' + langCode);
             }
         })();
     </script>
@@ -371,6 +371,19 @@
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
+
+        // Schließt das Sprachmenü, wenn der gesamte ausgeklappte Block vollständig außerhalb des Bildschirms ist (Scrollen)
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
+                const content = dropdown.querySelector('.lang-content');
+                if (content) {
+                    const rect = content.getBoundingClientRect();
+                    if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
+        }, { passive: true });
     </script>
 </body>
 </html>
