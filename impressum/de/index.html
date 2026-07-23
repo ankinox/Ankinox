@@ -1,21 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta name="google-site-verification" content="qXv-KkiYGcquENV0m9NsDZ5WntKY_7CEp7fkB2Y_1yY" />
-
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream - Ankinox</title>
     
-    <meta property="og:title" content="Ankinox">
-    <meta property="og:description" content="Schaue dir Filme, Musik und Serien auf Ankinox an.">
-    <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/06/img-20260613-wa00645601319322933086557.jpg">
-    <meta property="og:url" content="https://ankinox.github.io/"> 
-    <meta property="og:type" content="website">
-
-    <!-- Automatische Sprachprüfung und Weiterleitung -->
+   <!-- Automatische Sprachprüfung und Weiterleitung -->
     <script>
         (function() {
             const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
@@ -25,12 +13,15 @@
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'de' && supportedLangs.includes(langCode)) {
-                // Weiterleitung in den entsprechenden Sprachordner (z.B. /startseite/en oder /startseite/ru)
-                window.location.replace('/Startseite/de' + langCode);
+                window.location.replace('/impressum/' + langCode);
             }
         })();
     </script>
 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impressum – Ankinox</title>
+    
     <style>
         /* Plattformabhängige Flaggen-Anzeige (Emojis auf Mobilgeräten, echte Flaggen-Bilder nur auf PC/Desktop) */
         .flag-img { display: none; }
@@ -47,8 +38,14 @@
             .flag-emoji { display: none; }
         }
 
-        * { -webkit-tap-highlight-color: transparent; outline: none; }
-        body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
+        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding-bottom: 120px; /* Genug Platz für Footer + feste Navigation */
+            background-color: #050505; 
+            color: white; 
+            font-family: sans-serif; 
+        }
         
         /* Dropdown Sprachauswahl Styling */
         .lang-dropdown {
@@ -66,7 +63,9 @@
             align-items: center;
             gap: 5px;
         }
-        .lang-content {
+        
+        /* Lokales Dropdown für den Footer */
+        .lang-dropdown .lang-content {
             display: none;
             position: absolute;
             right: 0;
@@ -75,15 +74,13 @@
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
-            z-index: 10000;
+            z-index: 999999;
             overflow: hidden;
         }
-        /* Oben nach unten aufklappen */
         .lang-dropdown.down .lang-content {
             top: 100%;
             margin-top: 5px;
         }
-        /* Im Footer nach oben aufklappen */
         .lang-dropdown.up .lang-content {
             bottom: 100%;
             margin-bottom: 5px;
@@ -105,6 +102,125 @@
             display: block;
         }
 
+        /* Hintergrund-Aura für den magischen Ankinox-Look */
+        .ambient-glow {
+            position: fixed;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            height: 50vh;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, rgba(0, 212, 255, 0.05) 50%, rgba(5, 5, 5, 0) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Banner-Bereich analog zur Hauptseite */
+        .header-section {
+            padding: 30px 20px 10px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container { 
+            position: relative; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            width: 100%; 
+            margin-bottom: 20px; 
+        }
+        .logo-container img {
+            width: 120px;
+            display: block;
+            margin: 0 auto;
+        }
+        /* Exakter Platzhalter links, der genau so breit ist wie das Dropdown rechts, damit das Logo perfekt zentriert wird */
+        .logo-spacer {
+            width: 75px;
+            visibility: hidden;
+        }
+
+        h1 {
+            font-size: 24px;
+            background: linear-gradient(90deg, #7000ff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Elegante, abgerundete Boxen im Glass-Look */
+        .legal-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(112, 0, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 0 20px 20px 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .legal-card h2 {
+            font-size: 16px;
+            color: #00d4ff;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-left: 3px solid #7000ff;
+            padding-left: 8px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .legal-card p, .legal-card address {
+            color: #cccccc;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            font-style: normal;
+            margin: 0 0 10px 0;
+        }
+
+        .legal-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .legal-card a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .legal-card a:hover {
+            color: #bf00ff;
+        }
+
+        /* Zurück-Button */
+        .back-btn {
+            display: block;
+            width: calc(100% - 40px);
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 14px;
+            background: transparent;
+            color: #7000ff;
+            border: 2px solid #7000ff;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #7000ff;
+            color: white;
+            box-shadow: 0 0 15px rgba(112, 0, 255, 0.4);
+        }
+
+        /* Footer */
         .site-footer {
             margin-top: 50px;
             padding: 20px 20px 40px 20px;
@@ -136,114 +252,143 @@
         .copyright {
             color: #555;
             font-size: 0.75rem;
-            line-height: 1.4;
         }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
-        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
-        .dot { flex: 1; height: 5px; background: rgba(255,255,255,0.4); border-radius: 2.5px; overflow: hidden; position: relative; cursor: pointer; }
-        .dot.active { cursor: default; }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #7000ff, #00d4ff); position: absolute; top: 0; left: 0; pointer-events: none; }
-        .scroll-container { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 10px; scrollbar-width: none; }
-        .scroll-container::-webkit-scrollbar { display: none; }
-        @keyframes load { from { width: 0%; } to { width: 100%; } }
+        /* Feste Navigation ganz unten */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: #0a0a0a; 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 15px 0; 
+            border-top: 1px solid #333; 
+            z-index: 9999; 
+        }
+        
+        .bottom-nav a { 
+            color: #555; 
+            text-decoration: none; 
+            font-size: 1.2rem; 
+        }
+        
+        .bottom-nav a.active {
+            color: #00d4ff;
+        }
     </style>
 </head>
 <body>
 
-    <div id="banner-container" style="position:relative; width:100%; height:60vh; overflow:hidden">
-        <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
-        <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
-        
-        <!-- Logo links oben & Sprachauswahl rechts oben -->
-        <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:15px; display:flex; justify-content:space-between; align-items:center;">
-            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+    <!-- Magisches Hintergrundleuchten -->
+    <div class="ambient-glow"></div>
+
+    <!-- Header-Bereich mit Logo -->
+    <div class="header-section">
+        <div class="logo-container">
+            <!-- Unsichtbarer Platzhalter links gleicht die Breite des Dropdowns rechts aus -->
+            <div class="logo-spacer"></div>
             
-            <!-- Sprachauswahl Oben (Klappt nach unten auf) -->
-            <div class="lang-dropdown down" id="lang-top">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▾</div>
-                <div class="lang-content">
-                    <a href="/Startseite/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/Startseite/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/Startseite/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/Startseite/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/Startseite/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/Startseite/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/Startseite/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" alt="Ankinox Logo">
+            
+            <!-- Sprachauswahl Oben -->
+            <div>
+                <div class="lang-dropdown down" id="lang-top">
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▾</div>
                 </div>
             </div>
         </div>
-
-        <div style="position:absolute; bottom:1px; left:30px; z-index:3; max-width:500px">
-            <img id="banner-logo" src="" style="display: block; width: 100%; max-width: 150px; margin-left: -20px; margin-bottom: -70px">
-            <div id="banner-fsk" style="color:#bbb;font-size:13px;margin-bottom:12px"></div>
-            <p id="banner-desc" style="font-size:14px;margin-bottom:15px;opacity:0.9;line-height:1.4;max-width:90%"></p>
-            <div style="display:flex; gap:10px; align-items:center; position:relative; z-index:101">
-                <a id="banner-button-link" href="#" style="padding: 8px 20px; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; white-space: nowrap">▶ Anschauen</a>
-            </div>
-        </div>
+        <h1>Impressum</h1>
+        <p style="color: #666; font-size: 0.85rem; margin: 0;">Angaben gemäß § 5 DDG</p>
     </div>
 
-    <div style="width:100%; background-color:#050505; padding:20px 30px; box-sizing: border-box;">
-        <div id="indicator-box" style="display:flex; gap:10px; width:150px;"></div>
+    <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene -->
+    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+        <a href="/impressum/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+        <a href="/impressum/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+        <a href="/impressum/fr" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+        <a href="/impressum/es" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+        <a href="/impressum/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+        <a href="/impressum/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+        <a href="/impressum/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
     </div>
 
-    <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
-        <h2 style="font-size: 20px; margin-bottom: 15px">Mehr entdecken</h2>
-        <div class="scroll-container" id="ankinox-carousel">
-            <div style="flex: 0 0 140px">
-                <a href="/stream/de"><img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784273694/file_000000001d7471f492f8b519a9f32678_rxthra.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Streaming</p>
-                <p style="font-size: 12px; color: #bbb">Anime | Musik</p>
-            </div>
-            <div style="flex: 0 0 140px">
-                <a href="/Kanalmitgliedschaft/de"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Mitgliedschaft</p>
-                <p style="font-size: 12px; color: #bbb">Vorteile | Exklusiv</p>
-            </div>
-            <div style="flex: 0 0 140px">
-                <a href="/Shop/de"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Ankinox Shop</p>
-                <p style="font-size: 12px; color: #bbb">Merchandise | Exklusiv</p>
-            </div>
-            <div style="flex: 0 0 140px">
-                <a href="/Partnerschaft/de"><img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; border: none;"></a>
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Partnerschaft mit An..</p>
-                <p style="font-size: 12px; color: #bbb">Partnerschaft | Ankinox</p>
-            </div>
-        </div>
+    <!-- 1. WICHTIGER RECHTLICHER HINWEIS: Klärt die Rollenverteilung sofort auf -->
+    <div class="legal-card" style="border-color: rgba(0, 212, 255, 0.3); background: rgba(0, 212, 255, 0.01);">
+        <h2>Geltungsbereich</h2>
+        <p>Dieses Impressum gilt für das Online-Angebot der Webseite <strong>ankinox.com</strong> sowie für unseren offiziellen YouTube-Kanal <strong>Ankinox</strong>.</p>
+        <p style="margin-top: 10px; font-size: 0.85rem; color: #888;">
+            <em>Hinweis zur Webseite:</em> Diese Webseite dient ausschließlich unkommerziellen Informations- und Vermittlungszwecken für das YouTube-Projekt. Über diese Webseite werden keine direkten Verträge geschlossen, keine Werbung geschaltet und keine direkten Einnahmen generiert.
+        </p>
     </div>
 
+    <!-- 2. Diensteanbieter / Betreiber (Aktuell privat geschützt) -->
+    <div class="legal-card">
+        <h2>Diensteanbieter</h2>
+        <address>
+            <strong>Marcobode</strong><br>
+            <span style="color: #666; font-style: italic;">[Anschrift wird hinterlegt, sobald geschäftsmäßige Monetarisierung aktiv ist]</span><br>
+            Deutschland
+        </address>
+    </div>
+
+    <!-- 3. Kontakt -->
+    <div class="legal-card">
+        <h2>Kontakt</h2>
+        <p>
+            E-Mail: <a href="mailto:info@ankinox.com">info@ankinox.com</a>
+        </p>
+    </div>
+
+    <!-- 4. Haftungsausschluss (Disclaimer) & Fremdrechte -->
+    <div class="legal-card">
+        <h2>Haftung & Urheberrecht</h2>
+        <p>
+            Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
+        </p>
+        <p style="margin-top: 10px;">
+            Die durch uns selbst erstellten Inhalte, Designs und Werke auf dieser Webseite unterliegen dem deutschen Urheberrecht. 
+        </p>
+        <p style="margin-top: 10px; color: #aaa; font-style: italic;">
+            Beiträge, Videos, Grafiken und Werke Dritter (wie z. B. von kooperierenden Künstlern oder Studios) sind als solche gekennzeichnet oder unterliegen den Urheber- und Nutzungsrechten der jeweiligen Rechteinhaber. Eine Vervielfältigung oder Verwendung dieser fremden Inhalte ist ohne ausdrückliche Zustimmung des jeweiligen Rechteinhabers nicht gestattet.
+        </p>
+    </div>
+
+    <!-- Zurück zur Startseite Button -->
+    <a href="/index.html" class="back-btn">Zurück zur Startseite</a>
+
+    <!-- Footer mit den Pflichtlinks -->
     <footer class="site-footer">
         <!-- Sprachauswahl Im Footer (Klappt nach oben auf) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▴</div>
                 <div class="lang-content">
-                    <a href="/Startseite/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/Startseite/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/Startseite/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/Startseite/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/Startseite/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/Startseite/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/Startseite/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="/impressum/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="/impressum/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="/impressum/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="/impressum/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="/impressum/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="/impressum/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="/impressum/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
 
         <div class="footer-links">
-            <a href="/impressum/de">Impressum</a>
+            <a href="/impressum/de" style="color: #00d4ff; font-weight: bold;">Impressum</a>
             <a href="mailto:kontakt@ankinox.com">Kontakt</a>
             <a href="mailto:support@ankinox.com">Support</a>
         </div>
         <div class="copyright">
-            &copy; 2026 Ankinox. Alle Rechte an eigenen Inhalten vorbehalten.<br>
-            Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.
+            &copy; 2026 Ankinox. Alle Rechte an eigenen Inhalten vorbehalten. Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.
         </div>
     </footer>
 
+    <!-- Feste Navigationsleiste unten -->
     <nav class="bottom-nav">
-        <a href="/Startseite/de" style="color: #bf00ff">Start</a>
+        <a href="/Startseite/de">Start</a>
         <a href="/stream/de">Stream</a>
         <a href="/Shop/de">Shop</a>
         <a href="/Partnerschaft/de">Partner</a>
@@ -254,113 +399,74 @@
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
-            // Alle anderen Menüs schließen
+            const isTop = (id === 'lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
             document.querySelectorAll('.lang-dropdown').forEach(d => {
                 if(d.id !== id) d.classList.remove('show');
             });
-            dropdown.classList.toggle('show');
+
+            if (isTop) {
+                const isOpen = dropdown.classList.toggle('show');
+                if (isOpen) {
+                    detachedMenu.style.visibility = 'hidden';
+                    detachedMenu.style.display = 'block';
+
+                    const btnRect = dropdown.querySelector('.lang-btn').getBoundingClientRect();
+                    const menuWidth = detachedMenu.offsetWidth;
+
+                    detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                    detachedMenu.style.left = (btnRect.right - menuWidth) + 'px';
+                    
+                    detachedMenu.style.visibility = 'visible';
+                } else {
+                    detachedMenu.style.display = 'none';
+                }
+            } else {
+                detachedMenu.style.display = 'none';
+                dropdown.classList.toggle('show');
+            }
         }
 
-        // Klicks außerhalb schließen das Menü wieder
-        window.addEventListener('click', () => {
-            document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-dropdown') && !e.target.closest('#detached-lang-menu')) {
+                document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+                document.getElementById('detached-lang-menu').style.display = 'none';
+            }
         });
 
-        // Schließt das Sprachmenü, wenn der gesamte ausgeklappte Block vollständig außerhalb des Bildschirms ist (Scrollen)
         window.addEventListener('scroll', () => {
-            document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
-                const content = dropdown.querySelector('.lang-content');
-                if (content) {
-                    const rect = content.getBoundingClientRect();
-                    // Prüfen, ob der Block komplett außerhalb des Viewports liegt (oben raus oder unten raus)
-                    if (rect.bottom < 0 || rect.top > window.innerHeight) {
-                        dropdown.classList.remove('show');
+            const topDropdown = document.getElementById('lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            document.querySelectorAll('.lang-dropdown.up.show').forEach(dropdown => {
+                const rect = dropdown.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            if (topDropdown.classList.contains('show')) {
+                const btn = topDropdown.querySelector('.lang-btn');
+                const btnRect = btn.getBoundingClientRect();
+                const centerX = btnRect.left + btnRect.width / 2;
+                const centerY = btnRect.top + btnRect.height / 2;
+
+                if (btnRect.bottom < 0 || btnRect.top > window.innerHeight) {
+                    topDropdown.classList.remove('show');
+                    detachedMenu.style.display = 'none';
+                } else if (centerX >= 0 && centerX <= window.innerWidth && centerY >= 0 && centerY <= window.innerHeight) {
+                    const topElement = document.elementFromPoint(centerX, centerY);
+                    if (topElement && !btn.contains(topElement)) {
+                        topDropdown.classList.remove('show');
+                        detachedMenu.style.display = 'none';
+                    } else {
+                        detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                        detachedMenu.style.left = (btnRect.right - detachedMenu.offsetWidth) + 'px';
                     }
                 }
-            });
+            }
         }, { passive: true });
-
-        const data = [
-            { bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784273694/file_000000001d7471f492f8b519a9f32678_rxthra.png", logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784278472/IMG-20260717-WA0001-removebg-preview_y1qc5u.png", fsk: '<span style="border:2px solid #00d4ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Streaming</span> Anime • Filme • Musik', desc: "Entdecke unsere große Auswahl an Anime-Filmen, Serien und Musik.", url: "/stream/de", btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)" },
-            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607090240148567443699929004634.png", fsk: '<span style="border:2px solid #ffd700;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ffd700;box-shadow:0 0 5px #ffd700">Mitgliedschaft</span> Exklusive Vorteile', desc: "Profitiere von exklusiven Vorteilen und schalte die komplette Serien-Bibliothek frei.", url: "/Kanalmitgliedschaft/de", btnColor: "linear-gradient(90deg, #ffd700, #ff8c00)" },
-            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png", fsk: '<span style="border:2px solid #ff4500;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff4500;box-shadow:0 0 5px #ff4500">Shop</span> Merchandise • Exklusiv • Fanartikel', desc: "Entdecke exklusive Fan-Artikel und limitierte Editionen im offiziellen Ankinox Shop.", url: "/Shop/de", btnColor: "linear-gradient(90deg, #ff4500, #ff0000)" },
-            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png", fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Partnerschaft</span> Geldverdienen • Großwerden', desc: "Werde jetzt Ankinox Partner.", url: "/Partnerschaft/de", btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)" }
-        ];
-
-        const indicatorBox = document.getElementById('indicator-box');
-        data.forEach((_, i) => { indicatorBox.innerHTML += `<div class="dot" onclick="manualUpdate(${i})" id="dot-${i}"><div class="progress-bar" id="bar-${i}"></div></div>`; });
-
-        let idx = 0;
-        let timer = setInterval(autoUpdate, 5000);
-        
-        const bannerContainer = document.getElementById('banner-container');
-        let touchstartX = 0;
-        bannerContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
-        bannerContainer.addEventListener('touchend', e => {
-            let diff = e.changedTouches[0].screenX - touchstartX;
-            if (Math.abs(diff) > 50) {
-                if (diff < 0) manualUpdate((idx + 1) % data.length);
-                else manualUpdate((idx - 1 + data.length) % data.length);
-            }
-        });
-
-        function autoUpdate() { updateBanner((idx + 1) % data.length); }
-        function manualUpdate(i) { clearInterval(timer); updateBanner(i); timer = setInterval(autoUpdate, 5000); }
-        function updateBanner(i) {
-            idx = i;
-            document.getElementById('banner-bg').src = data[idx].bg;
-            document.getElementById('banner-logo').src = data[idx].logo;
-            document.getElementById('banner-fsk').innerHTML = data[idx].fsk;
-            document.getElementById('banner-desc').innerText = data[idx].desc;
-            document.getElementById('banner-button-link').href = data[idx].url;
-            document.getElementById('banner-button-link').style.background = data[idx].btnColor;
-            document.querySelectorAll('.dot').forEach((dot, index) => dot.classList.toggle('active', index === idx));
-            document.querySelectorAll('.progress-bar').forEach((bar, index) => {
-                bar.style.animation = 'none'; bar.style.width = '0%';
-                if (index === idx) setTimeout(() => { bar.style.animation = 'load 5s linear forwards'; }, 50);
-            });
-        }
-        updateBanner(0);
-
-        const carousel = document.getElementById('ankinox-carousel');
-        let scrollTimer, resumeTimer;
-        let isManual = false;
-
-        function canScroll() { return carousel.scrollWidth > carousel.clientWidth; }
-
-        function startCarousel() {
-            if (!canScroll()) return;
-            isManual = false;
-            clearInterval(scrollTimer);
-            scrollTimer = setInterval(() => {
-                carousel.scrollLeft += 1;
-                if (carousel.scrollLeft >= 160) {
-                    carousel.appendChild(carousel.firstElementChild);
-                    carousel.scrollLeft -= 160;
-                }
-            }, 30);
-        }
-
-        startCarousel();
-
-        carousel.addEventListener('touchstart', () => { 
-            isManual = true;
-            clearInterval(scrollTimer); 
-            clearTimeout(resumeTimer); 
-        });
-
-        carousel.addEventListener('touchend', () => { 
-            resumeTimer = setTimeout(() => { if (!isManual || canScroll()) startCarousel(); }, 3000); 
-        });
-
-        window.addEventListener('resize', () => {
-            clearInterval(scrollTimer);
-            if (canScroll()) {
-                startCarousel();
-            } else {
-                carousel.scrollLeft = 0;
-            }
-        });
     </script>
 </body>
 </html>
