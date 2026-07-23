@@ -40,15 +40,14 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
         body { margin: 0; padding-bottom: 90px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        /* Einheits-Styling für plattformunabhängige SVG-Flaggen */
-        .flag-icon {
-            width: 22px;
-            height: 16px;
-            object-fit: cover;
-            border-radius: 3px;
+        /* Kleine CSS-Klasse für saubere Flaggen-Darstellung */
+        .flag-img {
+            width: 1.2em;
+            height: 0.9em;
             vertical-align: middle;
+            border-radius: 2px;
+            object-fit: cover;
             display: inline-block;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         /* Dropdown Sprachauswahl Styling */
@@ -62,17 +61,17 @@
             padding: 6px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
         }
         .lang-content {
             display: none;
             position: absolute;
             right: 0;
             background: #111;
-            min-width: 155px;
+            min-width: 140px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
@@ -89,11 +88,9 @@
         }
         .lang-content a {
             color: #ddd;
-            padding: 9px 12px;
+            padding: 8px 12px;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: block;
             font-size: 0.9rem;
             text-align: left;
             transition: background 0.2s;
@@ -191,9 +188,7 @@
             
             <!-- Sprachauswahl Oben (Klappt nach unten auf) -->
             <div class="lang-dropdown down" id="lang-top">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">
-                    <img src="https://flagcdn.com/w40/de.png" class="flag-icon" alt="DE"> ▾
-                </div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"> ▾</div>
             </div>
         </div>
 
@@ -201,14 +196,14 @@
     </div>
 
     <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene -->
-    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 160px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
-        <a href="/Ankinox-Song/de"><img src="https://flagcdn.com/w40/de.png" class="flag-icon" alt="DE"> Deutsch (DE)</a>
-        <a href="/Ankinox-Song/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-icon" alt="EN"> English (EN)</a>
-        <a href="/Ankinox-Song/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-icon" alt="FR"> Français (FR)</a>
-        <a href="/Ankinox-Song/es"><img src="https://flagcdn.com/w40/es.png" class="flag-icon" alt="ES"> Español (ES)</a>
-        <a href="/Ankinox-Song/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-icon" alt="RU"> Русский (RU)</a>
-        <a href="/Ankinox-Song/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-icon" alt="JA"> 日本語 (JA)</a>
-        <a href="/Ankinox-Song/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-icon" alt="KO"> 한국어 (KO)</a>
+    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+        <a href="/Ankinox-Song/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"> Deutsch (DE)</a>
+        <a href="/Ankinox-Song/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"> English (EN)</a>
+        <a href="/Ankinox-Song/fr" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"> Français (FR)</a>
+        <a href="/Ankinox-Song/es" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"> Español (ES)</a>
+        <a href="/Ankinox-Song/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"> Русский (RU)</a>
+        <a href="/Ankinox-Song/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"> 日本語 (JA)</a>
+        <a href="/Ankinox-Song/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"> 한국어 (KO)</a>
     </div>
 
     <div class="content">
@@ -244,17 +239,15 @@
          <!-- Sprachauswahl Im Footer (Klappt nach oben auf) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)">
-                    <img src="https://flagcdn.com/w40/de.png" class="flag-icon" alt="DE"> ▴
-                </div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"> ▴</div>
                 <div class="lang-content">
-                    <a href="/Ankinox-Song/de"><img src="https://flagcdn.com/w40/de.png" class="flag-icon" alt="DE"> Deutsch (DE)</a>
-                    <a href="/Ankinox-Song/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-icon" alt="EN"> English (EN)</a>
-                    <a href="/Ankinox-Song/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-icon" alt="FR"> Français (FR)</a>
-                    <a href="/Ankinox-Song/es"><img src="https://flagcdn.com/w40/es.png" class="flag-icon" alt="ES"> Español (ES)</a>
-                    <a href="/Ankinox-Song/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-icon" alt="RU"> Русский (RU)</a>
-                    <a href="/Ankinox-Song/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-icon" alt="JA"> 日本語 (JA)</a>
-                    <a href="/Ankinox-Song/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-icon" alt="KO"> 한국어 (KO)</a>
+                    <a href="/Ankinox-Song/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"> Deutsch (DE)</a>
+                    <a href="/Ankinox-Song/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"> English (EN)</a>
+                    <a href="/Ankinox-Song/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"> Français (FR)</a>
+                    <a href="/Ankinox-Song/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"> Español (ES)</a>
+                    <a href="/Ankinox-Song/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"> Русский (RU)</a>
+                    <a href="/Ankinox-Song/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"> 日本語 (JA)</a>
+                    <a href="/Ankinox-Song/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
