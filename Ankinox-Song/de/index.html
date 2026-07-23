@@ -3,17 +3,59 @@
 <head>
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
      <!-- Automatische Sprachprüfung und Weiterleitung -->
+     <!-- Intelligente Sprachprüfung & Weiterleitung mit abgesichertem localStorage -->
     <script>
         (function() {
-            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
-            const supportedLangs = ['en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            const currentPath = window.location.pathname;
+            const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
             
-            // Prüfen ob die Sprache mit einer der unterstützten übereinstimmt (ersten 2 Zeichen, z.B. 'en-US' -> 'en')
+            // Pfadsegmente sauber aufteilen und das letzte Segment prüfen
+            const pathSegments = currentPath.split('/').filter(Boolean);
+            const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'de';
+
+            // Wenn wir gerade frisch manuell gewechselt haben, gar nicht erst eingreifen!
+            if (sessionStorage.getItem('justSwitched') === 'true') {
+                sessionStorage.removeItem('justSwitched');
+                return;
+            }
+
+            // 1. Wenn der Nutzer bereits manuell eine Sprache gewählt hat
+            const savedLang = localStorage.getItem('userSelectedLang');
+            if (savedLang && supportedLangs.includes(savedLang)) {
+                // Wenn die aktuelle URL NICHT der gespeicherten Sprache entspricht -> Sofort korrigieren!
+                if (pageLang !== savedLang) {
+                    let newPath;
+                    if (supportedLangs.includes(lastSegment)) {
+                        pathSegments[pathSegments.length - 1] = savedLang;
+                        newPath = '/' + pathSegments.join('/');
+                    } else {
+                        newPath = currentPath.endsWith('/') ? currentPath + savedLang : currentPath + '/' + savedLang;
+                    }
+                    if (newPath !== currentPath) {
+                        window.location.replace(newPath);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            // 2. Erstanweiser-Erkennung (nur beim allerersten Besuch)
+            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'de' && supportedLangs.includes(langCode)) {
-                // Weiterleitung in den entsprechenden Sprachordner (z.B. /startseite/en oder /startseite/ru)
-                window.location.replace('/Ankinox-Song/' + langCode);
+                localStorage.setItem('userSelectedLang', langCode);
+                let newPath;
+                if (supportedLangs.includes(lastSegment)) {
+                    pathSegments[pathSegments.length - 1] = langCode;
+                    newPath = '/' + pathSegments.join('/');
+                } else {
+                    newPath = currentPath.endsWith('/') ? currentPath + langCode : currentPath + '/' + langCode;
+                }
+                window.location.replace(newPath);
+            } else {
+                localStorage.setItem('userSelectedLang', 'de');
             }
         })();
     </script>
