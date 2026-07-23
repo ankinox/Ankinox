@@ -278,25 +278,34 @@
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Prüft beim Scrollen, ob der Button aus dem sichtbaren Bereich wandert bzw. überdeckt wird, und schließt sie dann
+        // Prüft beim Scrollen entsprechend der Regeln
         window.addEventListener('scroll', () => {
             document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
+                const btn = dropdown.querySelector('.lang-btn');
                 const rect = dropdown.getBoundingClientRect();
-                
-                // Für das obere Menü (klappt nach unten auf): 
-                // Schließen, sobald der Button oben aus dem Sichtfeld scrollt (rect.top < 0)
-                // Für das untere Menü (klappt nach oben auf): 
-                // Schließen, sobald der Button unten aus dem Sichtfeld scrollt (rect.bottom > window.innerHeight)
-                if (dropdown.classList.contains('down') && rect.top < 0) {
-                    dropdown.classList.remove('show');
-                }
-                if (dropdown.classList.contains('up') && rect.bottom > window.innerHeight) {
-                    dropdown.classList.remove('show');
-                }
-                
-                // Allgemeine Sicherheitsprüfung, falls der Button komplett verschwindet
+
+                // 1. Gemeinsame Rausscroll-Prüfung für BEIDE Menüs:
+                // Schließt erst, wenn der gesammte Bereich (Button + ausgeklappter Inhalt) komplett ausserhalb des Sichtfeldes ist.
                 if (rect.bottom < 0 || rect.top > window.innerHeight) {
                     dropdown.classList.remove('show');
+                    return;
+                }
+
+                // 2. Zusätzliche Überprüfung NUR für das obere Menü (Klasse 'down'):
+                // Prüft, ob der Button von einem anderen Element überdeckt wurde (z.B. beim Drüberscrollen)
+                if (dropdown.classList.contains('down') && btn) {
+                    const btnRect = btn.getBoundingClientRect();
+                    const centerX = btnRect.left + btnRect.width / 2;
+                    const centerY = btnRect.top + btnRect.height / 2;
+                    
+                    // Prüfen, ob der Button im sichtbaren Bereich liegt
+                    if (centerX >= 0 && centerX <= window.innerWidth && centerY >= 0 && centerY <= window.innerHeight) {
+                        const topElement = document.elementFromPoint(centerX, centerY);
+                        // Wenn das Element an dieser Koordinate nicht der Button selbst oder ein Kind davon ist -> überdeckt!
+                        if (topElement && !btn.contains(topElement)) {
+                            dropdown.classList.remove('show');
+                        }
+                    }
                 }
             });
         }, { passive: true });
