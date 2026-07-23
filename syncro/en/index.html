@@ -11,7 +11,7 @@
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'en' && supportedLangs.includes(langCode)) {
-                window.location.replace('/syncro/' + langCode);
+                window.location.replace('/syncro/en' + langCode);
             }
         })();
     </script>
