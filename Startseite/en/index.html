@@ -7,7 +7,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream - Ankinox</title>
+    <title>Startseite - Ankinox</title>
     
     <meta property="og:title" content="Ankinox">
     <meta property="og:description" content="Schaue dir Filme, Musik und Serien auf Ankinox an.">
@@ -250,6 +250,11 @@
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
+
+        // Automatisches Einklappen beim Scrollen (egal ob hoch oder runter)
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+        }, { passive: true });
 
         const data = [
             { bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784273694/file_000000001d7471f492f8b519a9f32678_rxthra.png", logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784278472/IMG-20260717-WA0001-removebg-preview_y1qc5u.png", fsk: '<span style="border:2px solid #00d4ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Streaming</span> Anime • Filme • Musik', desc: "Entdecke unsere große Auswahl an Anime-Filmen, Serien und Musik.", url: "/stream/en", btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)" },
