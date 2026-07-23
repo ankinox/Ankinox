@@ -15,12 +15,18 @@
     <meta property="og:url" content="https://ankinox.github.io/"> 
     <meta property="og:type" content="website">
 
-    <!-- Intelligente Sprachprüfung & Weiterleitung mit localStorage-Erinnerung -->
+    <!-- Intelligente Sprachprüfung & Weiterleitung mit abgesichertem localStorage -->
     <script>
         (function() {
             const currentPath = window.location.pathname;
             const pageLang = currentPath.split('/').pop().toLowerCase();
             const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
+
+            // Wenn wir gerade frisch manuell gewechselt haben, gar nicht erst eingreifen!
+            if (sessionStorage.getItem('justSwitched') === 'true') {
+                sessionStorage.removeItem('justSwitched');
+                return;
+            }
 
             // 1. Wenn der Nutzer bereits manuell eine Sprache gewählt hat
             const savedLang = localStorage.getItem('userSelectedLang');
@@ -181,13 +187,13 @@
             <div class="lang-dropdown down" id="lang-top">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▾</div>
                 <div class="lang-content">
-                    <a href="/Startseite/de" onclick="localStorage.setItem('userSelectedLang', 'de')"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/Startseite/en" onclick="localStorage.setItem('userSelectedLang', 'en')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/Startseite/fr" onclick="localStorage.setItem('userSelectedLang', 'fr')"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/Startseite/es" onclick="localStorage.setItem('userSelectedLang', 'es')"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/Startseite/ru" onclick="localStorage.setItem('userSelectedLang', 'ru')"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/Startseite/ja" onclick="localStorage.setItem('userSelectedLang', 'ja')"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/Startseite/ko" onclick="localStorage.setItem('userSelectedLang', 'ko')"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="#" onclick="changeLang('de', '/Startseite/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="#" onclick="changeLang('en', '/Startseite/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="#" onclick="changeLang('fr', '/Startseite/fr'); return false;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="#" onclick="changeLang('es', '/Startseite/es'); return false;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="#" onclick="changeLang('ru', '/Startseite/ru'); return false;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="#" onclick="changeLang('ja', '/Startseite/ja'); return false;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="#" onclick="changeLang('ko', '/Startseite/ko'); return false;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -238,13 +244,13 @@
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▴</div>
                 <div class="lang-content">
-                    <a href="/Startseite/de" onclick="localStorage.setItem('userSelectedLang', 'de')"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/Startseite/en" onclick="localStorage.setItem('userSelectedLang', 'en')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/Startseite/fr" onclick="localStorage.setItem('userSelectedLang', 'fr')"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/Startseite/es" onclick="localStorage.setItem('userSelectedLang', 'es')"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/Startseite/ru" onclick="localStorage.setItem('userSelectedLang', 'ru')"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/Startseite/ja" onclick="localStorage.setItem('userSelectedLang', 'ja')"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/Startseite/ko" onclick="localStorage.setItem('userSelectedLang', 'ko')"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="#" onclick="changeLang('de', '/Startseite/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="#" onclick="changeLang('en', '/Startseite/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="#" onclick="changeLang('fr', '/Startseite/fr'); return false;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="#" onclick="changeLang('es', '/Startseite/es'); return false;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="#" onclick="changeLang('ru', '/Startseite/ru'); return false;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="#" onclick="changeLang('ja', '/Startseite/ja'); return false;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="#" onclick="changeLang('ko', '/Startseite/ko'); return false;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -268,6 +274,13 @@
     </nav>
 
     <script>
+        // Garantiert fehlerfreier Sprachwechsel ohne Race-Condition
+        function changeLang(langCode, targetUrl) {
+            localStorage.setItem('userSelectedLang', langCode);
+            sessionStorage.setItem('justSwitched', 'true');
+            window.location.href = targetUrl;
+        }
+
         // Dropdown öffnen/schließen Script
         function toggleLangMenu(id, event) {
             event.stopPropagation();
