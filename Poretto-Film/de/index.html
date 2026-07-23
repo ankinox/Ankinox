@@ -169,6 +169,17 @@
         </div>
     </div>
 
+    <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene -->
+    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+        <a href="/Poretto-Film/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇩🇪 Deutsch (DE)</a>
+        <a href="/Poretto-Film/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇬🇧 English (EN)</a>
+        <a href="/Poretto-Film/fr" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇫🇷 Français (FR)</a>
+        <a href="/Poretto-Film/es" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇪🇸 Español (ES)</a>
+        <a href="/Poretto-Film/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇷🇺 Русский (RU)</a>
+        <a href="/Poretto-Film/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇯🇵 日本語 (JA)</a>
+        <a href="/Poretto-Film/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇰🇷 한국어 (KO)</a>
+    </div>
+
     <div class="banner">
         <div class="banner-logo" style="display:flex; justify-content:space-between; align-items:center; width:100vw; padding:0 15px; box-sizing:border-box;">
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
@@ -176,15 +187,6 @@
             <!-- Sprachauswahl Oben (Klappt nach unten auf) -->
             <div class="lang-dropdown down" id="lang-top" style="margin-right: 30px;">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
-                <div class="lang-content">
-                    <a href="/Poretto-Film/de">🇩🇪 Deutsch (DE)</a>
-                    <a href="/Poretto-Film/en">🇬🇧 English (EN)</a>
-                    <a href="/Poretto-Film/fr">🇫🇷 Français (FR)</a>
-                    <a href="/Poretto-Film/es">🇪🇸 Español (ES)</a>
-                    <a href="/Poretto-Film/ru">🇷🇺 Русский (RU)</a>
-                    <a href="/Poretto-Film/ja">🇯🇵 日本語 (JA)</a>
-                    <a href="/Poretto-Film/ko">🇰🇷 한국어 (KO)</a>
-                </div>
             </div>
         </div>
         <div class="banner-overlay"></div>
@@ -258,15 +260,80 @@ Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</d
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
+            const isTop = (id === 'lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            // Alle anderen Dropdowns schließen
             document.querySelectorAll('.lang-dropdown').forEach(d => {
                 if(d.id !== id) d.classList.remove('show');
             });
-            dropdown.classList.toggle('show');
+
+            if (isTop) {
+                const isOpen = dropdown.classList.toggle('show');
+                if (isOpen) {
+                    // Erst kurz unsichtbar einblenden, damit der Browser die echte Breite (`offsetWidth`) exakt messen kann
+                    detachedMenu.style.visibility = 'hidden';
+                    detachedMenu.style.display = 'block';
+
+                    const btnRect = dropdown.querySelector('.lang-btn').getBoundingClientRect();
+                    const menuWidth = detachedMenu.offsetWidth;
+
+                    // Exakt rechtsbündig unter dem Button ausrichten
+                    detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                    detachedMenu.style.left = (btnRect.right - menuWidth) + 'px';
+                    
+                    // Sofort sichtbar schalten
+                    detachedMenu.style.visibility = 'visible';
+                } else {
+                    detachedMenu.style.display = 'none';
+                }
+            } else {
+                detachedMenu.style.display = 'none';
+                dropdown.classList.toggle('show');
+            }
         }
 
-        window.addEventListener('click', () => {
-            document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+        // Klicks außerhalb schließen das Menü wieder
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-dropdown') && !e.target.closest('#detached-lang-menu')) {
+                document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+                document.getElementById('detached-lang-menu').style.display = 'none';
+            }
         });
+
+        // Prüft beim Scrollen die Position
+        window.addEventListener('scroll', () => {
+            const topDropdown = document.getElementById('lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            document.querySelectorAll('.lang-dropdown.up.show').forEach(dropdown => {
+                const rect = dropdown.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            if (topDropdown.classList.contains('show')) {
+                const btn = topDropdown.querySelector('.lang-btn');
+                const btnRect = btn.getBoundingClientRect();
+                const centerX = btnRect.left + btnRect.width / 2;
+                const centerY = btnRect.top + btnRect.height / 2;
+
+                if (btnRect.bottom < 0 || btnRect.top > window.innerHeight) {
+                    topDropdown.classList.remove('show');
+                    detachedMenu.style.display = 'none';
+                } else if (centerX >= 0 && centerX <= window.innerWidth && centerY >= 0 && centerY <= window.innerHeight) {
+                    const topElement = document.elementFromPoint(centerX, centerY);
+                    if (topElement && !btn.contains(topElement)) {
+                        topDropdown.classList.remove('show');
+                        detachedMenu.style.display = 'none';
+                    } else {
+                        detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                        detachedMenu.style.left = (btnRect.right - detachedMenu.offsetWidth) + 'px';
+                    }
+                }
+            }
+        }, { passive: true });
 
         const videoPopup = document.getElementById('video-popup');
         const ytPlayer = document.getElementById('yt-player');
@@ -320,4 +387,3 @@ Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</d
     </script>
 </body>
 </html>
-
