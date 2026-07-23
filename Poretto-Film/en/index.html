@@ -314,6 +314,12 @@ Content from partners and studios is subject to their respective copyrights.</di
     </nav>
 
     <script>
+      function changeLang(langCode, targetUrl) {
+            localStorage.setItem('userSelectedLang', langCode);
+            sessionStorage.setItem('justSwitched', 'true');
+            window.location.href = targetUrl;
+        }
+      
         // Dropdown open/close script
         function toggleLangMenu(id, event) {
             event.stopPropagation();
