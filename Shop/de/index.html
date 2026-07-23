@@ -13,6 +13,7 @@
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'de' && supportedLangs.includes(langCode)) {
+                // Weiterleitung in den entsprechenden Sprachordner (z.B. /Shop/en)
                 window.location.replace('/Shop/de' + langCode);
             }
         })();
@@ -69,7 +70,7 @@
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
-            z-index: 10000;
+            z-index: 999999;
             overflow: hidden;
         }
         .lang-dropdown.up .lang-content {
@@ -97,26 +98,18 @@
         .banner {
             position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
             background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png');
-            background-size: cover; background-position: center; z-index: -1;
+            background-size: cover; background-position: center; z-index: 0; 
         }
 
-        .banner-logo {
-            position: absolute;
-            top: -6px;
-            left: 15px;
-            z-index: 10;
-        }
-
-        .banner-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); 
-        }
+        .banner-logo { z-index: 10; }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); }
 
         .content {
             margin-top: 30vh; 
             background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, var(--bg-color) 11.5%, var(--bg-color) 100%);
             padding: 10vh 20px 20px 20px;
             position: relative;
+            z-index: 2;
         }
 
         .category-section { margin-bottom: 40px; }
@@ -155,6 +148,8 @@
             text-align: center;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             background: #050505;
+            position: relative;
+            z-index: 100;
         }
 
         .footer-links {
@@ -191,6 +186,24 @@
 </head>
 <body>
 
+    <div class="banner">
+        <!-- Header-Leiste mit Logo und dem anklickbaren Button im Hintergrund -->
+        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
+            <div class="banner-logo">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+            </div>
+
+            <!-- NUR der Button im Hintergrund -->
+            <div>
+                <div class="lang-dropdown down" id="lang-top">
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="banner-overlay"></div>
+    </div>
+
     <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene -->
     <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
         <a href="/Shop/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇩🇪 Deutsch (DE)</a>
@@ -200,18 +213,6 @@
         <a href="/Shop/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇷🇺 Русский (RU)</a>
         <a href="/Shop/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇯🇵 日本語 (JA)</a>
         <a href="/Shop/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇰🇷 한국어 (KO)</a>
-    </div>
-
-    <div class="banner">
-        <div class="banner-logo" style="display:flex; justify-content:space-between; align-items:center; width:100vw; padding:15px; box-sizing:border-box;">
-            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
-            
-            <!-- Sprachauswahl Oben (Klappt nach unten auf) -->
-            <div class="lang-dropdown down" id="lang-top" style="margin-right: 35px;">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
-            </div>
-        </div>
-        <div class="banner-overlay"></div>
     </div>
 
     <div class="content">
@@ -282,7 +283,7 @@
 
     <!-- Rechtssichere Fußnote (Footer) -->
     <footer class="site-footer">
-        <!-- Sprachauswahl Im Footer (Klappt nach oben auf) -->
+        <!-- Sprachauswahl Im Footer -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)">🇩🇪 ▴</div>
@@ -297,7 +298,6 @@
                 </div>
             </div>
         </div>
-
         <div class="footer-links">
             <a href="/impressum/de">Impressum</a>
             <a href="mailto:kontakt@ankinox.com">Kontakt</a>
@@ -396,9 +396,13 @@
             }
         }, { passive: true });
 
+        // Share Button Script
         document.getElementById('share-button').addEventListener('click', async () => {
             try {
-                await navigator.share({ title: 'Ankinox Shop', url: window.location.href });
+                await navigator.share({
+                    title: 'Ankinox Shop',
+                    url: window.location.href 
+                });
             } catch (err) { console.log('Teilen abgebrochen', err); }
         });
     </script>
