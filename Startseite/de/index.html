@@ -251,6 +251,20 @@
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
+        // Schließt das Sprachmenü, wenn der gesamte ausgeklappte Block vollständig außerhalb des Bildschirms ist (Scrollen)
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
+                const content = dropdown.querySelector('.lang-content');
+                if (content) {
+                    const rect = content.getBoundingClientRect();
+                    // Prüfen, ob der Block komplett außerhalb des Viewports liegt (oben raus oder unten raus)
+                    if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
+        }, { passive: true });
+
         const data = [
             { bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784273694/file_000000001d7471f492f8b519a9f32678_rxthra.png", logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784278472/IMG-20260717-WA0001-removebg-preview_y1qc5u.png", fsk: '<span style="border:2px solid #00d4ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Streaming</span> Anime • Filme • Musik', desc: "Entdecke unsere große Auswahl an Anime-Filmen, Serien und Musik.", url: "/stream/de", btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)" },
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607090240148567443699929004634.png", fsk: '<span style="border:2px solid #ffd700;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ffd700;box-shadow:0 0 5px #ffd700">Mitgliedschaft</span> Exklusive Vorteile', desc: "Profitiere von exklusiven Vorteilen und schalte die komplette Serien-Bibliothek frei.", url: "/Kanalmitgliedschaft/de", btnColor: "linear-gradient(90deg, #ffd700, #ff8c00)" },
