@@ -19,8 +19,12 @@
     <script>
         (function() {
             const currentPath = window.location.pathname;
-            const pageLang = currentPath.split('/').pop().toLowerCase();
             const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            
+            // Pfadsegmente sauber aufteilen und das letzte Segment prüfen
+            const pathSegments = currentPath.split('/').filter(Boolean);
+            const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'de';
 
             // Wenn wir gerade frisch manuell gewechselt haben, gar nicht erst eingreifen!
             if (sessionStorage.getItem('justSwitched') === 'true') {
@@ -34,8 +38,9 @@
                 // Wenn die aktuelle URL NICHT der gespeicherten Sprache entspricht -> Sofort korrigieren!
                 if (pageLang !== savedLang) {
                     let newPath;
-                    if (supportedLangs.includes(pageLang)) {
-                        newPath = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/' + savedLang;
+                    if (supportedLangs.includes(lastSegment)) {
+                        pathSegments[pathSegments.length - 1] = savedLang;
+                        newPath = '/' + pathSegments.join('/');
                     } else {
                         newPath = currentPath.endsWith('/') ? currentPath + savedLang : currentPath + '/' + savedLang;
                     }
@@ -53,9 +58,13 @@
             
             if (langCode !== 'de' && supportedLangs.includes(langCode)) {
                 localStorage.setItem('userSelectedLang', langCode);
-                const newPath = supportedLangs.includes(pageLang) 
-                    ? currentPath.substring(0, currentPath.lastIndexOf('/')) + '/' + langCode 
-                    : currentPath + (currentPath.endsWith('/') ? '' : '/') + langCode;
+                let newPath;
+                if (supportedLangs.includes(lastSegment)) {
+                    pathSegments[pathSegments.length - 1] = langCode;
+                    newPath = '/' + pathSegments.join('/');
+                } else {
+                    newPath = currentPath.endsWith('/') ? currentPath + langCode : currentPath + '/' + langCode;
+                }
                 window.location.replace(newPath);
             } else {
                 localStorage.setItem('userSelectedLang', 'de');
