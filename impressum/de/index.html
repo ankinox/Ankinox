@@ -85,6 +85,16 @@
             display: block;
         }
 
+        /* Klassen zur Steuerung der Sichtbarkeit je nach Gerät (PC vs. Handy) */
+        @media (min-width: 768px) {
+            .mobile-flag { display: none !important; }
+            .pc-flag { display: inline !important; }
+        }
+        @media (max-width: 767px) {
+            .mobile-flag { display: inline !important; }
+            .pc-flag { display: none !important; }
+        }
+
         /* Hintergrund-Aura für den magischen Ankinox-Look */
         .ambient-glow {
             position: fixed;
@@ -275,15 +285,15 @@
             
             <!-- Sprachauswahl Oben -->
             <div class="lang-dropdown down" id="lang-top">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><span class="mobile-flag">🇩🇪</span><span class="pc-flag">DE</span> ▾</div>
                 <div class="lang-content">
-                    <a href="/impressum/de">🇩🇪 Deutsch (DE)</a>
-                    <a href="/impressum/en">🇬🇧 English (EN)</a>
-                    <a href="/impressum/fr">🇫🇷 Français (FR)</a>
-                    <a href="/impressum/es">🇪🇸 Español (ES)</a>
-                    <a href="/impressum/ru">🇷🇺 Русский (RU)</a>
-                    <a href="/impressum/ja">🇯🇵 日本語 (JA)</a>
-                    <a href="/impressum/ko">🇰🇷 한국어 (KO)</a>
+                    <a href="/impressum/de"><span class="mobile-flag">🇩🇪</span><span class="pc-flag">DE</span> Deutsch (DE)</a>
+                    <a href="/impressum/en"><span class="mobile-flag">🇬🇧</span><span class="pc-flag">EN</span> English (EN)</a>
+                    <a href="/impressum/fr"><span class="mobile-flag">🇫🇷</span><span class="pc-flag">FR</span> Français (FR)</a>
+                    <a href="/impressum/es"><span class="mobile-flag">🇪🇸</span><span class="pc-flag">ES</span> Español (ES)</a>
+                    <a href="/impressum/ru"><span class="mobile-flag">🇷🇺</span><span class="pc-flag">RU</span> Русский (RU)</a>
+                    <a href="/impressum/ja"><span class="mobile-flag">🇯🇵</span><span class="pc-flag">JA</span> 日本語 (JA)</a>
+                    <a href="/impressum/ko"><span class="mobile-flag">🇰🇷</span><span class="pc-flag">KO</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -340,15 +350,15 @@
         <!-- Sprachauswahl Im Footer (Klappt nach oben auf) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)">🇩🇪 ▴</div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><span class="mobile-flag">🇩🇪</span><span class="pc-flag">DE</span> ▴</div>
                 <div class="lang-content">
-                    <a href="/impressum/de">🇩🇪 Deutsch (DE)</a>
-                    <a href="/impressum/en">🇬🇧 English (EN)</a>
-                    <a href="/impressum/fr">🇫🇷 Français (FR)</a>
-                    <a href="/impressum/es">🇪🇸 Español (ES)</a>
-                    <a href="/impressum/ru">🇷🇺 Русский (RU)</a>
-                    <a href="/impressum/ja">🇯🇵 日本語 (JA)</a>
-                    <a href="/impressum/ko">🇰🇷 한국어 (KO)</a>
+                    <a href="/impressum/de"><span class="mobile-flag">🇩🇪</span><span class="pc-flag">DE</span> Deutsch (DE)</a>
+                    <a href="/impressum/en"><span class="mobile-flag">🇬🇧</span><span class="pc-flag">EN</span> English (EN)</a>
+                    <a href="/impressum/fr"><span class="mobile-flag">🇫🇷</span><span class="pc-flag">FR</span> Français (FR)</a>
+                    <a href="/impressum/es"><span class="mobile-flag">🇪🇸</span><span class="pc-flag">ES</span> Español (ES)</a>
+                    <a href="/impressum/ru"><span class="mobile-flag">🇷🇺</span><span class="pc-flag">RU</span> Русский (RU)</a>
+                    <a href="/impressum/ja"><span class="mobile-flag">🇯🇵</span><span class="pc-flag">JA</span> 日本語 (JA)</a>
+                    <a href="/impressum/ko"><span class="mobile-flag">🇰🇷</span><span class="pc-flag">KO</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
