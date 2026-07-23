@@ -30,9 +30,15 @@
 
             // 1. Wenn der Nutzer bereits manuell eine Sprache gewählt hat
             const savedLang = localStorage.getItem('userSelectedLang');
-            if (savedLang) {
-                if (pageLang && pageLang !== savedLang && supportedLangs.includes(savedLang)) {
-                    const newPath = currentPath.replace(new RegExp('/' + pageLang + '$'), '/' + savedLang);
+            if (savedLang && supportedLangs.includes(savedLang)) {
+                // Wenn die aktuelle URL NICHT der gespeicherten Sprache entspricht -> Sofort korrigieren!
+                if (pageLang !== savedLang) {
+                    let newPath;
+                    if (supportedLangs.includes(pageLang)) {
+                        newPath = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/' + savedLang;
+                    } else {
+                        newPath = currentPath.endsWith('/') ? currentPath + savedLang : currentPath + '/' + savedLang;
+                    }
                     if (newPath !== currentPath) {
                         window.location.replace(newPath);
                         return;
@@ -47,7 +53,9 @@
             
             if (langCode !== 'de' && supportedLangs.includes(langCode)) {
                 localStorage.setItem('userSelectedLang', langCode);
-                const newPath = currentPath.replace(new RegExp('/de$'), '/' + langCode);
+                const newPath = supportedLangs.includes(pageLang) 
+                    ? currentPath.substring(0, currentPath.lastIndexOf('/')) + '/' + langCode 
+                    : currentPath + (currentPath.endsWith('/') ? '' : '/') + langCode;
                 window.location.replace(newPath);
             } else {
                 localStorage.setItem('userSelectedLang', 'de');
