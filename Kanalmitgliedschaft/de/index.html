@@ -55,7 +55,9 @@
             align-items: center;
             gap: 5px;
         }
-        .lang-content {
+        
+        /* Lokales Dropdown für den Footer (bleibt wie es ist) */
+        .lang-dropdown .lang-content {
             display: none;
             position: absolute;
             right: 0;
@@ -64,15 +66,9 @@
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
-            z-index: 999999; /* Extrem hoher z-index, damit das ausgeklappte Fenster absolut über allem liegt */
+            z-index: 999999;
             overflow: hidden;
         }
-        /* Oben nach unten aufklappen */
-        .lang-dropdown.down .lang-content {
-            top: 100%;
-            margin-top: 5px;
-        }
-        /* Im Footer nach oben aufklappen */
         .lang-dropdown.up .lang-content {
             bottom: 100%;
             margin-bottom: 5px;
@@ -156,25 +152,16 @@
 <body>
 
     <div class="banner">
-        <!-- Header-Leiste mit Logo und dem anklickbaren Button im normalen Hintergrund (unter dem scrollbaren Content) -->
+        <!-- Header-Leiste mit Logo und dem anklickbaren Button im Hintergrund -->
         <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
             <div class="banner-logo">
                 <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
             </div>
 
-            <!-- Sprachauswahl Button im Hintergrund -->
+            <!-- NUR der Button im Hintergrund (kein .lang-content mehr hier drinnen!) -->
             <div>
                 <div class="lang-dropdown down" id="lang-top">
                     <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
-                    <div class="lang-content">
-                        <a href="/Kanalmitgliedschaft/de">🇩🇪 Deutsch (DE)</a>
-                        <a href="/Kanalmitgliedschaft/en">🇬🇧 English (EN)</a>
-                        <a href="/Kanalmitgliedschaft/fr">🇫🇷 Français (FR)</a>
-                        <a href="/Kanalmitgliedschaft/es">🇪🇸 Español (ES)</a>
-                        <a href="/Kanalmitgliedschaft/ru">🇷🇺 Русский (RU)</a>
-                        <a href="/Kanalmitgliedschaft/ja">🇯🇵 日本語 (JA)</a>
-                        <a href="/Kanalmitgliedschaft/ko">🇰🇷 한국어 (KO)</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -182,7 +169,7 @@
         <div class="banner-overlay"></div>
     </div>
 
-    <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene -->
+    <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene (wird per JS gesteuert) -->
     <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 140px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
         <a href="/Kanalmitgliedschaft/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇩🇪 Deutsch (DE)</a>
         <a href="/Kanalmitgliedschaft/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;">🇬🇧 English (EN)</a>
