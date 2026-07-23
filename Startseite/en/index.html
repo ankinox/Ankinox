@@ -15,18 +15,36 @@
     <meta property="og:url" content="https://ankinox.github.io/"> 
     <meta property="og:type" content="website">
 
-    <!-- Automatic language check and redirection -->
+    <!-- Intelligente Sprachprüfung & Weiterleitung mit localStorage-Erinnerung -->
     <script>
         (function() {
+            const currentPath = window.location.pathname;
+            const pageLang = currentPath.split('/').pop().toLowerCase();
+            const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
+
+            // 1. Wenn der Nutzer bereits manuell eine Sprache gewählt hat
+            const savedLang = localStorage.getItem('userSelectedLang');
+            if (savedLang) {
+                if (pageLang && pageLang !== savedLang && supportedLangs.includes(savedLang)) {
+                    const newPath = currentPath.replace(new RegExp('/' + pageLang + '$'), '/' + savedLang);
+                    if (newPath !== currentPath) {
+                        window.location.replace(newPath);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            // 2. Erstanweiser-Erkennung (nur beim allerersten Besuch)
             const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-            const supportedLangs = ['de', 'fr', 'es', 'ru', 'ja', 'ko'];
-            
-            // Check if the language matches one of the supported ones (first 2 characters, e.g., 'en-US' -> 'en')
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'en' && supportedLangs.includes(langCode)) {
-                // Redirect to the corresponding language folder
-                window.location.replace('/Startseite/' + langCode);
+                localStorage.setItem('userSelectedLang', langCode);
+                const newPath = currentPath.replace(new RegExp('/en$'), '/' + langCode);
+                window.location.replace(newPath);
+            } else {
+                localStorage.setItem('userSelectedLang', 'en');
             }
         })();
     </script>
@@ -163,13 +181,13 @@
             <div class="lang-dropdown down" id="lang-top">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> ▾</div>
                 <div class="lang-content">
-                    <a href="/Startseite/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/Startseite/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/Startseite/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/Startseite/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/Startseite/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/Startseite/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/Startseite/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="/Startseite/de" onclick="localStorage.setItem('userSelectedLang', 'de')"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="/Startseite/en" onclick="localStorage.setItem('userSelectedLang', 'en')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="/Startseite/fr" onclick="localStorage.setItem('userSelectedLang', 'fr')"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="/Startseite/es" onclick="localStorage.setItem('userSelectedLang', 'es')"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="/Startseite/ru" onclick="localStorage.setItem('userSelectedLang', 'ru')"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="/Startseite/ja" onclick="localStorage.setItem('userSelectedLang', 'ja')"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="/Startseite/ko" onclick="localStorage.setItem('userSelectedLang', 'ko')"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -220,13 +238,13 @@
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> ▴</div>
                 <div class="lang-content">
-                    <a href="/Startseite/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/Startseite/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/Startseite/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/Startseite/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/Startseite/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/Startseite/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/Startseite/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="/Startseite/de" onclick="localStorage.setItem('userSelectedLang', 'de')"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="/Startseite/en" onclick="localStorage.setItem('userSelectedLang', 'en')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="/Startseite/fr" onclick="localStorage.setItem('userSelectedLang', 'fr')"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="/Startseite/es" onclick="localStorage.setItem('userSelectedLang', 'es')"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="/Startseite/ru" onclick="localStorage.setItem('userSelectedLang', 'ru')"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="/Startseite/ja" onclick="localStorage.setItem('userSelectedLang', 'ja')"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="/Startseite/ko" onclick="localStorage.setItem('userSelectedLang', 'ko')"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -254,28 +272,33 @@
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
-            // Close all other menus
             document.querySelectorAll('.lang-dropdown').forEach(d => {
                 if(d.id !== id) d.classList.remove('show');
             });
             dropdown.classList.toggle('show');
         }
 
-        // Clicks outside close the menu
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Automatic collapse on scroll (up or down)
         window.addEventListener('scroll', () => {
-            document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+            document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
+                const content = dropdown.querySelector('.lang-content');
+                if (content) {
+                    const rect = content.getBoundingClientRect();
+                    if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
         }, { passive: true });
 
         const data = [
             { bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784273694/file_000000001d7471f492f8b519a9f32678_rxthra.png", logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784278472/IMG-20260717-WA0001-removebg-preview_y1qc5u.png", fsk: '<span style="border:2px solid #00d4ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Streaming</span> Anime • Movies • Music', desc: "Discover our large selection of anime movies, series, and music.", url: "/stream/en", btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)" },
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607090240148567443699929004634.png", fsk: '<span style="border:2px solid #ffd700;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ffd700;box-shadow:0 0 5px #ffd700">Membership</span> Exclusive Benefits', desc: "Enjoy exclusive benefits and unlock the complete series library.", url: "/Kanalmitgliedschaft/en", btnColor: "linear-gradient(90deg, #ffd700, #ff8c00)" },
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png", fsk: '<span style="border:2px solid #ff4500;padding:1px 6px;border-radius:4px;font-weight:bold;color:#ff4500;box-shadow:0 0 5px #ff4500">Shop</span> Merchandise • Exclusive • Fan items', desc: "Discover exclusive fan items and limited editions in the official Ankinox Shop.", url: "/Shop/en", btnColor: "linear-gradient(90deg, #ff4500, #ff0000)" },
-            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png", fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Partnership</span> Earn money • Grow', desc: "Become an Ankinox partner now.", url: "/Partnerschaft/en", btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)" }
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png", fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #7000ff">Partnership</span> Earn money • Grow', desc: "Become an Ankinox partner now.", url: "/Partnerschaft/en", btnColor: "linear-gradient(90deg, #7000ff, #00d4ff)" }
         ];
 
         const indicatorBox = document.getElementById('indicator-box');
