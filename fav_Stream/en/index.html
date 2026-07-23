@@ -7,13 +7,13 @@
     <script>
         (function() {
             const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-            const supportedLangs = ['en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            const supportedLangs = ['de', 'fr', 'es', 'ru', 'ja', 'ko'];
             
             // Check if language matches one of the supported ones (first 2 characters, e.g. 'en-US' -> 'en')
             const langCode = userLang.substring(0, 2);
             
             if (langCode !== 'en' && supportedLangs.includes(langCode)) {
-                window.location.replace('/favoriten/' + langCode);
+                window.location.replace('/favoriten/en' + langCode);
             }
         })();
     </script>
@@ -233,7 +233,7 @@
         </div>
 
         <div class="footer-links">
-            <a href="/imprint/en">Imprint</a>
+            <a href="/impressum/en">Imprint</a>
             <a href="mailto:kontakt@ankinox.com">Contact</a>
             <a href="mailto:support@ankinox.com">Support</a>
         </div>
@@ -247,7 +247,7 @@
         <a href="/Startseite/en">Home</a>
         <a href="/stream/en">Stream</a>
         <a href="/Shop/en">Shop</a>
-        <a href="/Partnerschaft/en">Partnership</a>
+        <a href="/Partnerschaft/en">Partner</a>
     </nav>
 
     <script>
