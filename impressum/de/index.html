@@ -105,13 +105,22 @@
             position: relative;
         }
 
-        .logo-container { position: relative; display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; }
+        .logo-container { 
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            width: 100%; 
+            margin-bottom: 20px; 
+        }
         .logo-container img {
             width: 120px;
             display: block;
             margin: 0 auto;
-            position: relative;
-            left: 0; /* Zurückgesetzt, damit es perfekt im Flexbox-Container zentriert bleibt */
+        }
+        .logo-container .lang-dropdown {
+            position: absolute;
+            right: 0;
         }
 
         h1 {
@@ -258,10 +267,9 @@
     <!-- Header-Bereich mit Logo -->
     <div class="header-section">
         <div class="logo-container">
-            <div style="width: 120px;"></div>
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" alt="Ankinox Logo">
             
-            <!-- Sprachauswahl Oben (Klappt nach unten auf) -->
+            <!-- Sprachauswahl Oben (Absolut rechts positioniert, damit das Logo exakt zentriert bleibt) -->
             <div class="lang-dropdown down" id="lang-top">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
                 <div class="lang-content">
