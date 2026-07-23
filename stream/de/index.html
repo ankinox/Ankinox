@@ -28,6 +28,21 @@
         );
     </script>
     <style>
+        /* Plattformabhängige Flaggen-Anzeige (Emojis auf Mobilgeräten, echte Flaggen-Bilder nur auf PC/Desktop) */
+        .flag-img { display: none; }
+        .flag-emoji { display: inline-block; }
+        @media (min-width: 1024px) {
+            .flag-img {
+                width: 1.2em;
+                height: 0.9em;
+                vertical-align: middle;
+                border-radius: 2px;
+                object-fit: cover;
+                display: inline-block;
+            }
+            .flag-emoji { display: none; }
+        }
+
         * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
@@ -150,15 +165,15 @@
             
             <!-- Sprachauswahl Oben Rechts -->
             <div class="lang-dropdown down" id="lang-top">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> ▾</div>
                 <div class="lang-content">
-                    <a href="/stream/de">🇩🇪 Deutsch (DE)</a>
-                    <a href="/stream/en">🇬🇧 English (EN)</a>
-                    <a href="/stream/fr">🇫🇷 Français (FR)</a>
-                    <a href="/stream/es">🇪🇸 Español (ES)</a>
-                    <a href="/stream/ru">🇷🇺 Русский (RU)</a>
-                    <a href="/stream/ja">🇯🇵 日本語 (JA)</a>
-                    <a href="/stream/ko">🇰🇷 한국어 (KO)</a>
+                    <a href="/stream/de"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="/stream/en"><span class="flag-img"><img src="https://flagcdn.com/w40/gb.png" alt="EN"></span><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="/stream/fr"><span class="flag-img"><img src="https://flagcdn.com/w40/fr.png" alt="FR"></span><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="/stream/es"><span class="flag-img"><img src="https://flagcdn.com/w40/es.png" alt="ES"></span><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="/stream/ru"><span class="flag-img"><img src="https://flagcdn.com/w40/ru.png" alt="RU"></span><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="/stream/ja"><span class="flag-img"><img src="https://flagcdn.com/w40/jp.png" alt="JA"></span><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="/stream/ko"><span class="flag-img"><img src="https://flagcdn.com/w40/kr.png" alt="KO"></span><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -208,15 +223,15 @@
         <!-- Sprachauswahl im Footer -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)">🇩🇪 ▴</div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> ▾</div>
                 <div class="lang-content">
-                    <a href="/stream/de">🇩🇪 Deutsch (DE)</a>
-                    <a href="/stream/en">🇬🇧 English (EN)</a>
-                    <a href="/stream/fr">🇫🇷 Français (FR)</a>
-                    <a href="/stream/es">🇪🇸 Español (ES)</a>
-                    <a href="/stream/ru">🇷🇺 Русский (RU)</a>
-                    <a href="/stream/ja">🇯🇵 日本語 (JA)</a>
-                    <a href="/stream/ko">🇰🇷 한국어 (KO)</a>
+                    <a href="/stream/de"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="/stream/en"><span class="flag-img"><img src="https://flagcdn.com/w40/gb.png" alt="EN"></span><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="/stream/fr"><span class="flag-img"><img src="https://flagcdn.com/w40/fr.png" alt="FR"></span><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="/stream/es"><span class="flag-img"><img src="https://flagcdn.com/w40/es.png" alt="ES"></span><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="/stream/ru"><span class="flag-img"><img src="https://flagcdn.com/w40/ru.png" alt="RU"></span><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="/stream/ja"><span class="flag-img"><img src="https://flagcdn.com/w40/jp.png" alt="JA"></span><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="/stream/ko"><span class="flag-img"><img src="https://flagcdn.com/w40/kr.png" alt="KO"></span><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
