@@ -155,30 +155,30 @@
 </head>
 <body>
 
-    <div class="banner">
-        <!-- Header-Leiste für Logo links und Sprachauswahl rechts exakt auf gleicher Höhe -->
-        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
-            <div class="banner-logo">
-                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
-            </div>
+    <!-- Header-Leiste separat auf absolut höchster Ebene platziert, damit das Dropdown-Menü niemals verdeckt wird -->
+    <div style="position: fixed; top: 15px; left: 15px; right: 15px; z-index: 999998; display: flex; justify-content: space-between; align-items: center; pointer-events: none;">
+        <div class="banner-logo" style="pointer-events: auto;">
+            <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+        </div>
 
-            <!-- Sprachauswahl rechts oben (gegenüber vom Logo auf exakt gleicher Höhe) -->
-            <div>
-                <div class="lang-dropdown down" id="lang-top">
-                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
-                    <div class="lang-content">
-                        <a href="/Kanalmitgliedschaft/de">🇩🇪 Deutsch (DE)</a>
-                        <a href="/Kanalmitgliedschaft/en">🇬🇧 English (EN)</a>
-                        <a href="/Kanalmitgliedschaft/fr">🇫🇷 Français (FR)</a>
-                        <a href="/Kanalmitgliedschaft/es">🇪🇸 Español (ES)</a>
-                        <a href="/Kanalmitgliedschaft/ru">🇷🇺 Русский (RU)</a>
-                        <a href="/Kanalmitgliedschaft/ja">🇯🇵 日本語 (JA)</a>
-                        <a href="/Kanalmitgliedschaft/ko">🇰🇷 한국어 (KO)</a>
-                    </div>
+        <!-- Sprachauswahl rechts oben -->
+        <div style="pointer-events: auto;">
+            <div class="lang-dropdown down" id="lang-top">
+                <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
+                <div class="lang-content">
+                    <a href="/Kanalmitgliedschaft/de">🇩🇪 Deutsch (DE)</a>
+                    <a href="/Kanalmitgliedschaft/en">🇬🇧 English (EN)</a>
+                    <a href="/Kanalmitgliedschaft/fr">🇫🇷 Français (FR)</a>
+                    <a href="/Kanalmitgliedschaft/es">🇪🇸 Español (ES)</a>
+                    <a href="/Kanalmitgliedschaft/ru">🇷🇺 Русский (RU)</a>
+                    <a href="/Kanalmitgliedschaft/ja">🇯🇵 日本語 (JA)</a>
+                    <a href="/Kanalmitgliedschaft/ko">🇰🇷 한국어 (KO)</a>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div class="banner">
         <div class="banner-overlay"></div>
     </div>
 
@@ -284,14 +284,14 @@
                 const btn = dropdown.querySelector('.lang-btn');
                 const rect = dropdown.getBoundingClientRect();
 
-                // 1. Gemeinsame Rausscroll-Prüfung für BEIDE Menüs:
+                // Gemeinsame Rausscroll-Prüfung für BEIDE Menüs:
                 // Schließt erst, wenn der gesammte Bereich (Button + ausgeklappter Inhalt) komplett ausserhalb des Sichtfeldes ist.
                 if (rect.bottom < 0 || rect.top > window.innerHeight) {
                     dropdown.classList.remove('show');
                     return;
                 }
 
-                // 2. Zusätzliche Überprüfung NUR für das obere Menü (Klasse 'down'):
+                // Zusätzliche Überprüfung NUR für das obere Menü (Klasse 'down'):
                 // Prüft, ob der Button von einem anderen Element überdeckt wurde (z.B. beim Drüberscrollen)
                 if (dropdown.classList.contains('down') && btn) {
                     const btnRect = btn.getBoundingClientRect();
