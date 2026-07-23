@@ -1,1 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
+    
+   <!-- Automatic language check and redirection -->
+    <script>
+        (function() {
+            const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            const supportedLangs = ['en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            
+            // Check if language matches one of the supported ones (first 2 characters, e.g. 'en-US' -> 'en')
+            const langCode = userLang.substring(0, 2);
+            
+            if (langCode !== 'en' && supportedLangs.includes(langCode)) {
+                window.location.replace('/favoriten/' + langCode);
+            }
+        })();
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ankinox - Favorites</title>
+    <!-- Include Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseInstance = supabase.createClient(
+            'https://kynhrpdxhkjaeeexalje.supabase.co', 
+            'sb_publishable_lnmQ267x9hH4sdGN3FZxKg_6INmbnPQ'
+        );
+    </script>
+
+    <style>
+        /* Platform-dependent flag display (Emojis on mobile devices, real flag images only on PC/Desktop) */
+        .flag-img { display: none; }
+        .flag-emoji { display: inline-block; }
+        @media (min-width: 1024px) {
+            .flag-img {
+                width: 1.2em;
+                height: 0.9em;
+                vertical-align: middle;
+                border-radius: 2px;
+                object-fit: cover;
+                display: inline-block;
+            }
+            .flag-emoji { display: none; }
+        }
+
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
+        
+        /* Dropdown language selection styling */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-btn {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Local dropdown for the footer */
+        .lang-dropdown .lang-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #111;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            z-index: 999999;
+            overflow: hidden;
+        }
+        .lang-dropdown.up .lang-content {
+            bottom: 100%;
+            margin-bottom: 5px;
+        }
+        .lang-content a {
+            color: #ddd;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            text-align: left;
+            transition: background 0.2s;
+        }
+        .lang-content a:hover {
+            background: #00d4ff;
+            color: #000;
+        }
+        .lang-dropdown.show .lang-content {
+            display: block;
+        }
+
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836718839938699554614244236644.png');
+            background-size: cover; background-position: center; z-index: 0;
+        }
+
+        .banner-logo { z-index: 10; }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+        
+        .content { 
+            margin-top: 35vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 15%); 
+            padding: 20px; 
+            position: relative; 
+            z-index: 2;
+        }
+
+        /* Footer styling */
+        .site-footer {
+            padding: 70px 20px 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #050505;
+            position: relative;
+            z-index: 100;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        .copyright {
+            color: #555;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 9999; }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+        
+        .fav-container { display: flex; gap: 15px; overflow-x: auto; padding-top: 10px; min-height: 240px; }
+        .fav-card { flex: 0 0 140px; }
+        .fav-card a { text-decoration: none; color: white; }
+        .fav-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; display: block; }
+        .fav-card p { margin: 8px 0 0 0; font-size: 0.9rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .add-plus-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #555; }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
+            <div class="banner-logo">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+            </div>
+
+            <div>
+                <div class="lang-dropdown down" id="lang-top">
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> ▾</div>
+                </div>
+            </div>
+        </div>
+        <div class="banner-overlay"></div>
+    </div>
+
+    <!-- The expanded language window completely decoupled on the highest layer -->
+    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+        <a href="/favoriten/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+        <a href="/favoriten/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+        <a href="/favoriten/fr" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+        <a href="/favoriten/es" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+        <a href="/favoriten/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+        <a href="/favoriten/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+        <a href="/favoriten/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+    </div>
+
+    <div class="content">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000f73071f480d0d392f975801b1757380589434620822.png" 
+             style="width: 100%; max-width: 325px; display: block; margin: -30px auto 20px auto;">
+
+        <div style="text-align: center; margin-top: -20px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <a href="/syncro/en" style="text-decoration: none; color: #00d4ff; border: 2px solid #00d4ff; padding: 10px 30px; border-radius: 50px; font-weight: bold;">
+                    ⇄ Sync
+                </a>
+            </div>
+            
+            <div style="color: #cccccc; font-size: 0.95rem; margin-bottom: 30px;">
+                Synchronize your favorites with other devices.
+            </div>
+
+            <div style="text-align: left;">
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Favorites</h2>
+                <div id="favorites-container" class="fav-container">
+                    <!-- Favorites will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legally compliant footer -->
+    <footer class="site-footer">
+        <!-- Language selection in footer (opens upwards) -->
+        <div style="margin-bottom: 20px; display: flex; justify-content: center;">
+            <div class="lang-dropdown up" id="lang-footer">
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> ▴</div>
+                <div class="lang-content">
+                    <a href="/favoriten/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="/favoriten/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="/favoriten/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="/favoriten/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="/favoriten/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="/favoriten/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="/favoriten/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <a href="/imprint/en">Imprint</a>
+            <a href="mailto:kontakt@ankinox.com">Contact</a>
+            <a href="mailto:support@ankinox.com">Support</a>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Ankinox. All rights reserved for own content.<br>
+            Content from partners and studios is subject to their respective copyrights.
+        </div>
+    </footer>
+
+    <nav class="bottom-nav">
+        <a href="/Startseite/en">Home</a>
+        <a href="/stream/en">Stream</a>
+        <a href="/Shop/en">Shop</a>
+        <a href="/Partnerschaft/en">Partnership</a>
+    </nav>
+
+    <script>
+        // Dropdown open/close script
+        function toggleLangMenu(id, event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(id);
+            const isTop = (id === 'lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            document.querySelectorAll('.lang-dropdown').forEach(d => {
+                if(d.id !== id) d.classList.remove('show');
+            });
+
+            if (isTop) {
+                const isOpen = dropdown.classList.toggle('show');
+                if (isOpen) {
+                    detachedMenu.style.visibility = 'hidden';
+                    detachedMenu.style.display = 'block';
+
+                    const btnRect = dropdown.querySelector('.lang-btn').getBoundingClientRect();
+                    const menuWidth = detachedMenu.offsetWidth;
+
+                    detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                    detachedMenu.style.left = (btnRect.right - menuWidth) + 'px';
+                    
+                    detachedMenu.style.visibility = 'visible';
+                } else {
+                    detachedMenu.style.display = 'none';
+                }
+            } else {
+                detachedMenu.style.display = 'none';
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-dropdown') && !e.target.closest('#detached-lang-menu')) {
+                document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+                document.getElementById('detached-lang-menu').style.display = 'none';
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            const topDropdown = document.getElementById('lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            document.querySelectorAll('.lang-dropdown.up.show').forEach(dropdown => {
+                const rect = dropdown.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            if (topDropdown.classList.contains('show')) {
+                const btn = topDropdown.querySelector('.lang-btn');
+                const btnRect = btn.getBoundingClientRect();
+                const centerX = btnRect.left + btnRect.width / 2;
+                const centerY = btnRect.top + btnRect.height / 2;
+
+                if (btnRect.bottom < 0 || btnRect.top > window.innerHeight) {
+                    topDropdown.classList.remove('show');
+                    detachedMenu.style.display = 'none';
+                } else if (centerX >= 0 && centerX <= window.innerWidth && centerY >= 0 && centerY <= window.innerHeight) {
+                    const topElement = document.elementFromPoint(centerX, centerY);
+                    if (topElement && !btn.contains(topElement)) {
+                        topDropdown.classList.remove('show');
+                        detachedMenu.style.display = 'none';
+                    } else {
+                        detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                        detachedMenu.style.left = (btnRect.right - detachedMenu.offsetWidth) + 'px';
+                    }
+                }
+            }
+        }, { passive: true });
+
+        async function loadFavorites() {
+            const container = document.getElementById('favorites-container');
+            const deviceId = localStorage.getItem('anki_device_id');
+            if (!deviceId) {
+                container.innerHTML = '<div class="add-plus-placeholder">+</div>';
+                return;
+            }
+
+            // 1. Find own group
+            const { data: sessionData } = await window.supabaseInstance
+                .from('active_sessions')
+                .select('group_name')
+                .eq('device_id', deviceId)
+                .maybeSingle();
+            
+            const groupName = sessionData ? sessionData.group_name : null;
+
+            // 2. Find all device_ids in this group
+            let userIds = [deviceId];
+            if (groupName) {
+                const { data: groupMembers } = await window.supabaseInstance
+                    .from('active_sessions')
+                    .select('device_id')
+                    .eq('group_name', groupName);
+                
+                if (groupMembers) {
+                    userIds = groupMembers.map(m => m.device_id);
+                }
+            }
+
+            // 3. Load favorites for all found user_ids
+            const { data, error } = await window.supabaseInstance
+                .from('favorites')
+                .select('*')
+                .in('device_id', userIds)
+                .order('created_at', { ascending: false });
+
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<div class="add-plus-placeholder">+</div>';
+                return;
+            }
+
+            // Remove duplicates (based on page_url)
+            const uniqueFavorites = [];
+            const seenUrls = new Set();
+
+            data.forEach(item => {
+                if (!seenUrls.has(item.page_url)) {
+                    uniqueFavorites.push(item);
+                    seenUrls.add(item.page_url);
+                }
+            });
+
+            container.innerHTML = '';
+            uniqueFavorites.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'fav-card';
+                card.innerHTML = `
+                    <a href="${item.page_url}">
+                        <img src="${item.image_url}" alt="${item.title}">
+                        <p>${item.title}</p>
+                    </a>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.onload = loadFavorites;
+    </script>
+</body>
+</html>
 
