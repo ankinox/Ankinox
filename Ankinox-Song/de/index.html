@@ -385,7 +385,12 @@ Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</d
         };
 
         document.getElementById('share-button').addEventListener('click', async () => {
-            try { await navigator.share({ title: 'Träume Leben', text: 'Schau dir das an!', url: window.location.href }); } catch (err) {}
+            try {
+                await navigator.share({
+                    title: 'Ankinox-Träume Leben',
+                    url: window.location.href 
+                });
+            } catch (err) { console.log('Teilen abgebrochen', err); }
         });
     </script>
 </body>
