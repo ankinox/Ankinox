@@ -1,3 +1,8 @@
+Beim raus scrollen überlapt er das darf nicht sein.
+
+Der untere bereich hat noch ein fehler. Es sollte nichts geändert werden, außer das einklappen der sprachauswahl beim raus fahren des bildschirms.
+
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -233,19 +238,6 @@
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Schließt das Sprachmenü beim Scrollen, wenn der Block außerhalb des Viewports liegt
-        window.addEventListener('scroll', () => {
-            document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
-                const content = dropdown.querySelector('.lang-content');
-                if (content) {
-                    const rect = content.getBoundingClientRect();
-                    if (rect.bottom < 0 || rect.top > window.innerHeight) {
-                        dropdown.classList.remove('show');
-                    }
-                }
-            });
-        }, { passive: true });
-
         async function loadFavorites() {
             const container = document.getElementById('favorites-carousel');
             const deviceId = localStorage.getItem('anki_device_id');
@@ -292,7 +284,7 @@
         const data = [
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000006e8871f4a74e47a18c61618d4664144619533045072.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000d13071f49b02e87cff4df2111868918513011359622.png", fsk: 'FSK 0 • Kurzfilm', desc: "Poretto auf der Suche nach Freunden.", url: "/Poretto-Film/de" },
             { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png", fsk: 'FSK 16 • Partner', desc: "Werde jetzt Ankinox Partner.", url: "/Partnerschaft/de" },
-            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png", fsk: 'Shop • Merchandise', desc: "Exklusive Ankinox Fan-Artikel.", url: /Shop/de" }
+            { bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png", logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png", fsk: 'Shop • Merchandise', desc: "Exklusive Ankinox Fan-Artikel.", url: "/Shop/de" }
         ];
 
         let idx = 0;
