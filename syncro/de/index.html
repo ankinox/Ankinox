@@ -22,6 +22,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        /* Plattformabhängige Flaggen-Anzeige (Emojis auf Mobilgeräten, echte Flaggen-Bilder nur auf PC/Desktop) */
+        .flag-img { display: none; }
+        .flag-emoji { display: inline-block; }
+        @media (min-width: 1024px) {
+            .flag-img {
+                width: 1.2em;
+                height: 0.9em;
+                vertical-align: middle;
+                border-radius: 2px;
+                object-fit: cover;
+                display: inline-block;
+            }
+            .flag-emoji { display: none; }
+        }
+
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
@@ -152,7 +167,7 @@
             <div>
                 <!-- Sprachauswahl Oben Rechts -->
                 <div class="lang-dropdown down" id="lang-top">
-                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">🇩🇪 ▾</div>
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> ▾</div>
                 </div>
             </div>
         </div>
@@ -161,13 +176,13 @@
 
     <!-- Das ausgeklappte Sprachfenster komplett entkoppelt in der allerhöchsten Ebene -->
     <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
-        <a href="/Startseite/de"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="/syncro/en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="/syncro/fr"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="/syncro/es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="/syncro/ru"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="/syncro/ja"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="/syncro/ko"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+        <a href="/syncro/de" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+        <a href="/syncro/en" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><span class="flag-img"><img src="https://flagcdn.com/w40/gb.png" alt="EN"></span><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+        <a href="/syncro/fr" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><span class="flag-img"><img src="https://flagcdn.com/w40/fr.png" alt="FR"></span><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+        <a href="/syncro/es" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><span class="flag-img"><img src="https://flagcdn.com/w40/es.png" alt="ES"></span><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+        <a href="/syncro/ru" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><span class="flag-img"><img src="https://flagcdn.com/w40/ru.png" alt="RU"></span><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+        <a href="/syncro/ja" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><span class="flag-img"><img src="https://flagcdn.com/w40/jp.png" alt="JA"></span><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+        <a href="/syncro/ko" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><span class="flag-img"><img src="https://flagcdn.com/w40/kr.png" alt="KO"></span><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
     </div>
 
     <div id="codeModal" class="modal">
@@ -213,15 +228,15 @@
         <!-- Sprachauswahl im Footer -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)">🇩🇪 ▴</div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> ▴</div>
                 <div class="lang-content">
-                    <a href="/syncro/de">🇩🇪 Deutsch (DE)</a>
-                    <a href="/syncro/en">🇬🇧 English (EN)</a>
-                    <a href="/syncro/fr">🇫🇷 Français (FR)</a>
-                    <a href="/syncro/es">🇪🇸 Español (ES)</a>
-                    <a href="/syncro/ru">🇷🇺 Русский (RU)</a>
-                    <a href="/syncro/ja">🇯🇵 日本語 (JA)</a>
-                    <a href="/syncro/ko">🇰🇷 한국어 (KO)</a>
+                    <a href="/syncro/de"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" alt="DE"></span><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="/syncro/en"><span class="flag-img"><img src="https://flagcdn.com/w40/gb.png" alt="EN"></span><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="/syncro/fr"><span class="flag-img"><img src="https://flagcdn.com/w40/fr.png" alt="FR"></span><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="/syncro/es"><span class="flag-img"><img src="https://flagcdn.com/w40/es.png" alt="ES"></span><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="/syncro/ru"><span class="flag-img"><img src="https://flagcdn.com/w40/ru.png" alt="RU"></span><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="/syncro/ja"><span class="flag-img"><img src="https://flagcdn.com/w40/jp.png" alt="JA"></span><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="/syncro/ko"><span class="flag-img"><img src="https://flagcdn.com/w40/kr.png" alt="KO"></span><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
