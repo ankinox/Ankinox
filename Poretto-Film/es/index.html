@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="es">
 <head>
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
 
-  <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf DE, falls DE gespeichert ist) -->
+  <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf ES, falls ES gespeichert ist) -->
     <script>
         (function() {
             const currentPath = window.location.pathname;
@@ -11,7 +11,7 @@
             
             const pathSegments = currentPath.split('/').filter(Boolean);
             const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
-            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'de';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'es';
 
             // Wenn gerade aktiv und bewusst gewechselt wurde, einmalig durchlassen
             if (sessionStorage.getItem('justSwitched') === 'true') {
@@ -40,10 +40,10 @@
             }
 
             // Erstbesucher-Erkennung, falls noch gar nichts im Storage steht
-            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
+            const userLang = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
-            if (langCode !== 'de' && supportedLangs.includes(langCode)) {
+            if (langCode !== 'es' && supportedLangs.includes(langCode)) {
                 localStorage.setItem('userSelectedLang', langCode);
                 let newPath;
                 if (supportedLangs.includes(lastSegment)) {
@@ -54,7 +54,7 @@
                 }
                 window.location.replace(newPath);
             } else {
-                localStorage.setItem('userSelectedLang', 'de');
+                localStorage.setItem('userSelectedLang', 'es');
             }
         })();
     </script>
@@ -70,10 +70,10 @@
         );
     </script>
 
-    <meta property="og:title" content="Poretto – Der magische Stuhl">
-    <meta property="og:description" content="Ein Kurzfilm über Freundschaft und Neuanfänge.">
+    <meta property="og:title" content="Poretto – La silla mágica">
+    <meta property="og:description" content="Un cortometraje sobre la amistad y los nuevos comienzos.">
     <meta property="og:image" content="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127489/file_000000006e8871f4a74e47a18c61618d_zlvexa.png">
-    <meta property="og:url" content="/Poretto-Film/de">
+    <meta property="og:url" content="/Poretto-Film/es">
     <meta property="og:type" content="video.movie">
 
     <style>
@@ -243,7 +243,7 @@
             <!-- Language selection top (opens downwards) -->
             <div>
                 <div class="lang-dropdown down" id="lang-top">
-                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▾</div>
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▾</div>
                 </div>
             </div>
         </div>
@@ -255,28 +255,28 @@
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784127490/file_00000000d13071f49b02e87cff4df211_dmfvvi.png" style="width: 100%; max-width: 225px; display: block; margin: -130px auto -60px auto;">
 
             <div style="color: #bbb; margin-bottom: 10px;">
-                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span>  Kurzfilm • Drama
+                <span style="border: 1px solid #7000ff; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #00d4ff;">FSK 0</span>  Cortometraje • Drama
             </div>
             <div style="color: #00d4ff; font-size: 30px; margin-bottom: 5px;">★★★☆☆</div>
-            <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 20px;">Durchschnitt: 3.5</div>
+            <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 20px;">Media: 3.5</div>
 
             <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
-                <button id="favBtn" class="fav-btn" data-id="QXM4Ucsf5XA" data-type="movie" data-title="Poretto" onclick="toggleFavorite(this)">♥ Favorit</button>
-                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
+                <button id="favBtn" class="fav-btn" data-id="QXM4Ucsf5XA" data-type="movie" data-title="Poretto" onclick="toggleFavorite(this)">♥ Favorito</button>
+                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Compartir</button>
             </div>
 
             <div class="meta-details">
-                <div class="meta-row"><span class="meta-label">Veröffentlichung:</span><span class="meta-value">21. März 2014</span></div>
-                <div class="meta-row"><span class="meta-label">Regie:</span><span class="meta-value">Yōjirō Arai</span></div>
-                <div class="meta-row"><span class="meta-label">Studio:</span><span class="meta-value">Noitamina, Studio Colorido</span></div>
-                <div class="meta-row"><span class="meta-label">Dauer:</span><span class="meta-value">3:40 Min.</span></div>
+                <div class="meta-row"><span class="meta-label">Estreno:</span><span class="meta-value">21 de marzo de 2014</span></div>
+                <div class="meta-row"><span class="meta-label">Director:</span><span class="meta-value">Yōjirō Arai</span></div>
+                <div class="meta-row"><span class="meta-label">Estudio:</span><span class="meta-value">Noitamina, Studio Colorido</span></div>
+                <div class="meta-row"><span class="meta-label">Duración:</span><span class="meta-value">3:40 min.</span></div>
             </div>
 
             <div class="description-text">
-                Poretto ist ein Mädchen, das allein ist und niemanden hat, bis sie auf einen magischen Stuhl trifft, der ihr hilft, Freunde zu finden.
+                Poretto es una niña que está sola y no tiene a nadie, hasta que se encuentra con una silla mágica que la ayuda a hacer amigos.
             </div>
 
-            <button onclick="openVideo()" style="display: block; width: 90%; max-width: 500px; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Wiedergabe starten</button>
+            <button onclick="openVideo()" style="display: block; width: 90%; max-width: 500px; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer;">▶ Iniciar reproducción</button>
         </div>
     </div>
 
@@ -284,7 +284,7 @@
         <!-- Language selection in footer (opens upwards) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▴</div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▴</div>
                 <div class="lang-content">
                     <a href="#" onclick="changeLang('de', '/Poretto-Film/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
                     <a href="#" onclick="changeLang('en', '/Poretto-Film/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
@@ -298,19 +298,19 @@
         </div>
 
         <div class="footer-links">
-            <a href="/impressum/de">Impressum</a>
-            <a href="mailto:kontakt@ankinox.com">Kontakt</a>
-            <a href="mailto:support@ankinox.com">Support</a>
+            <a href="/impressum/es">Aviso legal</a>
+            <a href="mailto:kontakt@ankinox.com">Contacto</a>
+            <a href="mailto:support@ankinox.com">Soporte</a>
         </div>
-        <div class="copyright">&copy; 2026 Ankinox. Alle Rechte für eigene Inhalte vorbehalten.<br>
-Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</div>
+        <div class="copyright">&copy; 2026 Ankinox. Todos los derechos reservados sobre el contenido propio.<br>
+El contenido de socios y estudios está sujeto a sus respectivos derechos de autor.</div>
     </footer>
 
     <nav class="bottom-nav">
-        <a href="/Startseite/de">Home</a>
-        <a href="/stream/de">Stream</a>
-        <a href="/Shop/de">Shop</a>
-        <a href="/Partnerschaft/de">Partner</a>
+        <a href="/Startseite/es">Inicio</a>
+        <a href="/stream/es">Stream</a>
+        <a href="/Shop/es">Tienda</a>
+        <a href="/Partnerschaft/es">Socio</a>
     </nav>
 
     <script>
@@ -430,10 +430,10 @@ Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</d
 
             if (existingFavs && existingFavs.length > 0) {
                 await window.supabaseInstance.from('favorites').delete().in('id', existingFavs.map(f => f.id));
-                btn.classList.remove('active'); btn.innerText = "♥ Favorit";
+                btn.classList.remove('active'); btn.innerText = "♥ Favorito";
             } else {
                 await window.supabaseInstance.from('favorites').insert({ device_id: deviceId, media_id: mediaId, media_type: mediaType, title: mediaTitle, image_url: bannerUrl, page_url: pageUrl });
-                btn.classList.add('active'); btn.innerText = "★ Favorisiert";
+                btn.classList.add('active'); btn.innerText = "★ En favoritos";
             }
         }
 
@@ -442,13 +442,12 @@ Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.</d
             const mediaId = btn.getAttribute('data-id');
             const relevantIds = await getRelevantDeviceIds();
             const { data } = await window.supabaseInstance.from('favorites').select('id').eq('media_id', mediaId).in('device_id', relevantIds);
-            if (data && data.length > 0) { btn.classList.add('active'); btn.innerText = "★ Favorisiert"; }
+            if (data && data.length > 0) { btn.classList.add('active'); btn.innerText = "★ En favoritos"; }
         };
 
         document.getElementById('share-button').addEventListener('click', async () => {
-            try { await navigator.share({ title: 'Poretto', text: 'Schau dir Poretto an!', url: window.location.href }); } catch (err) {}
+            try { await navigator.share({ title: 'Poretto', text: '¡Echa un vistazo a Poretto!', url: window.location.href }); } catch (err) {}
         });
     </script>
 </body>
 </html>
-
