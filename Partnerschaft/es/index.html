@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
-<html lang="de">
+<html lang="es">
 <head>
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
 
-  <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf DE, falls DE gespeichert ist) -->
+  <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf ES, falls ES gespeichert ist) -->
     <script>
         (function() {
             const currentPath = window.location.pathname;
@@ -12,7 +11,7 @@
             
             const pathSegments = currentPath.split('/').filter(Boolean);
             const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
-            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'de';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'es';
 
             // Wenn gerade aktiv und bewusst gewechselt wurde, einmalig durchlassen
             if (sessionStorage.getItem('justSwitched') === 'true') {
@@ -41,10 +40,10 @@
             }
 
             // Erstbesucher-Erkennung, falls noch gar nichts im Storage steht
-            const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
+            const userLang = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
-            if (langCode !== 'de' && supportedLangs.includes(langCode)) {
+            if (langCode !== 'es' && supportedLangs.includes(langCode)) {
                 localStorage.setItem('userSelectedLang', langCode);
                 let newPath;
                 if (supportedLangs.includes(lastSegment)) {
@@ -55,17 +54,17 @@
                 }
                 window.location.replace(newPath);
             } else {
-                localStorage.setItem('userSelectedLang', 'de');
+                localStorage.setItem('userSelectedLang', 'es');
             }
         })();
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Partner werden bei Ankinox</title>
+    <title>Conviértete en socio de Ankinox</title>
 
-    <meta property="og:title" content="Partner werden bei Ankinox – Gemeinsam wachsen">
-    <meta property="og:description" content="Du produzierst Anime oder Animationsfilme? Ankinox bietet dir die passende Bühne.">
+    <meta property="og:title" content="Conviértete en socio de Ankinox – Creciendo juntos">
+    <meta property="og:description" content="¿Produces anime o películas de animación? Ankinox te ofrece el escenario ideal.">
     <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png">
     <meta property="og:url" content="https://ankinox.github.io/Ankinox/Partnerschaft.html">
     <meta property="og:type" content="website">
@@ -218,7 +217,7 @@
             <!-- Language button in background -->
             <div>
                 <div class="lang-dropdown down" id="lang-top">
-                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▾</div>
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▾</div>
                 </div>
             </div>
         </div>
@@ -246,7 +245,7 @@
             </div>
 
             <div style="text-align: center; margin-bottom: 25px;">
-                <p style="color: #bbb; font-size: 0.95rem; margin-bottom: 15px;">Wir arbeiten mit starken Partnern zusammen:</p>
+                <p style="color: #bbb; font-size: 0.95rem; margin-bottom: 15px;">Trabajamos junto con socios sólidos:</p>
                 <a href="https://youtube.com/@ankinox?si=WDc3DIt--5MQiHHm" style="text-decoration: none; display: inline-block;">
                     <div style="width: 60px; height: 60px; background-color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #00d4ff; overflow: hidden; margin: 0 auto 8px auto; box-shadow: 0 0 10px #00d4ff;">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" style="width: 60%; height: auto;">
@@ -256,26 +255,26 @@
             </div>
 
             <div style="margin-bottom: 35px;">
-                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Teilen</button>
+                <button id="share-button" style="background: transparent; color: #bf00ff; border: 2px solid #bf00ff; padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Compartir</button>
             </div>
 
             <div style="text-align: left; color: #cccccc; line-height: 1.5; margin-bottom: 30px; font-size: 0.95rem;">
-                <p style="font-weight: bold; color: white;">Du produzierst Anime oder Animationsfilme und suchst nach der passenden Bühne?</p>
-                Ankinox bietet Indie-Studios und unabhängigen Creatorn eine professionelle Plattform, um ihre Werke einem breiten Publikum zu präsentieren.
+                <p style="font-weight: bold; color: white;">¿Produces anime o películas de animación y buscas el escenario adecuado?</p>
+                Ankinox ofrece a los estudios independientes y creadores autónomos una plataforma profesional para presentar su obra a un público amplio.
                 
-                <p style="font-weight: bold; color: white; margin-top: 15px;">Was wir Studios bieten:</p>
+                <p style="font-weight: bold; color: white; margin-top: 15px;">Lo que ofrecemos a los estudios:</p>
                 <ul style="padding-left: 20px;">
-                    <li>Reichweite & Community: Wir bündeln unsere Community, um deine Filme ins Rampenlicht zu rücken.</li>
-                    <li>Transparente Partnerschaft: Faire Jahresverträge mit maximaler Flexibilität.</li>
-                    <li>Faire Umsatzbeteiligung: Proezentualer Anteil an den Werbeeinnahmen.</li>
-                    <li>Full-Service: Wir übernehmen Hosting, Integration und Community-Arbeit.</li>
+                    <li>Alcance y comunidad: Agrupamos a nuestra comunidad para poner tus películas en el punto de mira.</li>
+                    <li>Asociación transparente: Contratos anuales justos con la máxima flexibilidad.</li>
+                    <li>Reparto de ingresos justo: Porcentaje de participación en los ingresos publicitarios.</li>
+                    <li>Servicio integral: Nos encargamos del alojamiento, la integración y el trabajo con la comunidad.</li>
                 </ul>
 
-                <p style="font-weight: bold; color: white; margin-top: 15px;">Wie läuft die Zusammenarbeit ab?</p>
-                Wir legen großen Wert auf Planungssicherheit für alle beteiligten Parteien. Sollte eine Zusammenarbeit jemals enden, garantieren wir eine einmonatige Kündigungsfrist ab dem Beendigungsdatum. Das gibt uns die Zeit, unsere Community transparent zu informieren und die Inhalte sauber aus dem Programm zu nehmen – für einen fairen und professionellen Abschied.
+                <p style="font-weight: bold; color: white; margin-top: 15px;">¿Cómo funciona la colaboración?</p>
+                Damos gran importancia a la fiabilidad en la planificación para todas las partes implicadas. Si una colaboración llegara a terminar, garantizamos un periodo de preaviso de un mes a partir de la fecha de rescisión. Esto nos da el tiempo necesario para informar a nuestra comunidad de forma transparente y retirar el contenido del programa limpiamente, logrando una despedida justa y profesional.
                 
-                <p style="font-weight: bold; color: white; margin-top: 15px;">Kontakt für Studios</p>
-                Du hast ein Projekt, das zu Ankinox passt? Schicke uns eine Nachricht an:
+                <p style="font-weight: bold; color: white; margin-top: 15px;">Contacto para estudios</p>
+                ¿Tienes un proyecto que encaja con Ankinox? Envíanos un mensaje a:
             </div>
 
             <a href="mailto:partnerschaft@ankinox.com" style="text-decoration: none; display: block; width: 90%; margin: 20px auto; padding: 15px; background: linear-gradient(90deg, #7000ff, #00d4ff); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center;">partnerschaft@ankinox.com</a>
@@ -287,7 +286,7 @@
         <!-- Language selection in footer (opens upwards) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
-                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> ▴</div>
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▴</div>
                 <div class="lang-content">
                     <a href="#" onclick="changeLang('de', '/Partnerschaft/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
                     <a href="#" onclick="changeLang('en', '/Partnerschaft/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
@@ -301,21 +300,21 @@
         </div>
 
         <div class="footer-links">
-            <a href="/impressum/de">Impressum</a>
-            <a href="mailto:kontakt@ankinox.com">Kontakt</a>
-            <a href="mailto:support@ankinox.com">Support</a>
+            <a href="/impressum/es">Aviso legal</a>
+            <a href="mailto:kontakt@ankinox.com">Contacto</a>
+            <a href="mailto:support@ankinox.com">Soporte</a>
         </div>
         <div class="copyright">
-            &copy; 2026 Ankinox. Alle Rechte für eigene Inhalte vorbehalten.<br>
-            Inhalte von Partnern und Studios unterliegen deren jeweiligen Urheberrechten.
+            &copy; 2026 Ankinox. Todos los derechos reservados sobre el contenido propio.<br>
+            El contenido de socios y estudios está sujeto a sus respectivos derechos de autor.
         </div>
     </footer>
 
     <nav class="bottom-nav">
-        <a href="/Startseite/de">Home</a>
-        <a href="/stream/de">Stream</a>
-        <a href="/Shop/de">Shop</a>
-        <a href="/Partnerschaft/de" style="color: #bf00ff;">Partner</a>
+        <a href="/Startseite/es">Inicio</a>
+        <a href="/stream/es">Stream</a>
+        <a href="/Shop/es">Tienda</a>
+        <a href="/Partnerschaft/es" style="color: #bf00ff;">Socio</a>
     </nav>
 
     <script>
@@ -407,7 +406,7 @@
         document.getElementById('share-button').addEventListener('click', async () => {
             try {
                 await navigator.share({
-                    title: 'Partner werden bei Ankinox',
+                    title: 'Conviértete en socio de Ankinox',
                     url: window.location.href 
                 });
             } catch (err) { console.log('Sharing aborted', err); }
