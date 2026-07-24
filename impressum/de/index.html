@@ -9,17 +9,21 @@
             const currentPath = window.location.pathname;
             const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
             
+            // Pfadsegmente sauber aufteilen und das letzte Segment prüfen
             const pathSegments = currentPath.split('/').filter(Boolean);
             const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
             const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'de';
 
+            // Wenn wir gerade frisch manuell gewechselt haben, gar nicht erst eingreifen!
             if (sessionStorage.getItem('justSwitched') === 'true') {
                 sessionStorage.removeItem('justSwitched');
                 return;
             }
 
+            // 1. Wenn der Nutzer bereits manuell eine Sprache gewählt hat
             const savedLang = localStorage.getItem('userSelectedLang');
             if (savedLang && supportedLangs.includes(savedLang)) {
+                // Wenn die aktuelle URL NICHT der gespeicherten Sprache entspricht -> Sofort korrigieren!
                 if (pageLang !== savedLang) {
                     let newPath;
                     if (supportedLangs.includes(lastSegment)) {
@@ -36,6 +40,7 @@
                 return;
             }
 
+            // 2. Erstanweiser-Erkennung (nur beim allerersten Besuch)
             const userLang = (navigator.language || navigator.userLanguage || 'de').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
@@ -65,26 +70,27 @@
         .flag-emoji { display: inline-block; }
         @media (min-width: 1024px) {
             .flag-img {
-                width: 20px !important;
-                height: 14px !important;
+                width: 1.2em;
+                height: 0.9em;
                 vertical-align: middle;
                 border-radius: 2px;
                 object-fit: cover;
-                display: inline-block !important;
-                margin-right: 6px;
+                display: inline-block;
+                margin-right: 8px;
             }
-            .flag-emoji { display: none !important; }
+            .flag-emoji { display: none; }
         }
 
         * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
         body { 
             margin: 0; 
-            padding-bottom: 120px; 
+            padding-bottom: 120px; /* Genug Platz für Footer + feste Navigation */
             background-color: #050505; 
             color: white; 
             font-family: sans-serif; 
         }
         
+        /* Dropdown Sprachauswahl Styling */
         .lang-dropdown {
             position: relative;
             display: inline-block;
@@ -99,14 +105,13 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            color: white;
         }
         .lang-content {
             display: none;
             position: absolute;
             right: 0;
             background: #111;
-            min-width: 150px;
+            min-width: 160px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
@@ -123,7 +128,7 @@
         }
         .lang-content a {
             color: #ddd;
-            padding: 8px 12px;
+            padding: 10px 12px;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -139,6 +144,7 @@
             display: block;
         }
 
+        /* Hintergrund-Aura für den magischen Ankinox-Look */
         .ambient-glow {
             position: fixed;
             top: -10%;
@@ -151,6 +157,7 @@
             pointer-events: none;
         }
 
+        /* Banner-Bereich analog zur Hauptseite */
         .header-section {
             padding: 30px 20px 10px 20px;
             text-align: center;
@@ -170,6 +177,7 @@
             display: block;
             margin: 0 auto;
         }
+        /* Exakter Platzhalter links, der genau so breit ist wie das Dropdown rechts, damit das Logo perfekt zentriert wird */
         .logo-spacer {
             width: 75px;
             visibility: hidden;
@@ -185,6 +193,7 @@
             letter-spacing: 1px;
         }
 
+        /* Elegante, abgerundete Boxen im Glass-Look */
         .legal-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(112, 0, 255, 0.2);
@@ -195,13 +204,14 @@
         }
 
         .legal-card h2 {
-            font-size: 0.9rem;
+            font-size: 16px;
             color: #00d4ff;
             margin-top: 0;
             margin-bottom: 15px;
             border-left: 3px solid #7000ff;
             padding-left: 8px;
             text-transform: uppercase;
+            font-size: 0.9rem;
             letter-spacing: 0.5px;
         }
 
@@ -227,6 +237,7 @@
             color: #bf00ff;
         }
 
+        /* Zurück-Button */
         .back-btn {
             display: block;
             width: calc(100% - 40px);
@@ -251,6 +262,7 @@
             box-shadow: 0 0 15px rgba(112, 0, 255, 0.4);
         }
 
+        /* Footer */
         .site-footer {
             margin-top: 50px;
             padding: 20px 20px 40px 20px;
@@ -282,6 +294,7 @@
             font-size: 0.75rem;
         }
 
+        /* Feste Navigation ganz unten */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
@@ -308,28 +321,31 @@
 </head>
 <body>
 
+    <!-- Magisches Hintergrundleuchten -->
     <div class="ambient-glow"></div>
 
+    <!-- Header-Bereich mit Logo -->
     <div class="header-section">
         <div class="logo-container">
+            <!-- Unsichtbarer Platzhalter links gleicht die Breite des Dropdowns rechts aus -->
             <div class="logo-spacer"></div>
             
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" alt="Ankinox Logo">
             
-            <!-- Sprachauswahl Oben (Deine originale, funktionierende Struktur) -->
+            <!-- Sprachauswahl Oben -->
             <div class="lang-dropdown down" id="lang-top">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)">
-                    <img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE">
+                    <span class="flag-img"><img src="https://flagcdn.com/w40/de.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="DE"></span>
                     <span class="flag-emoji">🇩🇪</span> ▾
                 </div>
                 <div class="lang-content">
-                    <a href="#" onclick="changeLang('de', '/impressum/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="#" onclick="changeLang('en', '/impressum/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="#" onclick="changeLang('fr', '/impressum/fr'); return false;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="#" onclick="changeLang('es', '/impressum/es'); return false;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="#" onclick="changeLang('ru', '/impressum/ru'); return false;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="#" onclick="changeLang('ja', '/impressum/ja'); return false;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="#" onclick="changeLang('ko', '/impressum/ko'); return false;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="#" onclick="changeLang('de', '/impressum/de'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="DE"></span><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="#" onclick="changeLang('en', '/impressum/en'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/gb.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="EN"></span><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="#" onclick="changeLang('fr', '/impressum/fr'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/fr.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="FR"></span><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="#" onclick="changeLang('es', '/impressum/es'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/es.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="ES"></span><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="#" onclick="changeLang('ru', '/impressum/ru'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/ru.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="RU"></span><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="#" onclick="changeLang('ja', '/impressum/ja'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/jp.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="JA"></span><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="#" onclick="changeLang('ko', '/impressum/ko'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/kr.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="KO"></span><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -337,6 +353,7 @@
         <p style="color: #666; font-size: 0.85rem; margin: 0;">Angaben gemäß § 5 DDG</p>
     </div>
 
+    <!-- 1. WICHTIGER RECHTLICHER HINWEIS: Klärt die Rollenverteilung sofort auf -->
     <div class="legal-card" style="border-color: rgba(0, 212, 255, 0.3); background: rgba(0, 212, 255, 0.01);">
         <h2>Geltungsbereich</h2>
         <p>Dieses Impressum gilt für das Online-Angebot der Webseite <strong>ankinox.com</strong> sowie für unseren offiziellen YouTube-Kanal <strong>Ankinox</strong>.</p>
@@ -345,6 +362,7 @@
         </p>
     </div>
 
+    <!-- 2. Diensteanbieter / Betreiber (Aktuell privat geschützt) -->
     <div class="legal-card">
         <h2>Diensteanbieter</h2>
         <address>
@@ -354,6 +372,7 @@
         </address>
     </div>
 
+    <!-- 3. Kontakt -->
     <div class="legal-card">
         <h2>Kontakt</h2>
         <p>
@@ -361,6 +380,7 @@
         </p>
     </div>
 
+    <!-- 4. Haftungsausschluss (Disclaimer) & Fremdrechte -->
     <div class="legal-card">
         <h2>Haftung & Urheberrecht</h2>
         <p>
@@ -374,23 +394,26 @@
         </p>
     </div>
 
+    <!-- Zurück zur Startseite Button -->
     <a href="/index.html" class="back-btn">Zurück zur Startseite</a>
 
+    <!-- Footer mit den Pflichtlinks -->
     <footer class="site-footer">
+        <!-- Sprachauswahl Im Footer (Klappt nach oben auf) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)">
-                    <img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE">
+                    <span class="flag-img"><img src="https://flagcdn.com/w40/de.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="DE"></span>
                     <span class="flag-emoji">🇩🇪</span> ▾
                 </div>
                 <div class="lang-content">
-                    <a href="#" onclick="changeLang('de', '/impressum/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
-                    <a href="#" onclick="changeLang('en', '/impressum/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
-                    <a href="#" onclick="changeLang('fr', '/impressum/fr'); return false;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
-                    <a href="#" onclick="changeLang('es', '/impressum/es'); return false;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
-                    <a href="#" onclick="changeLang('ru', '/impressum/ru'); return false;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
-                    <a href="#" onclick="changeLang('ja', '/impressum/ja'); return false;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
-                    <a href="#" onclick="changeLang('ko', '/impressum/ko'); return false;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                    <a href="#" onclick="changeLang('de', '/impressum/de'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/de.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="DE"></span><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="#" onclick="changeLang('en', '/impressum/en'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/gb.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="EN"></span><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="#" onclick="changeLang('fr', '/impressum/fr'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/fr.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="FR"></span><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="#" onclick="changeLang('es', '/impressum/es'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/es.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="ES"></span><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="#" onclick="changeLang('ru', '/impressum/ru'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/ru.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="RU"></span><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="#" onclick="changeLang('ja', '/impressum/ja'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/jp.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="JA"></span><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="#" onclick="changeLang('ko', '/impressum/ko'); return false;"><span class="flag-img"><img src="https://flagcdn.com/w40/kr.png" style="width:100%; height:100%; object-fit:cover; border-radius:2px;" alt="KO"></span><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
                 </div>
             </div>
         </div>
@@ -405,6 +428,7 @@
         </div>
     </footer>
 
+    <!-- Feste Navigationsleiste unten -->
     <nav class="bottom-nav">
         <a href="/Startseite/de">Start</a>
         <a href="/stream/de">Stream</a>
@@ -419,6 +443,7 @@
             window.location.href = targetUrl;
         }
        
+        // Dropdown öffnen/schließen Script
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
@@ -432,6 +457,7 @@
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
+        // Schließt das Sprachmenü, wenn der gesamte ausgeklappte Block vollständig außerhalb des Bildschirms ist (Scrollen)
         window.addEventListener('scroll', () => {
             document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
                 const content = dropdown.querySelector('.lang-content');
