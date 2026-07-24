@@ -1,1 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
+
+    <!-- Intelligente Sprachprüfung & Weiterleitung mit abgesichertem localStorage -->
+    <script>
+        (function() {
+            const currentPath = window.location.pathname;
+            const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            
+            // Pfadsegmente sauber aufteilen und das letzte Segment prüfen
+            const pathSegments = currentPath.split('/').filter(Boolean);
+            const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'es';
+
+            // Wenn wir gerade frisch manuell gewechselt haben, gar nicht erst eingreifen!
+            if (sessionStorage.getItem('justSwitched') === 'true') {
+                sessionStorage.removeItem('justSwitched');
+                return;
+            }
+
+            // 1. Wenn der Nutzer bereits manuell eine Sprache gewählt hat
+            const savedLang = localStorage.getItem('userSelectedLang');
+            if (savedLang && supportedLangs.includes(savedLang)) {
+                // Wenn die aktuelle URL NICHT der gespeicherten Sprache entspricht -> Sofort korrigieren!
+                if (pageLang !== savedLang) {
+                    let newPath;
+                    if (supportedLangs.includes(lastSegment)) {
+                        pathSegments[pathSegments.length - 1] = savedLang;
+                        newPath = '/' + pathSegments.join('/');
+                    } else {
+                        newPath = currentPath.endsWith('/') ? currentPath + savedLang : currentPath + '/' + savedLang;
+                    }
+                    if (newPath !== currentPath) {
+                        window.location.replace(newPath);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            // 2. Erstanweiser-Erkennung (nur beim allerersten Besuch)
+            const userLang = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+            const langCode = userLang.substring(0, 2);
+            
+            if (langCode !== 'es' && supportedLangs.includes(langCode)) {
+                localStorage.setItem('userSelectedLang', langCode);
+                let newPath;
+                if (supportedLangs.includes(lastSegment)) {
+                    pathSegments[pathSegments.length - 1] = langCode;
+                    newPath = '/' + pathSegments.join('/');
+                } else {
+                    newPath = currentPath.endsWith('/') ? currentPath + langCode : currentPath + '/' + langCode;
+                }
+                window.location.replace(newPath);
+            } else {
+                localStorage.setItem('userSelectedLang', 'es');
+            }
+        })();
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Ankinox – Artículos para fans exclusivos</title>
+    
+    <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png">
+    <meta property="og:title" content="Tienda Ankinox">
+    <meta property="og:description" content="Merchandising exclusivo y ediciones limitadas.">
+
+    <style>
+        /* Platform-dependent flag display (Emojis on mobile devices, real flag images only on PC/Desktop) */
+        .flag-img { display: none; }
+        .flag-emoji { display: inline-block; }
+        @media (min-width: 1024px) {
+            .flag-img {
+                width: 1.2em;
+                height: 0.9em;
+                vertical-align: middle;
+                border-radius: 2px;
+                object-fit: cover;
+                display: inline-block;
+            }
+            .flag-emoji { display: none; }
+        }
+
+        /* Removes blue click effect everywhere on mobile devices */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        :root {
+            --primary-orange: #ff4500;
+            --primary-red: #8b0000;
+            --button-gradient: linear-gradient(90deg, #ff4500 0%, #8b0000 100%);
+            --bg-color: #050505;
+        }
+
+        body { margin: 0; padding-bottom: 120px; background-color: var(--bg-color); color: white; font-family: sans-serif; }
+        
+        /* Dropdown language selection styling */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-btn {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Local dropdown for the footer */
+        .lang-dropdown .lang-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #111;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            z-index: 999999;
+            overflow: hidden;
+        }
+        .lang-dropdown.up .lang-content {
+            bottom: 100%;
+            margin-bottom: 5px;
+        }
+        .lang-content a {
+            color: #ddd;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            text-align: left;
+            transition: background 0.2s;
+        }
+        .lang-content a:hover {
+            background: #00d4ff;
+            color: #000;
+        }
+        .lang-dropdown.show .lang-content {
+            display: block;
+        }
+
+        /* The banner contains the logo and stays fixed in the background */
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png');
+            background-size: cover; background-position: center; z-index: 0; 
+        }
+
+        .banner-logo { z-index: 10; }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); }
+
+        .content {
+            margin-top: 30vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, var(--bg-color) 11.5%, var(--bg-color) 100%);
+            padding: 10vh 20px 20px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .category-section { margin-bottom: 40px; }
+        .category-title { 
+            display: flex; align-items: center; color: var(--primary-orange); 
+            margin-bottom: 20px; text-transform: uppercase; font-size: 1.2rem;
+        }
+        .category-title::before {
+            content: ""; display: inline-block; width: 4px; height: 25px; 
+            background-color: var(--primary-orange); margin-right: 10px;
+        }
+        
+        .scroll-container {
+            display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .product-card {
+            min-width: 160px; width: 160px; background: #111; border-radius: 15px; padding: 10px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            border: 1px solid var(--primary-orange);
+        }
+        .product-img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; margin-bottom: 10px; }
+        .product-name { font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        
+        .product-btn { 
+            display: inline-block; margin-top: 10px; padding: 8px 15px; 
+            background: var(--button-gradient); color: white; text-decoration: none; border-radius: 20px; 
+            font-size: 0.8rem; font-weight: bold; border: none;
+        }
+
+        /* Footer styling */
+        .site-footer {
+            padding: 70px 20px 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #050505;
+            position: relative;
+            z-index: 100;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #ff4500;
+        }
+
+        .copyright {
+            color: #555;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: #0a0a0a; display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
+        }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <!-- Header bar with logo and clickable button in the background -->
+        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
+            <div class="banner-logo">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+            </div>
+
+            <!-- ONLY the button in the background -->
+            <div>
+                <div class="lang-dropdown down" id="lang-top">
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▾</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="banner-overlay"></div>
+    </div>
+
+    <!-- The expanded language window completely decoupled on the highest layer -->
+    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+        <a href="#" onclick="changeLang('de', '/Shop/de'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+        <a href="#" onclick="changeLang('en', '/Shop/en'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+        <a href="#" onclick="changeLang('fr', '/Shop/fr'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+        <a href="#" onclick="changeLang('es', '/Shop/es'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+        <a href="#" onclick="changeLang('ru', '/Shop/ru'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+        <a href="#" onclick="changeLang('ja', '/Shop/ja'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+        <a href="#" onclick="changeLang('ko', '/Shop/ko'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+    </div>
+
+    <div class="content">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png" 
+             style="width: 100%; max-width: 275px; display: block; margin: -130px auto -100px auto;">
+
+        <div style="text-align: center;">
+            <p style="color: #bbb; margin-top: 0; margin-bottom: 35px;">Merchandising exclusivo y ediciones limitadas.</p>
+
+            <div style="margin-bottom: 35px;">
+                <button id="share-button" style="background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange); padding: 12px 35px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Compartir</button>
+            </div>
+
+            <div class="category-section">
+                <h2 class="category-title">Ropa</h2>
+                <div class="scroll-container">
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_111319_samsungbrowser993583346539854004.jpg" class="product-img">
+                        <div class="product-name">Camiseta (H)</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-812-7&appearance=1" class="product-btn">Comprar</a>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112056_samsungbrowser3192014083057506429.jpg" class="product-img">
+                        <div class="product-name">Camiseta (M)</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-813-8&appearance=1269" class="product-btn">Comprar</a>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112514_samsungbrowser2447043084200885577.jpg" class="product-img">
+                        <div class="product-name">Pantalones cortos</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-1514-219&appearance=70" class="product-btn">Comprar</a>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_112857_samsungbrowser3718550902532511434.jpg" class="product-img">
+                        <div class="product-name">Calcetines</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-3001-214&appearance=1" class="product-btn">Comprar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section">
+                <h2 class="category-title">Libros</h2>
+                <div class="scroll-container">
+                    <div class="product-card">
+                        <img src="https://m.media-amazon.com/images/I/61rJFQG8JzL._AC_SL1500_.jpg" class="product-img">
+                        <div class="product-name">Tapa blanda</div>
+                        <a href="https://www.amazon.de/MADDY-DIE-SCHATTENWELT-Marcobode/dp/B0FYR393M1" class="product-btn">Comprar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section">
+                <h2 class="category-title">Varios</h2>
+                <div class="scroll-container">
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_104652_samsungbrowser129557483207852948.jpg" class="product-img">
+                        <div class="product-name">Taza</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-31-32&appearance=1" class="product-btn">Comprar</a>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/screenshot_20260701_110112_samsungbrowser2860517743287935495.jpg" class="product-img">
+                        <div class="product-name">Cojín</div>
+                        <a href="https://ankinox-shop.myspreadshop.de/ankinox+logo-A6a44be6cd019d2145062106d?sellable=lNdJgDpv5XTjpE3Xa9Dl-1413-37&appearance=741" class="product-btn">Comprar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legally compliant footer -->
+    <footer class="site-footer">
+        <!-- Language selection in footer -->
+        <div style="margin-bottom: 20px; display: flex; justify-content: center;">
+            <div class="lang-dropdown up" id="lang-footer">
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▴</div>
+                <div class="lang-content">
+                    <a href="#" onclick="changeLang('de', '/Shop/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="#" onclick="changeLang('en', '/Shop/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="#" onclick="changeLang('fr', '/Shop/fr'); return false;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="#" onclick="changeLang('es', '/Shop/es'); return false;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="#" onclick="changeLang('ru', '/Shop/ru'); return false;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="#" onclick="changeLang('ja', '/Shop/ja'); return false;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="#" onclick="changeLang('ko', '/Shop/ko'); return false;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-links">
+            <a href="/impressum/es">Aviso legal</a>
+            <a href="mailto:kontakt@ankinox.com">Contacto</a>
+            <a href="mailto:support@ankinox.com">Soporte</a>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Ankinox. Todos los derechos reservados sobre el contenido propio.<br>
+            El contenido de socios y estudios está sujeto a sus respectivos derechos de autor.
+        </div>
+    </footer>
+
+    <nav class="bottom-nav">
+        <a href="/Startseite/es">Inicio</a>
+        <a href="/stream/es">Stream</a>
+        <a href="/Shop/es" style="color: #bf00ff;">Tienda</a>
+        <a href="/Partnerschaft/es">Socio</a>
+    </nav>
+
+    <script>
+       function changeLang(langCode, targetUrl) {
+            localStorage.setItem('userSelectedLang', langCode);
+            sessionStorage.setItem('justSwitched', 'true');
+            window.location.href = targetUrl;
+        }
+       
+        // Dropdown open/close script
+        function toggleLangMenu(id, event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(id);
+            const isTop = (id === 'lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            // Close all other dropdowns
+            document.querySelectorAll('.lang-dropdown').forEach(d => {
+                if(d.id !== id) d.classList.remove('show');
+            });
+
+            if (isTop) {
+                const isOpen = dropdown.classList.toggle('show');
+                if (isOpen) {
+                    // Briefly fade out invisibly so the browser can accurately measure the real width (`offsetWidth`)
+                    detachedMenu.style.visibility = 'hidden';
+                    detachedMenu.style.display = 'block';
+
+                    const btnRect = dropdown.querySelector('.lang-btn').getBoundingClientRect();
+                    const menuWidth = detachedMenu.offsetWidth;
+
+                    // Align exactly right-aligned under the button
+                    detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                    detachedMenu.style.left = (btnRect.right - menuWidth) + 'px';
+                    
+                    // Switch to immediately visible
+                    detachedMenu.style.visibility = 'visible';
+                } else {
+                    detachedMenu.style.display = 'none';
+                }
+            } else {
+                detachedMenu.style.display = 'none';
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        // Outside clicks close the menu again
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-dropdown') && !e.target.closest('#detached-lang-menu')) {
+                document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+                document.getElementById('detached-lang-menu').style.display = 'none';
+            }
+        });
+
+        // Checks position during scrolling
+        window.addEventListener('scroll', () => {
+            const topDropdown = document.getElementById('lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            document.querySelectorAll('.lang-dropdown.up.show').forEach(dropdown => {
+                const rect = dropdown.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            if (topDropdown.classList.contains('show')) {
+                const btn = topDropdown.querySelector('.lang-btn');
+                const btnRect = btn.getBoundingClientRect();
+                const centerX = btnRect.left + btnRect.width / 2;
+                const centerY = btnRect.top + btnRect.height / 2;
+
+                if (btnRect.bottom < 0 || btnRect.top > window.innerHeight) {
+                    topDropdown.classList.remove('show');
+                    detachedMenu.style.display = 'none';
+                } else if (centerX >= 0 && centerX <= window.innerWidth && centerY >= 0 && centerY <= window.innerHeight) {
+                    const topElement = document.elementFromPoint(centerX, centerY);
+                    if (topElement && !btn.contains(topElement)) {
+                        topDropdown.classList.remove('show');
+                        detachedMenu.style.display = 'none';
+                    } else {
+                        detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                        detachedMenu.style.left = (btnRect.right - detachedMenu.offsetWidth) + 'px';
+                    }
+                }
+            }
+        }, { passive: true });
+
+        // Share Button Script
+        document.getElementById('share-button').addEventListener('click', async () => {
+            try {
+                await navigator.share({
+                    title: 'Tienda Ankinox',
+                    url: window.location.href 
+                });
+            } catch (err) { console.log('Sharing aborted', err); }
+        });
+    </script>
+</body>
+</html>
 
