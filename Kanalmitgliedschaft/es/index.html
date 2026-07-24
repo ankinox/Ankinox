@@ -1,1 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
+
+    <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf DE, falls DE gespeichert ist) -->
+    <script>
+        (function() {
+            const currentPath = window.location.pathname;
+            const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
+            
+            const pathSegments = currentPath.split('/').filter(Boolean);
+            const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'es';
+
+            // Wenn gerade aktiv und bewusst gewechselt wurde, einmalig durchlassen
+            if (sessionStorage.getItem('justSwitched') === 'true') {
+                sessionStorage.removeItem('justSwitched');
+                return;
+            }
+
+            const savedLang = localStorage.getItem('userSelectedLang');
+
+            // Wenn eine Sprache gespeichert ist und NICHT zur aktuellen URL-Seite passt -> Sofort korrigieren!
+            if (savedLang && supportedLangs.includes(savedLang)) {
+                if (pageLang !== savedLang) {
+                    let newPath;
+                    if (supportedLangs.includes(lastSegment)) {
+                        pathSegments[pathSegments.length - 1] = savedLang;
+                        newPath = '/' + pathSegments.join('/');
+                    } else {
+                        newPath = currentPath.endsWith('/') ? currentPath + savedLang : currentPath + '/' + savedLang;
+                    }
+                    if (newPath !== currentPath) {
+                        window.location.replace(newPath);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            // Erstbesucher-Erkennung, falls noch gar nichts im Storage steht
+            const userLang = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+            const langCode = userLang.substring(0, 2);
+            
+            if (langCode !== 'es' && supportedLangs.includes(langCode)) {
+                localStorage.setItem('userSelectedLang', langCode);
+                let newPath;
+                if (supportedLangs.includes(lastSegment)) {
+                    pathSegments[pathSegments.length - 1] = langCode;
+                    newPath = '/' + pathSegments.join('/');
+                } else {
+                    newPath = currentPath.endsWith('/') ? currentPath + langCode : currentPath + '/' + langCode;
+                }
+                window.location.replace(newPath);
+            } else {
+                localStorage.setItem('userSelectedLang', 'es');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Membresía del canal en Ankinox</title>
+
+    <meta property="og:title" content="Conviértete en miembro del canal de Ankinox – Beneficios exclusivos">
+    <meta property="og:description" content="Asegúrate beneficios exclusivos: ¡Mira películas antes y desbloquea la biblioteca completa de series!">
+    <meta property="og:image" content="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607090240148567443699929004634.png">
+    <meta property="og:url" content="https://ankinox.github.io/Ankinox/Mitgliedschaft.html">
+    <meta property="og:type" content="website">
+
+    <style>
+        /* Removes the blue click effect on mobile devices everywhere */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
+        
+        /* Platform-dependent flag display (standard/emojis on mobile devices, images on desktop) */
+        .flag-img { display: none; }
+        .flag-emoji { display: inline-block; }
+        @media (min-width: 1024px) {
+            .flag-img {
+                width: 1.2em;
+                height: 0.9em;
+                vertical-align: middle;
+                border-radius: 2px;
+                object-fit: cover;
+                display: inline-block;
+            }
+            .flag-emoji { display: none; }
+        }
+
+        /* Dropdown language selection styling */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-btn {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Local dropdown for the footer (remains as is) */
+        .lang-dropdown .lang-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #111;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            z-index: 999999;
+            overflow: hidden;
+        }
+        .lang-dropdown.up .lang-content {
+            bottom: 100%;
+            margin-bottom: 5px;
+        }
+        .lang-content a {
+            color: #ddd;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            text-align: left;
+            transition: background 0.2s;
+        }
+        .lang-content a:hover {
+            background: #00d4ff;
+            color: #000;
+        }
+        .lang-dropdown.show .lang-content {
+            display: block;
+        }
+
+        .banner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background-image: url('https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000741871f49fad164dffb4c4992147124538725298076.png');
+            background-size: cover; background-position: center; z-index: 0; 
+        }
+
+        .banner-logo { z-index: 10; }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.2); }
+
+        .content {
+            margin-top: 30vh; 
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, #050505 11.5%, #050505 100%);
+            padding: 10vh 20px 20px 20px;
+            position: relative;
+            z-index: 2; 
+        }
+
+        /* Footer styling */
+        .site-footer {
+            padding: 70px 20px 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #050505;
+            position: relative;
+            z-index: 100;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        .copyright {
+            color: #555;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: #0a0a0a; display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #333; z-index: 9999; 
+        }
+        .bottom-nav a { color: #555; text-decoration: none; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <!-- Header bar with logo and clickable button in the background -->
+        <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
+            <div class="banner-logo">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
+            </div>
+
+            <!-- ONLY the button in the background -->
+            <div>
+                <div class="lang-dropdown down" id="lang-top">
+                    <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▾</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="banner-overlay"></div>
+    </div>
+
+    <!-- The expanded language window completely decoupled at the highest layer -->
+    <div id="detached-lang-menu" style="display: none; position: fixed; z-index: 999999; min-width: 150px; background: #111; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+        <a href="#" onclick="changeLang('de', '/Kanalmitgliedschaft/de'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+        <a href="#" onclick="changeLang('en', '/Kanalmitgliedschaft/en'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+        <a href="#" onclick="changeLang('fr', '/Kanalmitgliedschaft/fr'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+        <a href="#" onclick="changeLang('es', '/Kanalmitgliedschaft/es'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+        <a href="#" onclick="changeLang('ru', '/Kanalmitgliedschaft/ru'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+        <a href="#" onclick="changeLang('ja', '/Kanalmitgliedschaft/ja'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+        <a href="#" onclick="changeLang('ko', '/Kanalmitgliedschaft/ko'); return false;" style="color: #ddd; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9rem; text-align: left;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+    </div>
+
+    <div class="content">
+        <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607090240148567443699929004634.png" 
+             style="width: 100%; max-width: 225px; display: block; margin: -130px auto -60px auto;">
+
+        <div style="text-align: center;">
+            <div style="color: #bbb; margin-bottom: 25px;">
+                <span style="border: 2px solid #ffff00; padding: 4px 12px; border-radius: 8px; font-weight: bold; color: #ffd700;">Membresía del canal</span>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+                <button id="share-button" style="background: transparent; color: #ffd700; border: 2px solid #ffff00; padding: 8px 25px; border-radius: 50px; font-weight: bold; cursor: pointer;">➔ Compartir</button>
+            </div>
+
+            <div style="text-align: left; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px; margin-bottom: 30px; color: #fff;">
+                <h3 style="margin-top: 0; color: #ffd700;">Tus beneficios como miembro:</h3>
+                <ul style="padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Plataforma:</strong> Procesado de forma segura a través de YouTube</li>
+                    <li><strong>Precio:</strong> 4,99 € al mes</li>
+                    <li><strong>Películas:</strong> Ver con 1 mes de antelación</li>
+                    <li><strong>Series:</strong> Acceso a la biblioteca completa de series</li>
+                    <li><strong>Anuncios:</strong> A pesar de la membresía, se incluyen anuncios cortos</li>
+                </ul>
+            </div>
+
+            <div style="margin: 40px 0;">
+                <a href="https://youtube.com/@ankinox/join" 
+                   style="display: inline-block; 
+                          width: 85%; 
+                          max-width: 400px;
+                          padding: 18px 0; 
+                          background: linear-gradient(90deg, #E6FF00, #FFD700); 
+                          color: #000; 
+                          border-radius: 50px; 
+                          font-weight: 900; 
+                          font-size: 1.3rem; 
+                          text-decoration: none; 
+                          text-align: center;
+                          box-shadow: 0 0 20px rgba(230, 255, 0, 0.4);">
+                    Hacerse miembro ahora
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legally compliant footnote (footer) -->
+    <footer class="site-footer">
+       <!-- Language selection in footer -->
+        <div style="margin-bottom: 20px; display: flex; justify-content: center;">
+            <div class="lang-dropdown up" id="lang-footer">
+                <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> ▴</div>
+                <div class="lang-content">
+                    <a href="#" onclick="changeLang('de', '/Kanalmitgliedschaft/de'); return false;"><img src="https://flagcdn.com/w40/de.png" class="flag-img" alt="DE"><span class="flag-emoji">🇩🇪</span> Deutsch (DE)</a>
+                    <a href="#" onclick="changeLang('en', '/Kanalmitgliedschaft/en'); return false;"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"><span class="flag-emoji">🇬🇧</span> English (EN)</a>
+                    <a href="#" onclick="changeLang('fr', '/Kanalmitgliedschaft/fr'); return false;"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> Français (FR)</a>
+                    <a href="#" onclick="changeLang('es', '/Kanalmitgliedschaft/es'); return false;"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"><span class="flag-emoji">🇪🇸</span> Español (ES)</a>
+                    <a href="#" onclick="changeLang('ru', '/Kanalmitgliedschaft/ru'); return false;"><img src="https://flagcdn.com/w40/ru.png" class="flag-img" alt="RU"><span class="flag-emoji">🇷🇺</span> Русский (RU)</a>
+                    <a href="#" onclick="changeLang('ja', '/Kanalmitgliedschaft/ja'); return false;"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> 日本語 (JA)</a>
+                    <a href="#" onclick="changeLang('ko', '/Kanalmitgliedschaft/ko'); return false;"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> 한국어 (KO)</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-links">
+            <a href="/impressum/es">Aviso legal</a>
+            <a href="mailto:kontakt@ankinox.com">Contacto</a>
+            <a href="mailto:support@ankinox.com">Soporte</a>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Ankinox. Todos los derechos reservados sobre el contenido propio.<br>
+            El contenido de los socios y estudios está sujeto a sus respectivos derechos de autor.
+        </div>
+    </footer>
+
+    <nav class="bottom-nav">
+        <a href="/Startseite/es">Inicio</a>
+        <a href="/stream/es">Streaming</a>
+        <a href="/Shop/es">Tienda</a>
+        <a href="/Partnerschaft/es">Socio</a>
+    </nav>
+
+    <script>
+        function changeLang(langCode, targetUrl) {
+            localStorage.setItem('userSelectedLang', langCode);
+            sessionStorage.setItem('justSwitched', 'true');
+            window.location.href = targetUrl;
+        }
+        
+        // Dropdown open/close script
+        function toggleLangMenu(id, event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(id);
+            const isTop = (id === 'lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            // Close all other dropdowns
+            document.querySelectorAll('.lang-dropdown').forEach(d => {
+                if(d.id !== id) d.classList.remove('show');
+            });
+
+            if (isTop) {
+                const isOpen = dropdown.classList.toggle('show');
+                if (isOpen) {
+                    // Briefly fade in invisibly so the browser can accurately measure the real width (`offsetWidth`)
+                    detachedMenu.style.visibility = 'hidden';
+                    detachedMenu.style.display = 'block';
+
+                    const btnRect = dropdown.querySelector('.lang-btn').getBoundingClientRect();
+                    const menuWidth = detachedMenu.offsetWidth;
+
+                    // Align exactly flush right below the button
+                    detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                    detachedMenu.style.left = (btnRect.right - menuWidth) + 'px';
+                    
+                    // Switch to visible immediately
+                    detachedMenu.style.visibility = 'visible';
+                } else {
+                    detachedMenu.style.display = 'none';
+                }
+            } else {
+                detachedMenu.style.display = 'none';
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        // Clicks outside close the menu again
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-dropdown') && !e.target.closest('#detached-lang-menu')) {
+                document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
+                document.getElementById('detached-lang-menu').style.display = 'none';
+            }
+        });
+
+        // Checks position on scroll
+        window.addEventListener('scroll', () => {
+            const topDropdown = document.getElementById('lang-top');
+            const detachedMenu = document.getElementById('detached-lang-menu');
+
+            document.querySelectorAll('.lang-dropdown.up.show').forEach(dropdown => {
+                const rect = dropdown.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            if (topDropdown.classList.contains('show')) {
+                const btn = topDropdown.querySelector('.lang-btn');
+                const btnRect = btn.getBoundingClientRect();
+                const centerX = btnRect.left + btnRect.width / 2;
+                const centerY = btnRect.top + btnRect.height / 2;
+
+                if (btnRect.bottom < 0 || btnRect.top > window.innerHeight) {
+                    topDropdown.classList.remove('show');
+                    detachedMenu.style.display = 'none';
+                } else if (centerX >= 0 && centerX <= window.innerWidth && centerY >= 0 && centerY <= window.innerHeight) {
+                    const topElement = document.elementFromPoint(centerX, centerY);
+                    if (topElement && !btn.contains(topElement)) {
+                        topDropdown.classList.remove('show');
+                        detachedMenu.style.display = 'none';
+                    } else {
+                        detachedMenu.style.top = (btnRect.bottom + 5) + 'px';
+                        detachedMenu.style.left = (btnRect.right - detachedMenu.offsetWidth) + 'px';
+                    }
+                }
+            }
+        }, { passive: true });
+
+        // Share button script
+        document.getElementById('share-button').addEventListener('click', async () => {
+            try {
+                await navigator.share({
+                    title: 'Membresía del canal en Ankinox',
+                    url: window.location.href 
+                });
+            } catch (err) { console.log('Sharing aborted', err); }
+        });
+    </script>
+</body>
+</html>
 
