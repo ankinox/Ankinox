@@ -11,7 +11,7 @@
             
             const pathSegments = currentPath.split('/').filter(Boolean);
             const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
-            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'en';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'ru';
 
             // Wenn gerade aktiv und bewusst gewechselt wurde, einmalig durchlassen
             if (sessionStorage.getItem('justSwitched') === 'true') {
@@ -40,10 +40,10 @@
             }
 
             // Erstbesucher-Erkennung, falls noch gar nichts im Storage steht
-            const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            const userLang = (navigator.language || navigator.userLanguage || 'ru').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
-            if (langCode !== 'en' && supportedLangs.includes(langCode)) {
+            if (langCode !== 'ru' && supportedLangs.includes(langCode)) {
                 localStorage.setItem('userSelectedLang', langCode);
                 let newPath;
                 if (supportedLangs.includes(lastSegment)) {
@@ -54,7 +54,7 @@
                 }
                 window.location.replace(newPath);
             } else {
-                localStorage.setItem('userSelectedLang', 'en');
+                localStorage.setItem('userSelectedLang', 'ru');
             }
         })();
     </script>
@@ -431,7 +431,7 @@
         <a href="/Startseite/ru">Главная</a>
         <a href="/stream/ru">Трансляция</a>
         <a href="/Shop/ru">Магазин</a>
-        <a href="/Partnerschaft/ru">Партнеры</a>
+        <a href="/Partnerschaft/ru">Партнёрство</a>
     </nav>
 
     <script>
