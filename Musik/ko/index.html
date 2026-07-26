@@ -3,26 +3,27 @@
 <head>
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
 
-  <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf DE, falls DE gespeichert ist) -->
+   <!-- 지능형 언어 확인 및 안전한 localStorage 리다이렉트 -->
     <script>
         (function() {
             const currentPath = window.location.pathname;
             const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
             
+            // 경로 세그먼트를 깔끔하게 분리하고 마지막 세그먼트 확인
             const pathSegments = currentPath.split('/').filter(Boolean);
             const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
-            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'en';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'ko';
 
-            // Wenn gerade aktiv und bewusst gewechselt wurde, einmalig durchlassen
+            // 수동으로 방금 변경한 경우 개입하지 않음!
             if (sessionStorage.getItem('justSwitched') === 'true') {
                 sessionStorage.removeItem('justSwitched');
                 return;
             }
 
+            // 1. 사용자가 이미 수동으로 언어를 선택한 경우
             const savedLang = localStorage.getItem('userSelectedLang');
-
-            // Wenn eine Sprache gespeichert ist und NICHT zur aktuellen URL-Seite passt -> Sofort korrigieren!
             if (savedLang && supportedLangs.includes(savedLang)) {
+                // 현재 URL이 저장된 언어와 일치하지 않는 경우 -> 즉시 수정!
                 if (pageLang !== savedLang) {
                     let newPath;
                     if (supportedLangs.includes(lastSegment)) {
@@ -39,11 +40,11 @@
                 return;
             }
 
-            // Erstbesucher-Erkennung, falls noch gar nichts im Storage steht
-            const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            // 2. 최초 방문자 감지 (최초 방문 시에만)
+            const userLang = (navigator.language || navigator.userLanguage || 'ko').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
-            if (langCode !== 'en' && supportedLangs.includes(langCode)) {
+            if (langCode !== 'ko' && supportedLangs.includes(langCode)) {
                 localStorage.setItem('userSelectedLang', langCode);
                 let newPath;
                 if (supportedLangs.includes(lastSegment)) {
@@ -54,15 +55,15 @@
                 }
                 window.location.replace(newPath);
             } else {
-                localStorage.setItem('userSelectedLang', 'en');
+                localStorage.setItem('userSelectedLang', 'ko');
             }
         })();
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스트림 - Ankinox</title>
-    <!-- Supabase Client included -->
+    <title>Stream - Ankinox</title>
+    <!-- Supabase 클라이언트 통합 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         window.supabaseInstance = supabase.createClient(
@@ -74,7 +75,7 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        /* Platform-dependent flag display (standard/emojis on mobile devices, images on desktop) */
+        /* 플랫폼별 국기 표시 (모바일에서는 표준/이모지, 데스크톱에서는 이미지) */
         .flag-img { display: none; }
         .flag-emoji { display: inline-block; }
         @media (min-width: 1024px) {
@@ -89,7 +90,7 @@
             .flag-emoji { display: none; }
         }
 
-        /* Dropdown language selection styling */
+        /* 드롭다운 언어 선택 스타일 */
         .lang-dropdown {
             position: relative;
             display: inline-block;
@@ -117,12 +118,12 @@
             z-index: 10000;
             overflow: hidden;
         }
-        /* Open downwards */
+        /* 위에서 아래로 펼쳐짐 */
         .lang-dropdown.down .lang-content {
             top: 100%;
             margin-top: 5px;
         }
-        /* Open upwards in footer */
+        /* 푸터에서 위로 펼쳐짐 */
         .lang-dropdown.up .lang-content {
             bottom: 100%;
             margin-bottom: 5px;
@@ -157,7 +158,7 @@
         
         .add-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555; text-decoration: none; }
         
-        /* Favorites cards styling */
+        /* 즐겨찾기 카드 스타일 */
         .fav-card { flex: 0 0 140px; text-decoration: none; color: white; }
         .fav-card img { width: 140px; height: 200px; object-fit: cover; border-radius: 8px; display: block; }
         .fav-card p { font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -177,11 +178,11 @@
         <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
         <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
         
-        <!-- Logo top left & language selection top right at exactly the same height -->
+        <!-- 왼쪽 상단 로고 및 오른쪽 상단 정확히 같은 높이의 언어 선택 -->
         <div style="position:absolute;top:15px;left:15px;right:15px;z-index:10;display:flex;justify-content:space-between;align-items:center;">
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
             
-            <!-- Language selection top (Opens downwards) -->
+            <!-- 상단 언어 선택 (아래로 펼쳐짐) -->
             <div class="lang-dropdown down" id="lang-top">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> ▾</div>
                 <div class="lang-content">
@@ -215,22 +216,26 @@
     </div>
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
-        <h2 style="font-size: 20px; margin-bottom: 15px">내 음악</h2>
+        <h2 style="font-size: 20px; margin-bottom: 15px">나의 음악</h2>
         <div id="music-favorites-container" class="scroll-container">
-            <!-- Dynamically populated -->
+            <!-- 동적으로 입력됩니다 -->
         </div>
 
-        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">신곡 발매</h2>
+        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">신규 발매</h2>
         <div class="scroll-container">
+            <a href="/Rising-Horizon/ko/" style="flex: 0 0 140px; text-decoration: none; color: white;">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784541714/1784530214857_swgyyh.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Rising Horizon</p>
+            </a>
             <a href="/Ankinox-Song/ko" style="flex: 0 0 140px; text-decoration: none; color: white;">
                 <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/1784489174693_pzgjqh.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Träume Leben</p>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Living Dreams</p>
             </a>
         </div>
     </div>
 
     <footer class="site-footer">
-       <!-- Language selection in footer (Opens upwards) -->
+       <!-- 푸터 내 언어 선택 (위로 펼쳐짐) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/kr.png" class="flag-img" alt="KO"><span class="flag-emoji">🇰🇷</span> ▴</div>
@@ -247,13 +252,13 @@
         </div>
       
         <div class="footer-links">
-            <a href="/impressum/ko">임프린트</a>
+            <a href="/impressum/ko">이용약관 및 사업자정보</a>
             <a href="mailto:kontakt@ankinox.com">문의하기</a>
             <a href="mailto:support@ankinox.com">지원</a>
         </div>
         <div class="copyright">
-            &copy; 2026 Ankinox. All rights reserved for own content.<br>
-            파트너 및 스튜디오의 콘텐츠는 각 소유자의 저작권에 따릅니다.
+            &copy; 2026 Ankinox. 자체 콘텐츠에 대한 모든 권리는 보유됩니다.<br>
+            파트너 및 스튜디오의 콘텐츠는 각 소유자의 저작권을 따릅니다.
         </div>
     </footer>
 
@@ -265,29 +270,29 @@
     </nav>
 
     <script>
-      function changeLang(langCode, targetUrl) {
+       function changeLang(langCode, targetUrl) {
             localStorage.setItem('userSelectedLang', langCode);
             sessionStorage.setItem('justSwitched', 'true');
             window.location.href = targetUrl;
         }
-      
-        // Dropdown open/close script
+       
+        // 드롭다운 열기/닫기 스크립트
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
-            // Close all other menus
+            // 다른 모든 메뉴 닫기
             document.querySelectorAll('.lang-dropdown').forEach(d => {
                 if(d.id !== id) d.classList.remove('show');
             });
             dropdown.classList.toggle('show');
         }
 
-        // Clicks outside close the menu again
+        // 바깥쪽을 클릭하면 메뉴 닫기
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Closes the language menu if the entire expanded block is completely outside the screen (Scrolling)
+        // 펼쳐진 블록이 화면 밖으로 완전히 벗어났을 때 언어 메뉴 닫기 (스크롤 시)
         window.addEventListener('scroll', () => {
             document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
                 const content = dropdown.querySelector('.lang-content');
@@ -300,12 +305,12 @@
             });
         }, { passive: true });
 
-        // Load favorites logic for music
+        // 음악 즐겨찾기 로드 로직
         async function loadMusicFavorites() {
             const container = document.getElementById('music-favorites-container');
             const deviceId = localStorage.getItem('anki_device_id');
             
-            // Base link always in first position
+            // 기본 링크는 항상 맨 처음
             let htmlContent = `
                 <a href="/fav_Musik/ko" class="fav-card">
                     <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836723245554507946646987273774.png">
@@ -341,13 +346,20 @@
         }
         loadMusicFavorites();
 
-        // Banner logic
+        // 배너 로직
         const data = [
+            {
+                bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784541714/1784530214857_swgyyh.png",
+                logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1785049318/file_00000000c4c48243a9e5397f386173fa_qbbk6j.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">NEW</span> 곡 • 나이트코어 • G-Pop',
+                desc: "Ankinox 독점 오리지널: „Rising Horizon“. 이 곡은 결코 포기하지 않는 것을 주제로 합니다.",
+                url: "/Rising-Horizon/ko/"
+            },
             {
                 bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/1784489174693_pzgjqh.png",
                 logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/file_000000002a2081fba36bcedb063bc325_vjk0io.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">NEW</span> 자막 | 노래 • 나이트코어 • 애니메이션 팝',
-                desc: "Ankinox 오리지널의 독점 트랙: 나이트코어 스타일의 Träume Leben.",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">NEW</span> 자막 | 곡 • 나이트코어 • 애니메이션 팝',
+                desc: "Ankinox Originals의 독점 트랙: 나이트코어 스타일의 Living Dreams.",
                 url: "/Ankinox-Song/ko"
             },
             {
@@ -356,13 +368,6 @@
                 fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> 파트너십 • 수익 창출 • 성장',
                 desc: "지금 Ankinox 파트너가 되어보세요.",
                 url: "/Partnerschaft/ko"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">상점</span> 굿즈 • 독점 • 팬 상품',
-                desc: "공식 Ankinox 상점에서 독점 팬 굿즈와 한정판을 만나보세요.",
-                url: "/Shop/ko"
             }
         ];
 
@@ -405,4 +410,3 @@
     </script>
 </body>
 </html>
-
