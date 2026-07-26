@@ -3,26 +3,27 @@
 <head>
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
 
-  <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf DE, falls DE gespeichert ist) -->
+   <!-- Vérification intelligente de la langue et redirection avec localStorage sécurisé -->
     <script>
         (function() {
             const currentPath = window.location.pathname;
             const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
             
+            // Diviser proprement les segments du chemin et vérifier le dernier segment
             const pathSegments = currentPath.split('/').filter(Boolean);
             const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
-            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'fr';
+            const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'en';
 
-            // Wenn gerade aktiv und bewusst gewechselt wurde, einmalig durchlassen
+            // Si nous venons de changer manuellement, ne pas interférer du tout !
             if (sessionStorage.getItem('justSwitched') === 'true') {
                 sessionStorage.removeItem('justSwitched');
                 return;
             }
 
+            // 1. Si l'utilisateur a déjà sélectionné une langue manuellement
             const savedLang = localStorage.getItem('userSelectedLang');
-
-            // Wenn eine Sprache gespeichert ist und NICHT zur aktuellen URL-Seite passt -> Sofort korrigieren!
             if (savedLang && supportedLangs.includes(savedLang)) {
+                // Si l'URL actuelle ne correspond PAS à la langue enregistrée -> Corriger immédiatement !
                 if (pageLang !== savedLang) {
                     let newPath;
                     if (supportedLangs.includes(lastSegment)) {
@@ -39,11 +40,11 @@
                 return;
             }
 
-            // Erstbesucher-Erkennung, falls noch gar nichts im Storage steht
-            const userLang = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
+            // 2. Détection du premier visiteur (uniquement lors de la toute première visite)
+            const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
-            if (langCode !== 'fr' && supportedLangs.includes(langCode)) {
+            if (langCode !== 'en' && supportedLangs.includes(langCode)) {
                 localStorage.setItem('userSelectedLang', langCode);
                 let newPath;
                 if (supportedLangs.includes(lastSegment)) {
@@ -54,15 +55,15 @@
                 }
                 window.location.replace(newPath);
             } else {
-                localStorage.setItem('userSelectedLang', 'fr');
+                localStorage.setItem('userSelectedLang', 'en');
             }
         })();
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flux - Ankinox</title>
-    <!-- Supabase Client included -->
+    <title>Stream - Ankinox</title>
+    <!-- Client Supabase intégré -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         window.supabaseInstance = supabase.createClient(
@@ -74,7 +75,7 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        /* Platform-dependent flag display (standard/emojis on mobile devices, images on desktop) */
+        /* Affichage des drapeaux selon la plateforme (standard/emojis sur mobile, images sur bureau) */
         .flag-img { display: none; }
         .flag-emoji { display: inline-block; }
         @media (min-width: 1024px) {
@@ -89,7 +90,7 @@
             .flag-emoji { display: none; }
         }
 
-        /* Dropdown language selection styling */
+        /* Style du menu déroulant de sélection de langue */
         .lang-dropdown {
             position: relative;
             display: inline-block;
@@ -117,12 +118,12 @@
             z-index: 10000;
             overflow: hidden;
         }
-        /* Open downwards */
+        /* S'ouvre vers le bas en haut */
         .lang-dropdown.down .lang-content {
             top: 100%;
             margin-top: 5px;
         }
-        /* Open upwards in footer */
+        /* S'ouvre vers le haut dans le pied de page */
         .lang-dropdown.up .lang-content {
             bottom: 100%;
             margin-bottom: 5px;
@@ -157,7 +158,7 @@
         
         .add-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555; text-decoration: none; }
         
-        /* Favorites cards styling */
+        /* Style des cartes de favoris */
         .fav-card { flex: 0 0 140px; text-decoration: none; color: white; }
         .fav-card img { width: 140px; height: 200px; object-fit: cover; border-radius: 8px; display: block; }
         .fav-card p { font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -177,11 +178,11 @@
         <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
         <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
         
-        <!-- Logo top left & language selection top right at exactly the same height -->
+        <!-- Logo en haut à gauche et sélection de langue en haut à droite exactement à la même hauteur -->
         <div style="position:absolute;top:15px;left:15px;right:15px;z-index:10;display:flex;justify-content:space-between;align-items:center;">
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
             
-            <!-- Language selection top (Opens downwards) -->
+            <!-- Sélection de langue en haut (S'ouvre vers le bas) -->
             <div class="lang-dropdown down" id="lang-top">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> ▾</div>
                 <div class="lang-content">
@@ -217,20 +218,24 @@
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
         <h2 style="font-size: 20px; margin-bottom: 15px">Ma musique</h2>
         <div id="music-favorites-container" class="scroll-container">
-            <!-- Dynamically populated -->
+            <!-- Rempli dynamiquement -->
         </div>
 
-        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Nouveautés</h2>
+        <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">Nouvelles sorties</h2>
         <div class="scroll-container">
+            <a href="/Rising-Horizon/fr/" style="flex: 0 0 140px; text-decoration: none; color: white;">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784541714/1784530214857_swgyyh.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Rising Horizon</p>
+            </a>
             <a href="/Ankinox-Song/fr" style="flex: 0 0 140px; text-decoration: none; color: white;">
                 <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/1784489174693_pzgjqh.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Träume Leben</p>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Living Dreams</p>
             </a>
         </div>
     </div>
 
     <footer class="site-footer">
-       <!-- Language selection in footer (Opens upwards) -->
+       <!-- Sélection de langue dans le pied de page (S'ouvre vers le haut) -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR"><span class="flag-emoji">🇫🇷</span> ▴</div>
@@ -259,35 +264,35 @@
 
     <nav class="bottom-nav">
         <a href="/Startseite/fr">Accueil</a>
-        <a href="/stream/fr" id="nav-stream">Flux</a>
+        <a href="/stream/fr" id="nav-stream">Stream</a>
         <a href="/Shop/fr">Boutique</a>
-        <a href="/Partnerschaft/fr">Partenaire</a>
+        <a href="/Partnerschaft/fr">Partenaires</a>
     </nav>
 
     <script>
-      function changeLang(langCode, targetUrl) {
+       function changeLang(langCode, targetUrl) {
             localStorage.setItem('userSelectedLang', langCode);
             sessionStorage.setItem('justSwitched', 'true');
             window.location.href = targetUrl;
         }
-      
-        // Dropdown open/close script
+       
+        // Script pour ouvrir/fermer le menu déroulant
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
-            // Close all other menus
+            // Fermer tous les autres menus
             document.querySelectorAll('.lang-dropdown').forEach(d => {
                 if(d.id !== id) d.classList.remove('show');
             });
             dropdown.classList.toggle('show');
         }
 
-        // Clicks outside close the menu again
+        // Les clics en dehors ferment à nouveau le menu
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Closes the language menu if the entire expanded block is completely outside the screen (Scrolling)
+        // Ferme le menu de langue si l'ensemble du bloc déplié est complètement hors de l'écran (défilement)
         window.addEventListener('scroll', () => {
             document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
                 const content = dropdown.querySelector('.lang-content');
@@ -300,16 +305,16 @@
             });
         }, { passive: true });
 
-        // Load favorites logic for music
+        // Logique de chargement des favoris pour la musique
         async function loadMusicFavorites() {
             const container = document.getElementById('music-favorites-container');
             const deviceId = localStorage.getItem('anki_device_id');
             
-            // Base link always in first position
+            // Lien de base toujours en première position
             let htmlContent = `
                 <a href="/fav_Musik/fr" class="fav-card">
                     <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836723245554507946646987273774.png">
-                    <p>Musique favoris</p>
+                    <p>Musique favorite</p>
                 </a>
             `;
 
@@ -341,28 +346,28 @@
         }
         loadMusicFavorites();
 
-        // Banner logic
+        // Logique de la bannière
         const data = [
+            {
+                bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784541714/1784530214857_swgyyh.png",
+                logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1785049318/file_00000000c4c48243a9e5397f386173fa_qbbk6j.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">NOUVEAU</span> Chanson • Nightcore • G-Pop',
+                desc: "Un original exclusif d'Ankinox : « Rising Horizon ». Ce morceau parle de ne jamais abandonner.",
+                url: "/Rising-Horizon/fr/"
+            },
             {
                 bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/1784489174693_pzgjqh.png",
                 logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/file_000000002a2081fba36bcedb063bc325_vjk0io.png",
                 fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">NOUVEAU</span> Sous-titres | Chanson • Nightcore • Anime Pop',
-                desc: "Un morceau exclusif d'Ankinox Originals : Träume Leben en version Nightcore.",
+                desc: "Un morceau exclusif des originaux d'Ankinox : Living Dreams en version Nightcore.",
                 url: "/Ankinox-Song/fr"
             },
             {
                 bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/lv_0_202607061608551723013789651408983.jpg",
                 logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000035871f499d3f138bff8e98b379938916723128019.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> Partenariat • Gagner de l\'argent • Croître',
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> Partenariat • Gagner de l\'argent • Grandir',
                 desc: "Devenez partenaire d'Ankinox dès maintenant.",
                 url: "/Partnerschaft/fr"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">Boutique</span> Produits dérivés • Exclusif • Articles de fans',
-                desc: "Découvrez des produits dérivés exclusifs et des éditions limitées dans la boutique officielle Ankinox.",
-                url: "/Shop/fr"
             }
         ];
 
@@ -405,4 +410,3 @@
     </script>
 </body>
 </html>
-
