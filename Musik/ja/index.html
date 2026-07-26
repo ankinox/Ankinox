@@ -3,26 +3,27 @@
 <head>
 <link rel="icon" href="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" type="image/png">
 
-  <!-- Strikter URL-Abgleich mit dem localStorage (Erzwingt Rückleitung auf DE, falls DE gespeichert ist) -->
+   <!-- インテリジェントな言語チェックと安全なlocalStorage付きリダイレクト -->
     <script>
         (function() {
             const currentPath = window.location.pathname;
             const supportedLangs = ['de', 'en', 'fr', 'es', 'ru', 'ja', 'ko'];
             
+            // パスセグメントをきれいに分割し、最後のセグメントを確認する
             const pathSegments = currentPath.split('/').filter(Boolean);
             const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toLowerCase() : '';
             const pageLang = supportedLangs.includes(lastSegment) ? lastSegment : 'ja';
 
-            // Wenn gerade aktiv und bewusst gewechselt wurde, einmalig durchlassen
+            // 手動で切り替えたばかりの場合は干渉しない！
             if (sessionStorage.getItem('justSwitched') === 'true') {
                 sessionStorage.removeItem('justSwitched');
                 return;
             }
 
+            // 1. ユーザーがすでに手動で言語を選択している場合
             const savedLang = localStorage.getItem('userSelectedLang');
-
-            // Wenn eine Sprache gespeichert ist und NICHT zur aktuellen URL-Seite passt -> Sofort korrigieren!
             if (savedLang && supportedLangs.includes(savedLang)) {
+                // 現在のURLが保存された言語と一致しない場合 -> すぐに修正！
                 if (pageLang !== savedLang) {
                     let newPath;
                     if (supportedLangs.includes(lastSegment)) {
@@ -39,7 +40,7 @@
                 return;
             }
 
-            // Erstbesucher-Erkennung, falls noch gar nichts im Storage steht
+            // 2. 初回訪問者の検出（初回訪問時のみ）
             const userLang = (navigator.language || navigator.userLanguage || 'ja').toLowerCase();
             const langCode = userLang.substring(0, 2);
             
@@ -61,8 +62,8 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ストリーム - Ankinox</title>
-    <!-- Supabase Client included -->
+    <title>Stream - Ankinox</title>
+    <!-- Supabaseクライアントの統合 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         window.supabaseInstance = supabase.createClient(
@@ -74,7 +75,7 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding-bottom: 120px; background-color: #050505; color: white; font-family: sans-serif; }
         
-        /* Platform-dependent flag display (standard/emojis on mobile devices, images on desktop) */
+        /* プラットフォームに応じたフラグ表示（モバイルでは標準/絵文字、デスクトップでは画像） */
         .flag-img { display: none; }
         .flag-emoji { display: inline-block; }
         @media (min-width: 1024px) {
@@ -89,7 +90,7 @@
             .flag-emoji { display: none; }
         }
 
-        /* Dropdown language selection styling */
+        /* ドロップダウン言語選択のスタイル */
         .lang-dropdown {
             position: relative;
             display: inline-block;
@@ -117,12 +118,12 @@
             z-index: 10000;
             overflow: hidden;
         }
-        /* Open downwards */
+        /* 上から下へ展開 */
         .lang-dropdown.down .lang-content {
             top: 100%;
             margin-top: 5px;
         }
-        /* Open upwards in footer */
+        /* フッターで上へ展開 */
         .lang-dropdown.up .lang-content {
             bottom: 100%;
             margin-bottom: 5px;
@@ -157,7 +158,7 @@
         
         .add-placeholder { flex: 0 0 140px; height: 200px; border: 1px dashed #555; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 40px; color: #555; text-decoration: none; }
         
-        /* Favorites cards styling */
+        /* お気に入りカードのスタイル */
         .fav-card { flex: 0 0 140px; text-decoration: none; color: white; }
         .fav-card img { width: 140px; height: 200px; object-fit: cover; border-radius: 8px; display: block; }
         .fav-card p { font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -177,11 +178,11 @@
         <img id="banner-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1">
         <div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(to top,#050505 0%,transparent 60%);z-index:2"></div>
         
-        <!-- Logo top left & language selection top right at exactly the same height -->
+        <!-- 左上にロゴ、右上にまったく同じ高さで言語選択 -->
         <div style="position:absolute;top:15px;left:15px;right:15px;z-index:10;display:flex;justify-content:space-between;align-items:center;">
             <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784128412/file_00000000fae07246aee954a7e9b9ef57_wqnzez.png" style="width: 100px;">
             
-            <!-- Language selection top (Opens downwards) -->
+            <!-- 上部言語選択（下向きに展開） -->
             <div class="lang-dropdown down" id="lang-top">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-top', event)"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> ▾</div>
                 <div class="lang-content">
@@ -215,22 +216,26 @@
     </div>
 
     <div style="background-color: #050505; color: white; padding: 10px 30px; font-family: sans-serif;">
-        <h2 style="font-size: 20px; margin-bottom: 15px">マイ音楽</h2>
+        <h2 style="font-size: 20px; margin-bottom: 15px">マイミュージック</h2>
         <div id="music-favorites-container" class="scroll-container">
-            <!-- Dynamically populated -->
+            <!-- 動的に入力されます -->
         </div>
 
         <h2 style="font-size: 20px; margin-bottom: 15px; margin-top: 30px;">新着リリース</h2>
         <div class="scroll-container">
+            <a href="/Rising-Horizon/ja/" style="flex: 0 0 140px; text-decoration: none; color: white;">
+                <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784541714/1784530214857_swgyyh.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Rising Horizon</p>
+            </a>
             <a href="/Ankinox-Song/ja" style="flex: 0 0 140px; text-decoration: none; color: white;">
                 <img src="https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/1784489174693_pzgjqh.png" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px;">
-                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">夢を生きる (Träume Leben)</p>
+                <p style="font-size: 14px; margin: 10px 0 5px 0; font-weight: bold; white-space: nowrap;">Living Dreams</p>
             </a>
         </div>
     </div>
 
     <footer class="site-footer">
-       <!-- Language selection in footer (Opens upwards) -->
+       <!-- フッター内の言語選択（上向きに展開） -->
         <div style="margin-bottom: 20px; display: flex; justify-content: center;">
             <div class="lang-dropdown up" id="lang-footer">
                 <div class="lang-btn" onclick="toggleLangMenu('lang-footer', event)"><img src="https://flagcdn.com/w40/jp.png" class="flag-img" alt="JA"><span class="flag-emoji">🇯🇵</span> ▴</div>
@@ -247,13 +252,13 @@
         </div>
       
         <div class="footer-links">
-            <a href="/impressum/ja">インプリント</a>
+            <a href="/impressum/ja">特定商取引法に基づく表記</a>
             <a href="mailto:kontakt@ankinox.com">お問い合わせ</a>
             <a href="mailto:support@ankinox.com">サポート</a>
         </div>
         <div class="copyright">
-            &copy; 2026 Ankinox. 独自コンテンツのすべての権利を保有します。<br>
-            パートナーおよびスタジオからのコンテンツは、それぞれの著作権に準拠します。
+            &copy; 2026 Ankinox. すべての独自コンテンツの権利は留保されています。<br>
+            パートナーおよびスタジオのコンテンツは、それぞれの著作権に従います。
         </div>
     </footer>
 
@@ -265,29 +270,29 @@
     </nav>
 
     <script>
-      function changeLang(langCode, targetUrl) {
+       function changeLang(langCode, targetUrl) {
             localStorage.setItem('userSelectedLang', langCode);
             sessionStorage.setItem('justSwitched', 'true');
             window.location.href = targetUrl;
         }
-      
-        // Dropdown open/close script
+       
+        // ドロップダウン開閉スクリプト
         function toggleLangMenu(id, event) {
             event.stopPropagation();
             const dropdown = document.getElementById(id);
-            // Close all other menus
+            // 他のすべてのメニューを閉じる
             document.querySelectorAll('.lang-dropdown').forEach(d => {
                 if(d.id !== id) d.classList.remove('show');
             });
             dropdown.classList.toggle('show');
         }
 
-        // Clicks outside close the menu again
+        // 外側をクリックするとメニューが閉じる
         window.addEventListener('click', () => {
             document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('show'));
         });
 
-        // Closes the language menu if the entire expanded block is completely outside the screen (Scrolling)
+        // 展開されたブロック全体が画面外に出た場合に言語メニューを閉じる（スクロール時）
         window.addEventListener('scroll', () => {
             document.querySelectorAll('.lang-dropdown.show').forEach(dropdown => {
                 const content = dropdown.querySelector('.lang-content');
@@ -300,16 +305,16 @@
             });
         }, { passive: true });
 
-        // Load favorites logic for music
+        // 音楽のお気に入りを読み込むロジック
         async function loadMusicFavorites() {
             const container = document.getElementById('music-favorites-container');
             const deviceId = localStorage.getItem('anki_device_id');
             
-            // Base link always in first position
+            // 基本リンクは常に先頭
             let htmlContent = `
                 <a href="/fav_Musik/ja" class="fav-card">
                     <img src="https://ankinox.wordpress.com/wp-content/uploads/2026/07/17836723245554507946646987273774.png">
-                    <p>音楽のお気に入り</p>
+                    <p>お気に入りの音楽</p>
                 </a>
             `;
 
@@ -341,13 +346,20 @@
         }
         loadMusicFavorites();
 
-        // Banner logic
+        // バナーロジック
         const data = [
+            {
+                bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784541714/1784530214857_swgyyh.png",
+                logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1785049318/file_00000000c4c48243a9e5397f386173fa_qbbk6j.png",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">NEW</span> 曲 • ナイトコア • G-Pop',
+                desc: "Ankinoxの独占オリジナル：「Rising Horizon」。この楽曲は、決して諦めないことをテーマにしています。",
+                url: "/Rising-Horizon/ja/"
+            },
             {
                 bg: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/1784489174693_pzgjqh.png",
                 logo: "https://res.cloudinary.com/pqb6wtea/image/upload/v1784489854/file_000000002a2081fba36bcedb063bc325_vjk0io.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">新着</span> 字幕付き | 曲 • ナイトコア • アニメポップ',
-                desc: "Ankinox Originalsによる限定トラック：ナイトコアスタイルの「夢を生きる (Träume Leben)」。",
+                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">NEW</span> 字幕 | 曲 • ナイトコア • アニメポップ',
+                desc: "Ankinox Originalsからの独占トラック：ナイトコアスタイルのLiving Dreams。",
                 url: "/Ankinox-Song/ja"
             },
             {
@@ -356,13 +368,6 @@
                 fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">FSK 16</span> パートナーシップ • 収益化 • 成長',
                 desc: "今すぐAnkinoxパートナーになりましょう。",
                 url: "/Partnerschaft/ja"
-            },
-            {
-                bg: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_00000000465071f4b6f088a5c97f5ae94673847233298897158.png",
-                logo: "https://ankinox.wordpress.com/wp-content/uploads/2026/07/file_000000003d8c71f48076cd973bc171244122624465816296866.png",
-                fsk: '<span style="border:2px solid #7000ff;padding:1px 6px;border-radius:4px;font-weight:bold;color:#00d4ff;box-shadow:0 0 5px #00d4ff">ショップ</span> グッズ • 限定品 • ファンアイテム',
-                desc: "公式Ankinoxショップで限定ファンメルチャンダイズや限定版を見つけよう。",
-                url: "/Shop/ja"
             }
         ];
 
@@ -405,4 +410,3 @@
     </script>
 </body>
 </html>
-
